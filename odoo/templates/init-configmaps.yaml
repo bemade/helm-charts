@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: odoo-init-create-user
+  namespace: {{ .Release.Namespace }}
+data:
+  init-create-user.sh: |
+    #!/bin/sh
+    LOG_FILE="/scripts/init-log-create-user.txt"
+
+    echo "Starting user creation script at $(date)" > $LOG_FILE
+
+    echo "Checking if user $DB_USER exists..." >> $LOG_FILE
+    psql -h $DB_HOST -U $DB_SUPERUSER -tc "SELECT 1 FROM pg_roles WHERE rolname='$DB_USER'" >> $LOG_FILE 2>&1 | grep -q 1
+    if [ $? -ne 0 ]; then
+      echo "User $DB_USER does not exist. Creating user..." >> $LOG_FILE
+      psql -h $DB_HOST -U $DB_SUPERUSER -c "CREATE USER \"$DB_USER\" WITH PASSWORD '$DB_PASSWORD';" >> $LOG_FILE 2>&1
+    else
+      echo "User $DB_USER already exists." >> $LOG_FILE
+    fi
+
+    echo "Granting CREATEDB privilege to user $DB_USER..." >> $LOG_FILE
+    psql -h $DB_HOST -U $DB_SUPERUSER -c "ALTER USER \"$DB_USER\" CREATEDB;" >> $LOG_FILE 2>&1
+
+    echo "User creation script completed at $(date)" >> $LOG_FILE
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: odoo-init-db
+  namespace: {{ .Release.Namespace }}
+data:
+  init-db.sh: |
+    #!/bin/sh
+    LOG_FILE="/scripts/init-log-db.txt"
+
+    echo "Starting database initialization script at $(date)" > $LOG_FILE
+
+    echo "Checking if database $DB_NAME exists..." >> $LOG_FILE
+    DB_EXIST=$(psql -h $DB_HOST -U $DB_SUPERUSER -tc "SELECT 1 FROM pg_database WHERE datname = '$DB_NAME'" | xargs)
+    if [ "$DB_EXIST" != "1" ]; then
+      echo "Database $DB_NAME does not exist. Launching Odoo to initialize the database..." >> $LOG_FILE
+      /usr/bin/odoo -c /etc/odoo/odoo.conf -d "$DB_NAME" -i=base --stop-after-init >> $LOG_FILE 2>&1
+    else
+      echo "Database $DB_NAME already exists." >> $LOG_FILE
+    fi
+
+    echo "Database initialization script completed at $(date)" >> $LOG_FILE
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: odoo-init-revoke-privileges
+  namespace: {{ .Release.Namespace }}
+data:
+  init-revoke-privileges.sh: |
+    #!/bin/sh
+    LOG_FILE="/scripts/init-log-revoke-privileges.txt"
+
+    echo "Starting revoke privileges script at $(date)" > $LOG_FILE
+
+    echo "Revoking CREATEDB privilege from user $DB_USER..." >> $LOG_FILE
+    psql -h $DB_HOST -U $DB_SUPERUSER -c "ALTER USER \"$DB_USER\" NOCREATEDB;" >> $LOG_FILE 2>&1
+
+    echo "Revoke privileges script completed at $(date)" >> $LOG_FILE

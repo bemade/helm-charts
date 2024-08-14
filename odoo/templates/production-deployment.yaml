@@ -1,0 +1,156 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-odoo
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: odoo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odoo
+  template:
+    metadata:
+      labels:
+        app: odoo
+    spec:
+      volumes:
+        - name: init-user-script-volume
+          configMap:
+            name: init-create-user
+        - name: init-odoo-db-volume
+          configMap:
+            name: odoo-init-db
+        - name: odoo-init-revoke-privileges-volume
+          configMap:
+            name: odoo-init-revoke-privileges
+        - name: init-log-volume
+          emptyDir: {}
+        - name: odoo-filestore  # Ensure this volume is defined
+          persistentVolumeClaim:
+            claimName: {{ .Values.odoo.filestore.pvcName }}  # Referencing the PVC for the filestore
+        - name: odoo-config
+          configMap:
+            name: odoo-conf-production
+      initContainers:
+        - name: init-create-user
+          image: postgres:16-alpine
+          command: ["/bin/sh", "/scripts/init-create-user.sh"]
+          env:
+            - name: DB_HOST
+              value: {{ .Values.odoo.db.host }}
+            - name: DB_SUPERUSER
+              value: {{ .Values.odoo.db.superuser }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: superuserPassword
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: password
+          volumeMounts:
+            - name: init-user-script-volume
+              mountPath: /scripts
+              subPath: init-create-user.sh
+              readOnly: true
+            - name: init-log-volume
+              mountPath: /scripts
+              subPath: init-log.txt
+        - name: init-odoo-db
+          image: {{ .Values.odoo.image }}
+          command: ["/bin/sh", "/scripts/odoo-init-db.sh"]
+          env:
+            - name: DB_HOST
+              value: {{ .Values.odoo.db.host }}
+            - name: DB_SUPERUSER
+              value: {{ .Values.odoo.db.superuser }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: superuserPassword
+            - name: HOST
+              value: {{ .Values.odoo.db.host }}
+            - name: USER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: username
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: password
+          volumeMounts:
+            - name: init-odoo-db-volume
+              mountPath: /scripts
+              subPath: init-odoo-db.sh
+              readOnly: true
+            - name: init-log-volume
+              mountPath: /scripts
+              subPath: init-log.txt
+        - name: init-revoke-create
+          image: postgres:16-alpine
+          command: ["/bin/sh", "/scripts/init-revoke-privileges.sh"]
+          env:
+            - name: DB_HOST
+              value: {{ .Values.odoo.db.host }}
+            - name: DB_SUPERUSER
+              value: {{ .Values.odoo.db.superuser }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: superuserPassword
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: username
+          volumeMounts:
+            - name: odoo-init-revoke-privileges-volume
+              mountPath: /scripts
+              subPath: init-revoke-privileges.sh
+              readOnly: true
+            - name: init-log-volume
+              mountPath: /scripts
+              subPath: init-log.txt
+      containers:
+        - name: odoo
+          image: {{ .Values.odoo.image }}
+          ports:
+            - containerPort: 8069
+          volumeMounts:
+            - name: init-log-volume
+              mountPath: /scripts
+              subPath: init-log.txt
+            - name: odoo-filestore
+              mountPath: /var/lib/odoo  # Mounting the filestore
+            - name: odoo-config
+              mountPath: /etc/odoo
+              subPath: odoo.conf
+          env:
+            - name: HOST
+              value: {{ .Values.odoo.db.host }}
+            - name: USER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: username
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: password
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0

@@ -1,8 +1,10 @@
 namespace: "default"
 odoo:
   image: "odoo:17"
-  replicaCount: 1
   domain: "demo.odoo.bemade.org"
+  staging:
+    enabled: false
+    replicaCount: 2
   filestore:
     pvcName: "odoo-filestore-pvc"
     storageSize: 10Gi
