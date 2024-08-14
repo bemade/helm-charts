@@ -9,7 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: {{ .Values.odoo.ingress.host }}
+    - host: {{ .Values.odoo.domain }}
       http:
         paths:
           - path: /
@@ -21,6 +21,6 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - {{ .Values.odoo.ingress.host }}
+        - {{ .Values.odoo.domain }}
       secretName: {{ .Values.odoo.ingress.tlsSecretName }}
 {{- end }}

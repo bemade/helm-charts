@@ -14,6 +14,5 @@ odoo:
     superuserPassword: "postgres"
   ingress:
     enabled: true
-    host: "demo.odoo.bemade.org"
     tlsSecretName: "odoo-tls-secret"
     clusterIssuer: "letsencrypt-dns"
