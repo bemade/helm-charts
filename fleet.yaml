@@ -1,0 +1,9 @@
+helm:
+  chart: ./charts/odoo
+  releaseName: demo3-odoo
+  values:
+    odoo:
+      superuserPassword: changeme
+      domain: "demo3.odoo.bemade.org"
+      ingress:
+        host: "demo3.odoo.bemade.org"
