@@ -18,7 +18,7 @@ spec:
       volumes:
         - name: init-user-script-volume
           configMap:
-            name: init-create-user
+            name: odoo-init-create-user
         - name: init-odoo-db-volume
           configMap:
             name: odoo-init-db
