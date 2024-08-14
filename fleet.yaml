@@ -2,6 +2,7 @@ helm:
   chart: ./charts/odoo
   releaseName: demo3-odoo
   namespace: demo3-odoo
+  createNamespace: true
   values:
     odoo:
       superuserPassword: changeme
