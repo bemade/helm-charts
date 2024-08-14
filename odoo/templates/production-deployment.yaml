@@ -25,11 +25,9 @@ spec:
         - name: odoo-init-revoke-privileges-volume
           configMap:
             name: odoo-init-revoke-privileges
-        - name: init-log-volume
-          emptyDir: {}
-        - name: odoo-filestore  # Ensure this volume is defined
+        - name: odoo-filestore
           persistentVolumeClaim:
-            claimName: {{ .Values.odoo.filestore.pvcName }}  # Referencing the PVC for the filestore
+            claimName: {{ .Values.odoo.filestore.pvcName }}
         - name: odoo-config
           configMap:
             name: odoo-conf-production
@@ -59,15 +57,12 @@ spec:
                   key: password
           volumeMounts:
             - name: init-user-script-volume
-              mountPath: /scripts
+              mountPath: /scripts/init-create-user.sh  # Mounting the script correctly as a file
               subPath: init-create-user.sh
               readOnly: true
-            - name: init-log-volume
-              mountPath: /scripts/init-log.txt
-              subPath: init-log.txt
         - name: init-odoo-db
           image: {{ .Values.odoo.image }}
-          command: ["/bin/sh", "/scripts/odoo-init-db.sh"]
+          command: ["/bin/sh", "/scripts/init-odoo-db.sh"]
           env:
             - name: DB_HOST
               value: {{ .Values.odoo.db.host }}
@@ -92,12 +87,9 @@ spec:
                   key: password
           volumeMounts:
             - name: init-odoo-db-volume
-              mountPath: /scripts
+              mountPath: /scripts/init-odoo-db.sh  # Mounting the script correctly as a file
               subPath: init-odoo-db.sh
               readOnly: true
-            - name: init-log-volume
-              mountPath: /scripts/init-log.txt
-              subPath: init-log.txt
         - name: init-revoke-create
           image: postgres:16-alpine
           command: ["/bin/sh", "/scripts/init-revoke-privileges.sh"]
@@ -118,25 +110,19 @@ spec:
                   key: username
           volumeMounts:
             - name: odoo-init-revoke-privileges-volume
-              mountPath: /scripts
+              mountPath: /scripts/init-revoke-privileges.sh  # Mounting the script correctly as a file
               subPath: init-revoke-privileges.sh
               readOnly: true
-            - name: init-log-volume
-              mountPath: /scripts/init-log.txt
-              subPath: init-log.txt
       containers:
         - name: odoo
           image: {{ .Values.odoo.image }}
           ports:
             - containerPort: 8069
           volumeMounts:
-            - name: init-log-volume
-              mountPath: /scripts
-              subPath: init-log.txt
             - name: odoo-filestore
               mountPath: /var/lib/odoo  # Mounting the filestore
             - name: odoo-config
-              mountPath: /etc/odoo
+              mountPath: /etc/odoo/odoo.conf  # Mounting the odoo.conf file
               subPath: odoo.conf
           env:
             - name: HOST

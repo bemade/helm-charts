@@ -6,7 +6,7 @@ metadata:
 data:
   init-create-user.sh: |
     #!/bin/sh
-    LOG_FILE="/scripts/init-log-create-user.txt"
+    LOG_FILE="/var/log/init-log-create-user.txt"
 
     echo "Starting user creation script at $(date)" > $LOG_FILE
 
@@ -34,7 +34,7 @@ metadata:
 data:
   init-db.sh: |
     #!/bin/sh
-    LOG_FILE="/scripts/init-log-db.txt"
+    LOG_FILE="/var/log/init-log-db.txt"
 
     echo "Starting database initialization script at $(date)" > $LOG_FILE
 
@@ -59,7 +59,7 @@ metadata:
 data:
   init-revoke-privileges.sh: |
     #!/bin/sh
-    LOG_FILE="/scripts/init-log-revoke-privileges.txt"
+    LOG_FILE="/var/log/init-log-revoke-privileges.txt"
 
     echo "Starting revoke privileges script at $(date)" > $LOG_FILE
 
