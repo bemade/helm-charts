@@ -59,7 +59,7 @@ spec:
                   key: password
           volumeMounts:
             - name: init-user-script-volume
-              mountPath: /scripts/init-create-user.sh
+              mountPath: /scripts
               subPath: init-create-user.sh
               readOnly: true
             - name: init-log-volume
@@ -92,7 +92,7 @@ spec:
                   key: password
           volumeMounts:
             - name: init-odoo-db-volume
-              mountPath: /scripts/init-odoo-db.sh
+              mountPath: /scripts
               subPath: init-odoo-db.sh
               readOnly: true
             - name: init-log-volume
@@ -118,7 +118,7 @@ spec:
                   key: username
           volumeMounts:
             - name: odoo-init-revoke-privileges-volume
-              mountPath: /scripts/init-revoke-privileges.sh
+              mountPath: /scripts
               subPath: init-revoke-privileges.sh
               readOnly: true
             - name: init-log-volume
