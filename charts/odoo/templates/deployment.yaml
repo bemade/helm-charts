@@ -37,12 +37,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
-                  key: superUserPassword
+                  key: superuserPassword
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
-                  key: superUserPassword
+                  key: superuserPassword
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
