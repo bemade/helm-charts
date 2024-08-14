@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: odoo-init-script
+  namespace: {{ .Release.Namespace }}
+data:
+  init-create-user-and-schema.sh: |
+    #!/bin/sh
+    LOG_FILE="/scripts/init-log.txt"
+
+    echo "Starting init script at $(date)" > $LOG_FILE
+
+    echo "Checking if user $DB_USER exists..." >> $LOG_FILE
+    psql -h $DB_HOST -U $DB_SUPERUSER -tc "SELECT 1 FROM pg_roles WHERE rolname='$DB_USER'" >> $LOG_FILE 2>&1 | grep -q 1
+    if [ $? -ne 0 ]; then
+      echo "User $DB_USER does not exist. Creating user..." >> $LOG_FILE
+      psql -h $DB_HOST -U $DB_SUPERUSER -c "CREATE USER \"$DB_USER\" WITH PASSWORD '$DB_PASSWORD';" >> $LOG_FILE 2>&1
+      psql -h $DB_HOST -U $DB_SUPERUSER -c "ALTER USER \"$DB_USER\" CREATEDB;" >> $LOG_FILE 2>&1
+    else
+      echo "User $DB_USER already exists." >> $LOG_FILE
+    fi
+
+    echo "Checking if schema $DB_USER exists..." >> $LOG_FILE
+    psql -h $DB_HOST -U $DB_SUPERUSER -tc "SELECT schema_name FROM information_schema.schemata WHERE schema_name = '$DB_USER'" >> $LOG_FILE 2>&1 | grep -q 1
+    if [ $? -ne 0 ]; then
+      echo "Schema $DB_USER does not exist. Creating schema..." >> $LOG_FILE
+      psql -h $DB_HOST -U $DB_SUPERUSER -c "CREATE SCHEMA \"$DB_USER\" AUTHORIZATION \"$DB_USER\"; ALTER ROLE \"$DB_USER\" SET search_path TO \"$DB_USER\", public; GRANT ALL PRIVILEGES ON SCHEMA \"$DB_USER\" TO \"$DB_USER\";" >> $LOG_FILE 2>&1
+    else
+      echo "Schema $DB_USER already exists." >> $LOG_FILE
+    fi
+
+    echo "Init script completed at $(date)" >> $LOG_FILE

@@ -1,0 +1,18 @@
+namespace: "default"
+odoo:
+  image: "odoo:17"
+  replicaCount: 1
+  domain: "demo.odoo.bemade.org"
+  filestore:
+    pvcName: "odoo-filestore-pvc"
+    storageSize: 10Gi
+    storageClassName: ""
+  db:
+    host: "postgresql.default.svc.cluster.local"
+    superuser: "postgres"
+    superuserPassword: "postgres"
+  ingress:
+    enabled: true
+    host: "demo.odoo.bemade.org"
+    tlsSecretName: "odoo-tls-secret"
+    clusterIssuer: "letsencrypt-dns"

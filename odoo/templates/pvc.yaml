@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.odoo.filestore.pvcName }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.odoo.filestore.storageSize | default "10Gi" }}
+  {{- if .Values.odoo.filestore.storageClassName }}
+  storageClassName: {{ .Values.odoo.filestore.storageClassName }}
+  {{- end }}
