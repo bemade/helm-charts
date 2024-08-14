@@ -59,11 +59,11 @@ spec:
                   key: password
           volumeMounts:
             - name: init-user-script-volume
-              mountPath: /scripts
+              mountPath: /scripts/init-create-user.sh
               subPath: init-create-user.sh
               readOnly: true
             - name: init-log-volume
-              mountPath: /scripts
+              mountPath: /scripts/init-log.txt
               subPath: init-log.txt
         - name: init-odoo-db
           image: {{ .Values.odoo.image }}
@@ -92,11 +92,11 @@ spec:
                   key: password
           volumeMounts:
             - name: init-odoo-db-volume
-              mountPath: /scripts
+              mountPath: /scripts/init-odoo-db.sh
               subPath: init-odoo-db.sh
               readOnly: true
             - name: init-log-volume
-              mountPath: /scripts
+              mountPath: /scripts/init-log.txt
               subPath: init-log.txt
         - name: init-revoke-create
           image: postgres:16-alpine
@@ -118,11 +118,11 @@ spec:
                   key: username
           volumeMounts:
             - name: odoo-init-revoke-privileges-volume
-              mountPath: /scripts
+              mountPath: /scripts/init-revoke-privileges.sh
               subPath: init-revoke-privileges.sh
               readOnly: true
             - name: init-log-volume
-              mountPath: /scripts
+              mountPath: /scripts/init-log.txt
               subPath: init-log.txt
       containers:
         - name: odoo
