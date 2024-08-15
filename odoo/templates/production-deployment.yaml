@@ -63,7 +63,7 @@ spec:
         - name: init-odoo-db
           image: {{ .Values.odoo.image }}
           # command: ["/bin/sh", "/scripts/init-odoo-db.sh"]
-          command: ["/bin/sh", "sleep infinity"]
+          command: ["/bin/bash", "sleep infinity"]
           env:
             - name: DB_HOST
               value: {{ .Values.odoo.db.host }}
