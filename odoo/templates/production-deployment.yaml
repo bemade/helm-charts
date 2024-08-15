@@ -62,7 +62,7 @@ spec:
               readOnly: true
         - name: init-odoo-db
           image: {{ .Values.odoo.image }}
-          # command: ["/bin/sh", "/scripts/init-odoo-db.sh"]
+          # command: ["/bin/sh", "/scripts/init-db.sh"]
           command: ["/bin/sh", "-c", "sleep infinity"]
           env:
             - name: DB_HOST
@@ -88,8 +88,8 @@ spec:
                   key: password
           volumeMounts:
             - name: init-odoo-db-volume
-              mountPath: /scripts/init-odoo-db.sh
-              subPath: init-odoo-db.sh
+              mountPath: /scripts/init-db.sh
+              subPath: init-db.sh
               readOnly: true
         - name: init-revoke-create
           image: postgres:16-alpine
