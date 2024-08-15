@@ -121,7 +121,7 @@ spec:
         - name: odoo
           image: {{ .Values.odoo.image }}
           command: ["/bin/sh", "-c"]
-          args: ["/usr/bin/odoo --db_name=$USER --list_db=False"]
+          args: ["/usr/bin/odoo -d $USER --list_db=False"]
           ports:
             - containerPort: 8069
           volumeMounts:
