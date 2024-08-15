@@ -94,6 +94,9 @@ spec:
               mountPath: /scripts/init-db.sh
               subPath: init-db.sh
               readOnly: true
+            - name: odoo-config
+              mountPath: /etc/odoo/odoo.conf  # Mounting the odoo.conf file
+              subPath: odoo.conf
         - name: init-revoke-create
           image: postgres:16-alpine
           command: ["/bin/sh", "/scripts/init-revoke-privileges.sh"]
