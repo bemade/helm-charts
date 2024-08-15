@@ -121,15 +121,15 @@ spec:
         - name: odoo
           image: {{ .Values.odoo.image }}
           command: ["/bin/sh", "-c"]
-          args: ["/usr/bin/odoo -d $USER --list_db=False"]
+          args: ["/usr/bin/odoo -d $USER -c /etc/odoo/odoo.conf"]
           ports:
             - containerPort: 8069
           volumeMounts:
             - name: odoo-filestore
               mountPath: /var/lib/odoo  # Mounting the filestore
-            - name: odoo-config
-              mountPath: /etc/odoo/odoo.conf  # Mounting the odoo.conf file
-              subPath: odoo.conf
+            # - name: odoo-config
+            #   mountPath: /etc/odoo/odoo.conf  # Mounting the odoo.conf file
+            #   subPath: odoo.conf
           env:
             - name: HOST
               value: {{ .Values.odoo.db.host }}
