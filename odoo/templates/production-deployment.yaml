@@ -62,8 +62,8 @@ spec:
               readOnly: true
         - name: init-odoo-db
           image: {{ .Values.odoo.image }}
-          # command: ["/bin/sh", "/scripts/init-db.sh"]
-          command: ["/bin/sh", "-c", "sleep infinity"]
+          command: ["/bin/sh", "/scripts/init-db.sh"]
+          # command: ["/bin/sh", "-c", "sleep infinity"]
           securityContext:
             runAsUser: 0
             runAsGroup: 0
@@ -94,9 +94,6 @@ spec:
               mountPath: /scripts/init-db.sh
               subPath: init-db.sh
               readOnly: true
-            - name: odoo-config
-              mountPath: /etc/odoo/odoo.conf  # Mounting the odoo.conf file
-              subPath: odoo.conf
         - name: init-revoke-create
           image: postgres:16-alpine
           command: ["/bin/sh", "/scripts/init-revoke-privileges.sh"]

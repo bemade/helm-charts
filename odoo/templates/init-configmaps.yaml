@@ -38,7 +38,7 @@ data:
 
     echo "Starting database initialization script at $(date)" > $LOG_FILE
 
-    /usr/bin/odoo -c /etc/odoo/odoo.conf -d "$DB_NAME" -i web -r "$USER" -w "$PASSWORD" --db_host="$DB_HOST" --stop-after-init >> $LOG_FILE 2>&1
+    /bin/odoo --db_user=$USER --db_password=$PASSWORD -d $USER -i web --db_host=$HOST --stop-after-init
 
     echo "Database initialization script completed at $(date)" >> $LOG_FILE
 
