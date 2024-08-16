@@ -26,6 +26,24 @@ spec:
           volumeMounts:
             - name: odoo-filestore
               mountPath: /var/lib/odoo
+        - name: init-db-user
+          image: postgres:16.1
+          command: ["sh", "-c", "psql -v ON_ERROR_STOP=1 --host=$HOST --username=$USER --dbname=postgres --command \"CREATE USER $USER WITH PASSWORD '$PASSWORD' CREATEDB;\""]
+          env:
+            - name: HOST
+              value: kubegres
+            - name: USER
+              value: odoo
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: password
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: superUserPassword
       containers:
         - name: odoo
           image: {{ .Values.odoo.image }}
