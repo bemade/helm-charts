@@ -10,5 +10,5 @@ spec:
     app: odoo
   ports:
     - protocol: TCP
-      port: 80
+      port: 8069
       targetPort: 8069
