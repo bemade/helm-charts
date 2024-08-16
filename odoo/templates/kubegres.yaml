@@ -1,0 +1,22 @@
+apiVersion: kubegres.reactive-tech.io/v1
+kind: Kubegres
+metadata:
+  name: kubegres
+  namespace: {{ .Release.Namespace }}
+spec:
+   replicas: 3
+   image: postgres:16.1
+   database:
+      size: {{ .Values.odoo.db.size | default "5Gi" }}
+      storageClassName: non-replicated-storage
+   env:
+      - name: POSTGRES_PASSWORD
+        valueFrom:
+           secretKeyRef:
+              name: pg-credentials
+              key: password
+      - name: POSTGRES_REPLICATION_PASSWORD
+        valueFrom:
+           secretKeyRef:
+              name: pg-credentials
+              key: password

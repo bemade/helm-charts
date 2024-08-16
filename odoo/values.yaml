@@ -5,13 +5,10 @@ odoo:
     enabled: false
     replicaCount: 2
   filestore:
-    pvcName: "odoo-filestore-pvc"
-    storageSize: 10Gi
+    size: 10Gi
     storageClassName: ""
   db:
-    host: "postgresql.default.svc.cluster.local"
-    superuser: "postgres"
-    superuserPassword: "postgres"
+    size: 10Gi
   ingress:
     enabled: true
     tlsSecretName: "odoo-tls-secret"
