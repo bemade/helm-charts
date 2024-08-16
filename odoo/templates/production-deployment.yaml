@@ -28,7 +28,7 @@ spec:
               mountPath: /var/lib/odoo
         - name: init-db-user
           image: postgres:16.1
-          command: ["sh", "-c", "psql -v ON_ERROR_STOP=1 --host=$HOST --username=postgres --dbname=postgres --command \"CREATE USER $USER WITH PASSWORD '$PASSWORD' CREATEDB;\""]
+command: ["sh", "-c", "psql -v ON_ERROR_STOP=1 --host=$HOST --username=postgres --dbname=postgres --command \"DO \$\$ BEGIN IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = '$USER') THEN CREATE USER $USER WITH PASSWORD '$PASSWORD' CREATEDB; END IF; END \$\$;\""]
           env:
             - name: HOST
               value: kubegres
