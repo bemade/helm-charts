@@ -31,10 +31,7 @@ spec:
             - name: HOST
               value: kubegres
             - name: USER
-              valueFrom:
-                secretKeyRef:
-                  name: pg-credentials
-                  key: username
+              value: postgres
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
