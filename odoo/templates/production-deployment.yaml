@@ -19,6 +19,9 @@ spec:
         - name: odoo-filestore
           persistentVolumeClaim:
             claimName: odoo-filestore-pvc
+        - name: init-db-script
+          configMap:
+            name: init-db-script
       initContainers:
         - name: init-permissions
           image: busybox
@@ -28,7 +31,7 @@ spec:
               mountPath: /var/lib/odoo
         - name: init-db-user
           image: postgres:16.1
-command: ["sh", "-c", "psql -v ON_ERROR_STOP=1 --host=$HOST --username=postgres --dbname=postgres --command \"DO \$\$ BEGIN IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = '$USER') THEN CREATE USER $USER WITH PASSWORD '$PASSWORD' CREATEDB; END IF; END \$\$;\""]
+          command: ["/bin/bash", "/scripts/init-db-user.sh"]
           env:
             - name: HOST
               value: kubegres
@@ -44,6 +47,9 @@ command: ["sh", "-c", "psql -v ON_ERROR_STOP=1 --host=$HOST --username=postgres 
                 secretKeyRef:
                   name: pg-credentials
                   key: superUserPassword
+          volumeMounts:
+            - name: init-db-script
+              mountPath: /scripts
       containers:
         - name: odoo
           image: {{ .Values.odoo.image }}
