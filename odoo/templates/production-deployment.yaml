@@ -20,12 +20,12 @@ spec:
           persistentVolumeClaim:
             claimName: odoo-filestore-pvc
       initContainers:
-        -name: init-permissions
-        image: busybox
-        command: ["sh", "-c", "chown -R 1000:1000 /var/lib/odoo"]
-        volumeMounts:
-          - name: odoo-filestore
-            mountPath: /var/lib/odoo
+        - name: init-permissions
+          image: busybox
+          command: ["sh", "-c", "chown -R 1000:1000 /var/lib/odoo"]
+          volumeMounts:
+            - name: odoo-filestore
+              mountPath: /var/lib/odoo
       containers:
         - name: odoo
           image: {{ .Values.odoo.image }}
