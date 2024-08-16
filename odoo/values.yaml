@@ -5,10 +5,10 @@ odoo:
     enabled: false
     replicaCount: 2
   filestore:
-    size: 10Gi
+    size: ""
     storageClassName: ""
   db:
-    size: 10Gi
+    size: ""
   ingress:
     enabled: true
     tlsSecretName: "odoo-tls-secret"

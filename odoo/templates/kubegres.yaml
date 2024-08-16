@@ -7,7 +7,7 @@ spec:
    replicas: 3
    image: postgres:16.1
    database:
-      size: {{ .Values.odoo.db.size | default "5Gi" }}
+      size: {{ .Values.odoo.db.size | default "1Gi" }}
       storageClassName: non-replicated-storage
    env:
       - name: POSTGRES_PASSWORD
