@@ -18,7 +18,7 @@ spec:
       volumes:
         - name: odoo-filestore
           persistentVolumeClaim:
-            claimName: {{ .Values.odoo.filestore.pvcName }}
+            claimName: odoo-filestore-pvc
       containers:
         - name: odoo
           image: {{ .Values.odoo.image }}
