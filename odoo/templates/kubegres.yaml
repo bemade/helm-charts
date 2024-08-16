@@ -9,14 +9,23 @@ spec:
    database:
       size: {{ .Values.odoo.db.size | default "1Gi" }}
       storageClassName: non-replicated-storage
+   customConfig: postgres-conf
    env:
       - name: POSTGRES_PASSWORD
         valueFrom:
            secretKeyRef:
               name: pg-credentials
-              key: password
+              key: superUserPassword
       - name: POSTGRES_REPLICATION_PASSWORD
         valueFrom:
            secretKeyRef:
               name: pg-credentials
+              key: superUserPassword
+      - name: ODOO_USER_PASSWORD
+        valueFrom:
+           secretKeyRef:
+              name: pg-credentials
               key: password
+      - name: ODOO_USER
+        value: odoo
+
