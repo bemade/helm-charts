@@ -9,14 +9,14 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: {{ .Values.production.hostname}}.{{ .Values.odoo.domain }}
+    - host: {{ .Values.odoo.production.hostname }}.{{ .Values.odoo.domain }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: odoo-{{ .Values.production.hostname }}
+                name: odoo-{{ .Values.odoo.production.hostname }}
                 port:
                   number: 8069
     {{- range .Values.odoo.staging }}
@@ -34,7 +34,7 @@ spec:
     {{- end }}
   tls:
     - hosts:
-        - {{ .Values.production.hostname}}.{{ .Values.odoo.domain }}
+        - {{ .Values.odoo.production.hostname}}.{{ .Values.odoo.domain }}
         {{- range $.Values.odoo.staging }}
         - {{ .hostname }}.{{ $.Values.odoo.domain }}
         {{- end }}
