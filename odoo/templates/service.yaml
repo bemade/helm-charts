@@ -4,10 +4,10 @@ metadata:
   name: odoo-{{ .Values.odoo.production.hostname }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: odoo-production
+    app: odoo-{{ .Values.odoo.production.hostname }}
 spec:
   selector:
-    app: odoo-production
+    app: odoo-{{ .Values.odoo.production.hostname }}
   ports:
     - protocol: TCP
       port: 8069
