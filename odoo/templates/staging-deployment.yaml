@@ -30,11 +30,8 @@ spec:
         - name: init-filestore
           image: busybox
           command:
-            - "sh"
-            - "-c"
-            - |
-              chmod +x /scripts/init-filestore.sh
-              /scripts/init-filestore.sh
+            - "/bin/bash"
+            - "/scripts/init-filestore.sh"
           env:
             - name: PROD_DB
               value: {{ .productionDatabase }}
@@ -93,11 +90,8 @@ spec:
         - name: copy-production-db
           image: postgres:16.1
           command:
-            - "sh"
-            - "-c"
-            - |
-              chmod +x /scripts/copy-production-db.sh
-              /scripts/copy-production-db.sh
+            - "/bin/bash"
+            - "/scripts/copy-production-db.sh"
           env:
             - name: POSTGRES_USER
               value: odoo
