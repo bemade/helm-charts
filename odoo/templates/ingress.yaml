@@ -35,7 +35,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.odoo.production.hostname}}.{{ .Values.odoo.domain }}
-        {{- range $.Values.odoo.staging }}
+        {{- range .Values.odoo.staging }}
         - {{ .hostname }}.{{ $.Values.odoo.domain }}
         {{- end }}
       secretName: {{ .Values.odoo.ingress.tlsSecretName }}

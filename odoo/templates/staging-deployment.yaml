@@ -111,20 +111,9 @@ spec:
             - name: {{ .hostname}}-pgdata
               mountPath: /var/lib/postgresql/data
       containers:
-        - name: {{ .hostname }}-postgres
-          image: {{ $.Values.odoo.image }}
-          ports:
-            - containerPort: 8069
-          env:
-            - name: POSTGRES_USER
-              value: odoo
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: pg-credentials
-                  key: password
         - name: postgres-{{ .hostname }}
           image: postgres:16.1
+          env:
             - name: POSTGRES_USER
               value: odoo
             - name: POSTGRES_PASSWORD
