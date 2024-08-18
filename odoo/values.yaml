@@ -12,7 +12,7 @@ odoo:
       storageClassName: ""
   filestore:
     size: ""
-    storageClassName: ""
+    storageClassName: "longhorn"
   db:
     size: ""
   ingress:

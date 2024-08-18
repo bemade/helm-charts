@@ -9,9 +9,7 @@ spec:
     - ReadWriteOnce
     - ReadOnlyMany
   persistentVolumeReclaimPolicy: Retain
-  {{- if .Values.odoo.filestore.storageClassName }}
-  storageClassName: {{ .Values.odoo.filestore.storageClassName }}
-  {{- end }}
+  storageClassName: {{ .Values.odoo.filestore.storageClassName | default longhorn }}
   csi:
     driver: driver.longhorn.io
     volumeHandle: {{ .Values.odoo.production.hostname }}-filestore-pv
