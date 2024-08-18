@@ -34,7 +34,7 @@ spec:
             - name: PROD_DB
               value: {{ .productionDatabase }}
           volumeMounts:
-            - name: init-db-script
+            - name: init-filestore
               mountPath: /scripts
             - name: prod-filestore
               mountPath: /production-filestore
@@ -106,7 +106,7 @@ spec:
             - name: PROD_HOST
               value: kubegres
           volumeMounts:
-            - name: init-db-script
+            - name: copy-production-db
               mountPath: /scripts
             - name: {{ .hostname}}-pgdata
               mountPath: /var/lib/postgresql/data
@@ -124,7 +124,7 @@ spec:
             - name: POSTGRES_DB
               value: odoo
           volumeMounts:
-            - name: init-db-script
+            - name: copy-production-db
               mountPath: /scripts
             - name: {{ .hostname }}-pgdata
               mountPath: /var/lib/postgresql/data
