@@ -14,8 +14,6 @@ spec:
   {{- end }}
   csi:
     driver: driver.longhorn.io
-    fsType: ext4
-    volumeHandle: {{ .Values.odoo.production.hostname }}-filestore-pv
 
 ---
 
