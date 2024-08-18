@@ -19,3 +19,4 @@ odoo:
     enabled: true
     tlsSecretName: "odoo-tls-secret"
     clusterIssuer: "letsencrypt-dns"
+  masterPassword: "$00p3rP4ssW0rD!"
