@@ -9,7 +9,7 @@ spec:
     - ReadWriteOnce
     - ReadOnlyMany
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: {{ .Values.odoo.filestore.storageClassName | default longhorn }}
+  storageClassName: {{ .Values.odoo.filestore.storageClassName | default "longhorn" }}
   csi:
     driver: driver.longhorn.io
     volumeHandle: {{ .Values.odoo.production.hostname }}-filestore-pv
@@ -27,9 +27,7 @@ spec:
   resources:
     requests:
       storage: {{ .Values.odoo.filestore.size | default "1Gi" }}
-  {{- if .Values.odoo.filestore.storageClassName }}
-  storageClassName: {{ .Values.odoo.filestore.storageClassName }}
-  {{- end }}
+  storageClassName: {{ .Values.odoo.filestore.storageClassName | default "longhorn" }}
   volumeName: {{ .Values.odoo.production.hostname}}-filestore-pv
 
 {{- range .Values.odoo.staging }}
@@ -46,9 +44,7 @@ spec:
   resources:
     requests:
       storage: {{ $.Values.odoo.filestore.size | default "1Gi" }}
-  {{- if $.Values.odoo.filestore.storageClassName }}
-  storageClassName: {{ $.Values.odoo.filestore.storageClassName }}
-  {{- end }}
+  storageClassName: {{ $.Values.odoo.filestore.storageClassName | default "longhorn" }}
 
 ---
 
@@ -63,9 +59,7 @@ spec:
   resources:
     requests:
       storage: {{ $.Values.odoo.db.size | default "1Gi" }}
-  {{- if .storageClassName }}
-  storageClassName: {{ .storageClassName }}
-  {{- end }}
+  storageClassName: {{ .storageClassName | default "longhorn" }}
 
 ---
 
@@ -80,8 +74,6 @@ spec:
   resources:
     requests:
       storage: {{ $.Values.odoo.filestore.size | default "1Gi" }}
-  {{- if $.Values.odoo.filestore.storageClassName }}
-  storageClassName: {{ $.Values.odoo.filestore.storageClassName }}
-  {{- end }}
+  storageClassName: {{ $.Values.odoo.filestore.storageClassName | default "longhorn" }}
   volumeName: {{ $.Values.odoo.production.hostname}}-filestore-pv
 {{- end }}

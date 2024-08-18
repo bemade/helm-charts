@@ -6,10 +6,10 @@ odoo:
   staging:
     - hostname: "stg1"
       productionDatabase: "odoo"
-      storageClassName: ""
+      storageClassName: "non-replicated-storage"
     - hostname: "stg2"
       productionDatabase: "odoo"
-      storageClassName: ""
+      storageClassName: "non-replicated-storage"
   filestore:
     size: ""
     storageClassName: "longhorn"
