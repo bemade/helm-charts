@@ -1,9 +1,15 @@
 odoo:
   image: "odoo:17"
-  domain: "demo.odoo.bemade.org"
+  domain: "odoo.bemade.org"
+  production:
+    hostname: "demo"
   staging:
-    enabled: false
-    replicaCount: 2
+    - hostname: "stg1"
+      productionDatabase: "odoo"
+      storageClassName: ""
+    - hostname: "stg2"
+      productionDatabase: "odoo"
+      storageClassName: ""
   filestore:
     size: ""
     storageClassName: ""

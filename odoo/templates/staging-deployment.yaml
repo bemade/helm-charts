@@ -1,0 +1,141 @@
+{{- range .Values.odoo.staging }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo-{{ .hostname }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: odoo-{{ .hostname }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odoo-{{ .hostname }}
+  template:
+    metadata:
+      labels:
+        app: odoo-{{ .hostname }}
+    spec:
+      volumes:
+        - name: filestore
+          persistentVolumeClaim:
+            claimName: {{ .hostname }}-filestore-pvc
+        - name: init-filestore
+          configMap:
+            name: init-filestore
+        - name: prod-filestore
+          persistentVolumeClaim:
+            claimName: {{ .hostname }}-prod-filestore-pvc
+      initContainers:
+        - name: init-filestore
+          image: busybox
+          command: ["/bin/bash", "/scripts/init-filestore.sh"]
+          env:
+            - name: PROD_DB
+              value: {{ .productionDatabase }}
+          volumeMounts:
+            - name: init-db-script
+              mountPath: /scripts
+            - name: prod-filestore
+              mountPath: /production-filestore
+            - name: filestore
+              mountPath: /var/lib/odoo
+      containers:
+        - name: odoo-{{ .hostname }}
+          image: {{ $.Values.odoo.image }}
+          ports:
+            - containerPort: 8069
+          volumeMounts:
+            - name: filestore
+              mountPath: /var/lib/odoo  # Mounting the filestore
+          env:
+            - name: HOST
+              value: {{ .hostname }}-postgres
+            - name: USER
+              value: odoo
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: password
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-{{ .hostname }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: postgres-{{ .hostname }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-{{ .hostname }}
+  template:
+    metadata:
+      labels:
+        app: postgres-{{ .hostname }}
+    spec:
+      volumes:
+        - name: copy-production-db
+          configMap:
+            name: copy-production-db
+        - name: {{ .hostname }}-pgdata
+          persistentVolumeClaim:
+            claimName: {{ .hostname }}-pgdata-pvc
+      initContainers:
+        - name: copy-production-db
+          image: postgres:16.1
+          command: ["sh", "-c", "/scripts/copy-production-db.sh"]
+          env:
+            - name: POSTGRES_USER
+              value: odoo
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: password
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: password
+            - name: POSTGRES_DB
+              value: {{ .productionDatabase }}
+            - name: PROD_HOST
+              value: kubegres
+          volumeMounts:
+            - name: init-db-script
+              mountPath: /scripts
+            - name: {{ .hostname}}-pgdata
+              mountPath: /var/lib/postgresql/data
+      containers:
+        - name: {{ .hostname }}-postgres
+          image: {{ $.Values.odoo.image }}
+          ports:
+            - containerPort: 8069
+          env:
+            - name: POSTGRES_USER
+              value: odoo
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: password
+        - name: postgres-{{ .hostname }}
+          image: postgres:16.1
+            - name: POSTGRES_USER
+              value: odoo
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-credentials
+                  key: password
+            - name: POSTGRES_DB
+              value: odoo
+          volumeMounts:
+            - name: init-db-script
+              mountPath: /scripts
+            - name: {{ .hostname }}-pgdata
+              mountPath: /var/lib/postgresql/data
+{{- end }}

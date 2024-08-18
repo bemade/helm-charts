@@ -1,7 +1,24 @@
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.odoo.production.hostname }}-filestore-pv
+spec:
+  capacity:
+    storage: {{ .Values.odoo.filestore.size | default "1Gi" }}
+  accessModes:
+    - ReadWriteOnce
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  {{- if .Values.odoo.filestore.storageClassName }}
+  storageClassName: {{ .Values.odoo.filestore.storageClassName }}
+  {{- end }}
+
+---
+
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: odoo-filestore-pvc
+  name: {{ .Values.odoo.production.hostname }}-filestore-pvc
   namespace: {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -12,3 +29,58 @@ spec:
   {{- if .Values.odoo.filestore.storageClassName }}
   storageClassName: {{ .Values.odoo.filestore.storageClassName }}
   {{- end }}
+  volumeName: {{ .Values.odoo.production.hostname}}-filestore-pv
+
+{{- range .Values.odoo.staging }}
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .hostname }}-filestore-pvc
+  namespace: {{ $.Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ $.Values.odoo.filestore.size | default "1Gi" }}
+  {{- if $.Values.odoo.filestore.storageClassName }}
+  storageClassName: {{ $.Values.odoo.filestore.storageClassName }}
+  {{- end }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .hostname }}-pgdata-pvc
+  namespace: {{ $.Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ $.Values.odoo.db.size | default "1Gi" }}
+  {{- if .storageClassName }}
+  storageClassName: {{ .storageClassName }}
+  {{- end }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .hostname }}-prod-filestore-pvc
+  namespace: {{ $.Release.Namespace }}
+spec:
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: {{ $.Values.odoo.filestore.size | default "1Gi" }}
+  {{- if $.Values.odoo.filestore.storageClassName }}
+  storageClassName: {{ $.Values.odoo.filestore.storageClassName }}
+  {{- end }}
+  volumeName: {{ $.Values.odoo.production.hostname}}-filestore-pv
+{{- end }}

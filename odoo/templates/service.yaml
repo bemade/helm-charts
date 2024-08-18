@@ -1,14 +1,49 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: odoo-service
+  name: odoo-{{ .Values.odoo.production.hostname }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: odoo
+    app: odoo-production
 spec:
   selector:
-    app: odoo
+    app: odoo-production
   ports:
     - protocol: TCP
       port: 8069
       targetPort: 8069
+
+{{- range .Values.odoo.staging }}
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: odoo-{{ .hostname }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: odoo-{{ .hostname }}
+spec:
+  selector:
+    app: odoo-{{ .hostname }}
+  ports:
+    - protocol: TCP
+      port: 8069
+      targetPort: 8069
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-{{ .hostname }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: postgres-{{ .hostname }}
+spec:
+  selector:
+    app: postgres-{{ .hostname }}
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+{{- end }}

@@ -1,24 +1,39 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: init-db-script
+  name: init-filestore
   namespace: {{ .Release.Namespace }}
 data:
-  init-db-user.sh: |
+  init-filestore.sh: |
     #!/bin/bash
-    set -e
 
-    # Environment variables passed to the container
-    HOST=${HOST}
-    USER=${USER}
-    PASSWORD=${PASSWORD}
+    # Check if the filestore contains the database directory
+    if [ -d "/var/lib/odoo/filestore/$PROD_DB" ]; then
+        echo "Filestore for $PROD_DB already exists in staging. No action needed."
+    else
+        echo "Filestore for $PROD_DB not found in staging. Copying from production filestore..."
+        cp -r /production-filestore/filestore/$PROD_DB /var/lib/odoo/filestore/
+        echo "Filestore copied successfully."
+    fi
 
-    psql -v ON_ERROR_STOP=1 --host="$HOST" --username="postgres" --dbname="postgres" <<-EOSQL
-    DO \$\$
-    BEGIN
-      IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = '$USER') THEN
-        CREATE USER $USER WITH PASSWORD '$PASSWORD' CREATEDB;
-      END IF;
-    END
-    \$\$;
-    EOSQL
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: copy-production-db
+  namespace: {{ .Release.Namespace }}
+data:
+  copy-production-db.sh: |
+    #!/bin/bash
+
+    # Check if the database already exists
+    DB_EXISTS=$(psql -U "$POSTGRES_USER" -h localhost -lqt | cut -d \| -f 1 | grep -w "$POSTGRES_DB" | wc -l)
+
+    if [ "$DB_EXISTS" -eq 1 ]; then
+        echo "Database $POSTGRES_DB already exists in staging. No action needed."
+    else
+        echo "Database $POSTGRES_DB not found in staging. Copying from production database..."
+        pg_dump -h $PROD_HOST -U $POSTGRES_USER -d $POSTGRES_DB | psql -U $POSTGRES_USER -h localhost -d $POSTGRES_DB
+        echo "Database copied successfully."
+    fi
