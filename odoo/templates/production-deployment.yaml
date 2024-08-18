@@ -40,12 +40,12 @@ spec:
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: pg-credentials
+                  name: credentials
                   key: password
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: pg-credentials
+                  name: credentials
                   key: superUserPassword
           volumeMounts:
             - name: init-db-script
@@ -66,5 +66,5 @@ spec:
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: pg-credentials
+                  name: credentials
                   key: password

@@ -13,11 +13,11 @@ spec:
       - name: POSTGRES_PASSWORD
         valueFrom:
            secretKeyRef:
-              name: pg-credentials
+              name: credentials
               key: superUserPassword
       - name: POSTGRES_REPLICATION_PASSWORD
         valueFrom:
            secretKeyRef:
-              name: pg-credentials
+              name: credentials
               key: superUserPassword
 

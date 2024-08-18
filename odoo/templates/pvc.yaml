@@ -1,22 +1,4 @@
 apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: {{ .Values.odoo.production.hostname }}-filestore-pv
-spec:
-  capacity:
-    storage: {{ .Values.odoo.filestore.size | default "1Gi" }}
-  accessModes:
-    - ReadWriteOnce
-    - ReadOnlyMany
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: {{ .Values.odoo.filestore.storageClassName | default "longhorn" }}
-  csi:
-    driver: driver.longhorn.io
-    volumeHandle: {{ .Values.odoo.production.hostname }}-filestore-pv
-
----
-
-apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ .Values.odoo.production.hostname }}-filestore-pvc
@@ -28,7 +10,6 @@ spec:
     requests:
       storage: {{ .Values.odoo.filestore.size | default "1Gi" }}
   storageClassName: {{ .Values.odoo.filestore.storageClassName | default "longhorn" }}
-  volumeName: {{ .Values.odoo.production.hostname}}-filestore-pv
 
 {{- range .Values.odoo.staging }}
 ---
@@ -66,14 +47,13 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .hostname }}-prod-filestore-pvc
+  name: {{ .hostname }}-prod-backup
   namespace: {{ $.Release.Namespace }}
 spec:
   accessModes:
-    - ReadOnlyMany
+    - ReadWriteOnce
   resources:
     requests:
-      storage: {{ $.Values.odoo.filestore.size | default "1Gi" }}
-  storageClassName: {{ $.Values.odoo.filestore.storageClassName | default "longhorn" }}
-  volumeName: {{ $.Values.odoo.production.hostname}}-filestore-pv
+      storage: {{ $.Values.odoo.db.size | default "1Gi" }}
+  storageClassName: {{ .storageClassName | default "longhorn" }}
 {{- end }}

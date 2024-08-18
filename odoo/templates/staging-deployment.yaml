@@ -20,28 +20,62 @@ spec:
         - name: filestore
           persistentVolumeClaim:
             claimName: {{ .hostname }}-filestore-pvc
-        - name: init-filestore
+        - name: pull-production-db
           configMap:
-            name: init-filestore
-        - name: prod-filestore
+            name: pull-production-db
+        - name: restore-db
+          configMap:
+            name: restore-db
+        - name: prod-backup
           persistentVolumeClaim:
-            claimName: {{ .hostname }}-prod-filestore-pvc
+            claimName: {{ .hostname }}-prod-backup
       initContainers:
-        - name: init-filestore
+        - name: pull-production-db
           image: busybox
           command:
             - "/bin/bash"
-            - "/scripts/init-filestore.sh"
+            - "/scripts/pull-production-db.sh"
           env:
             - name: PROD_DB
               value: {{ .productionDatabase }}
+            - name: MASTER_PW
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: masterPassword
           volumeMounts:
-            - name: init-filestore
+            - name: pull-production-db
               mountPath: /scripts
-            - name: prod-filestore
-              mountPath: /production-filestore
             - name: filestore
               mountPath: /var/lib/odoo
+            - name: prod-backup
+              mountPath: /mnt/prod-backup
+      - name: restore-db
+        image: {{ $.Values.odoo.image }}
+        command:
+          - "/bin/bash"
+          - "/scripts/restore-db.sh"
+        env:
+          - name: PG_HOST
+            value: postgres-{{ .hostname }}
+          - name: DB_NAME
+            value: {{ .productionDatabase }}
+          - name: PG_USER
+            value: odoo
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: credentials
+                key: password
+          - name: BACKUP_DIR
+            value: "/mnt/prod-backup"
+          - name: FILESTORE_DEST_DIR
+            value: "/var/lib/odoo"
+          - volumeMounts:
+            - name: filestore
+              mountPath: /var/lib/odoo
+            - name: prod-backup
+              mountPath: /mnt/prod-backup
       containers:
         - name: odoo-{{ .hostname }}
           image: {{ $.Values.odoo.image }}
@@ -52,13 +86,13 @@ spec:
               mountPath: /var/lib/odoo  # Mounting the filestore
           env:
             - name: HOST
-              value: {{ .hostname }}-postgres
+              value: postgres-{{ .hostname }}
             - name: USER
               value: odoo
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: pg-credentials
+                  name: credentials
                   key: password
 ---
 
@@ -80,42 +114,9 @@ spec:
         app: postgres-{{ .hostname }}
     spec:
       volumes:
-        - name: copy-production-db
-          configMap:
-            name: copy-production-db
         - name: {{ .hostname }}-pgdata
           persistentVolumeClaim:
             claimName: {{ .hostname }}-pgdata-pvc
-      initContainers:
-        - name: copy-production-db
-          image: postgres:16.1
-          command:
-            - "/bin/bash"
-            - "/scripts/copy-production-db.sh"
-          env:
-            - name: POSTGRES_USER
-              value: odoo
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: pg-credentials
-                  key: password
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: pg-credentials
-                  key: password
-            - name: POSTGRES_DB
-              value: {{ .productionDatabase }}
-            - name: PROD_HOST
-              value: kubegres
-            - name: PGDATA
-              value: /var/lib/postgresql/data/db
-          volumeMounts:
-            - name: copy-production-db
-              mountPath: /scripts
-            - name: {{ .hostname}}-pgdata
-              mountPath: /var/lib/postgresql/data
       containers:
         - name: postgres-{{ .hostname }}
           image: postgres:16.1
@@ -125,15 +126,13 @@ spec:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: pg-credentials
+                  name: credentials
                   key: password
             - name: POSTGRES_DB
               value: odoo
             - name: PGDATA
               value: /var/lib/postgresql/data/db
           volumeMounts:
-            - name: copy-production-db
-              mountPath: /scripts
             - name: {{ .hostname }}-pgdata
               mountPath: /var/lib/postgresql/data
 {{- end }}

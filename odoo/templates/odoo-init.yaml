@@ -1,19 +1,71 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: init-filestore
+  name: pull-production-db
   namespace: {{ .Release.Namespace }}
 data:
-  init-filestore.sh: |
+  pull-production-db.sh: |
     #!/bin/bash
 
-    # Check if the filestore contains the database directory
-    if [ -d "/var/lib/odoo/filestore/$PROD_DB" ]; then
-        echo "Filestore for $PROD_DB already exists in staging. No action needed."
+    FILESTORE_DIR="/var/lib/odoo/$PROD_DB"
+    BACKUP_FILE="/mnt/prod-backup/backup.zip"
+
+    if [ -d "$FILESTORE_DIR]; then
+      echo "Backup file already exists. Skipping download."
     else
-        echo "Filestore for $PROD_DB not found in staging. Copying from production filestore..."
-        cp -r /production-filestore/filestore/$PROD_DB /var/lib/odoo/filestore/
-        echo "Filestore copied successfully."
+      echo "Backup file not found. Downloading..."
+      curl -o "$BACKUP_FILE" -X POST \
+        -F 'master_pwd=<master_password>' \
+        -F 'name=<database_name>' \
+        -F 'backup_format=zip' \
+        http://<odoo-production-service>/web/database/backup
+    fi
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: restore-db
+  namespace: {{ .Release.Namespace }}
+data:
+  restore-db.sh: |
+    #!/bin/bash
+
+    BACKUP_DIR="/mnt/prod-backup"
+    EXTRACT_DIR="/tmp/odoo_backup"
+    FILESTORE_SRC_DIR="/filestore"
+    FILESTORE_DEST_DIR="/var/lib/odoo"
+
+    # Function to restore the database
+    restore_database() {
+      echo "Restoring database $DB_NAME..."
+      createdb -U "$PG_USER" -h "$PG_HOST" "$DB_NAME"
+      pg_restore -U "$PG_USER" -h "$PG_HOST" -d "$DB_NAME" "$EXTRACT_DIR/db.dump"
+    }
+
+    # Function to copy the filestore
+    copy_filestore() {
+      echo "Copying filestore to $FILESTORE_DEST_DIR/$DB_NAME..."
+      mkdir -p "$FILESTORE_DEST_DIR/$DB_NAME"
+      cp -r "$FILESTORE_SRC_DIR/"* "$FILESTORE_DEST_DIR/$DB_NAME/"
+    }
+
+    # Check if the database already exists
+    if psql -U "$PG_USER" -h "$PG_HOST" -lqt | cut -d \| -f 1 | grep -qw "$DB_NAME"; then
+      echo "Database $DB_NAME already exists. Skipping restore."
+    else
+      echo "Database $DB_NAME not found. Restoring..."
+      unzip "$BACKUP_DIR/odoo_backup.zip" -d "$EXTRACT_DIR"
+      restore_database
+    fi
+
+    # Check if the filestore for the database already exists
+    if [ -d "$FILESTORE_DEST_DIR/$DB_NAME" ]; then
+      echo "Filestore for $DB_NAME already exists. Skipping copy."
+    else
+      echo "Filestore for $DB_NAME not found. Copying..."
+      copy_filestore
     fi
 
 ---
