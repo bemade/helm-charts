@@ -37,8 +37,7 @@ spec:
           image: busybox
           command:
             - "sh"
-            - "-c"
-            - "chmod +x /scripts/*.sh && /scripts/pull-production-db.sh"
+            - "/scripts/pull-production-db.sh"
           env:
             - name: PROD_DB
               value: {{ .productionDatabase }}
@@ -58,8 +57,7 @@ spec:
           image: {{ $.Values.odoo.image }}
           command:
             - "sh"
-            - "-c"
-            - "chmod +x /scripts/*.sh && /scripts/restore-db.sh"
+            - "/scripts/restore-db.sh"
           env:
             - name: PG_HOST
               value: postgres-{{ .hostname }}
