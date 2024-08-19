@@ -81,6 +81,8 @@ spec:
             mountPath: /var/lib/odoo
           - name: prod-backup
             mountPath: /mnt/prod-backup
+          - name: restore-db
+            mountPath: /scripts
       containers:
         - name: odoo-{{ .hostname }}
           image: {{ $.Values.odoo.image }}
