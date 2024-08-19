@@ -74,11 +74,11 @@ spec:
               value: "/mnt/prod-backup"
             - name: FILESTORE_DEST_DIR
               value: "/var/lib/odoo"
-          - volumeMounts:
-            - name: filestore
-              mountPath: /var/lib/odoo
-            - name: prod-backup
-              mountPath: /mnt/prod-backup
+          volumeMounts:
+          - name: filestore
+            mountPath: /var/lib/odoo
+          - name: prod-backup
+            mountPath: /mnt/prod-backup
       containers:
         - name: odoo-{{ .hostname }}
           image: {{ $.Values.odoo.image }}
