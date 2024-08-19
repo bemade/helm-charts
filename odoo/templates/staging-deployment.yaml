@@ -38,7 +38,7 @@ spec:
           command:
             - "sh"
             - "-c"
-            - "/scripts/pull-production-db.sh"
+            - "chmod +x /scripts/*.sh && /scripts/pull-production-db.sh"
           env:
             - name: PROD_DB
               value: {{ .productionDatabase }}
@@ -57,8 +57,9 @@ spec:
         - name: restore-db
           image: {{ $.Values.odoo.image }}
           command:
-            - "/bin/bash"
-            - "/scripts/restore-db.sh"
+            - "sh"
+            - "-c"
+            - "chmod +x /scripts/*.sh && /scripts/restore-db.sh"
           env:
             - name: PG_HOST
               value: postgres-{{ .hostname }}
