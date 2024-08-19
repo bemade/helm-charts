@@ -10,7 +10,7 @@ data:
     FILESTORE_DIR="/var/lib/odoo/$PROD_DB"
     BACKUP_FILE="/mnt/prod-backup/backup.zip"
 
-    if [ -d "$FILESTORE_DIR]; then
+    if [ -d "$FILESTORE_DIR"]; then
       echo "Backup file already exists. Skipping download."
     else
       echo "Backup file not found. Downloading..."
