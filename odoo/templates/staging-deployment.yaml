@@ -53,32 +53,32 @@ spec:
               mountPath: /var/lib/odoo
             - name: prod-backup
               mountPath: /mnt/prod-backup
-      - name: restore-db
-        image: {{ $.Values.odoo.image }}
-        command:
-          - "/bin/bash"
-          - "/scripts/restore-db.sh"
-        env:
-          - name: PG_HOST
-            value: postgres-{{ .hostname }}
-          - name: DB_NAME
-            value: {{ .productionDatabase }}
-          - name: PG_USER
-            value: odoo
-          - name: PGPASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: credentials
-                key: password
-          - name: BACKUP_DIR
-            value: "/mnt/prod-backup"
-          - name: FILESTORE_DEST_DIR
-            value: "/var/lib/odoo"
-          - volumeMounts:
-            - name: filestore
-              mountPath: /var/lib/odoo
-            - name: prod-backup
-              mountPath: /mnt/prod-backup
+        - name: restore-db
+          image: {{ $.Values.odoo.image }}
+          command:
+            - "/bin/bash"
+            - "/scripts/restore-db.sh"
+          env:
+            - name: PG_HOST
+              value: postgres-{{ .hostname }}
+            - name: DB_NAME
+              value: {{ .productionDatabase }}
+            - name: PG_USER
+              value: odoo
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: password
+            - name: BACKUP_DIR
+              value: "/mnt/prod-backup"
+            - name: FILESTORE_DEST_DIR
+              value: "/var/lib/odoo"
+            - volumeMounts:
+              - name: filestore
+                mountPath: /var/lib/odoo
+              - name: prod-backup
+                mountPath: /mnt/prod-backup
       containers:
         - name: odoo-{{ .hostname }}
           image: {{ $.Values.odoo.image }}
