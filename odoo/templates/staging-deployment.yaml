@@ -1,3 +1,6 @@
+# Deployment for the Odoo staging servers. These pull their DB and filestore
+# from production. Each staging server gets its own postgresql server so that we
+# have no risk of compromising the production server.
 {{- range .Values.odoo.staging }}
 apiVersion: apps/v1
 kind: Deployment
