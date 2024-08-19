@@ -40,7 +40,7 @@ spec:
             - "/scripts/pull-production-db.sh"
           env:
             - name: PROD_HOST
-              value: {{ $.Values.odoo.production.hostname }}
+              value: odoo-{{ $.Values.odoo.production.hostname }}
             - name: PROD_DB
               value: {{ .productionDatabase }}
             - name: MASTER_PW
