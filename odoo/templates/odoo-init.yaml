@@ -10,15 +10,15 @@ data:
     FILESTORE_DIR="/var/lib/odoo/$PROD_DB"
     BACKUP_FILE="/mnt/prod-backup/backup.zip"
 
-    if [ -d "$FILESTORE_DIR"]; then
+    if [ -d "$FILESTORE_DIR" ]; then
       echo "Backup file already exists. Skipping download."
     else
       echo "Backup file not found. Downloading..."
       curl -o "$BACKUP_FILE" -X POST \
-        -F 'master_pwd=<master_password>' \
-        -F 'name=<database_name>' \
-        -F 'backup_format=zip' \
-        http://<odoo-production-service>/web/database/backup
+        -F "master_pwd=$MASTER_PW" \
+        -F"name=$PROD_DB" \
+        -F "backup_format=zip" \
+        "http://$PROD_HOST/web/database/backup"
     fi
 
 ---
