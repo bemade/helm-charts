@@ -34,8 +34,6 @@ data:
 
     BACKUP_DIR="/mnt/prod-backup"
     EXTRACT_DIR="/tmp/odoo_backup"
-    FILESTORE_SRC_DIR="/filestore"
-    FILESTORE_DEST_DIR="/var/lib/odoo"
 
     # Function to restore the database
     restore_database() {
