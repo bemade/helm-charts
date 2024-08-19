@@ -25,7 +25,7 @@ spec:
   resources:
     requests:
       storage: {{ $.Values.odoo.filestore.size | default "1Gi" }}
-  storageClassName: {{ $.Values.odoo.filestore.storageClassName | default "longhorn" }}
+  storageClassName: {{ .storageClassName | default "longhorn" }}
 
 ---
 
