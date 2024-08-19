@@ -36,7 +36,8 @@ spec:
         - name: pull-production-db
           image: busybox
           command:
-            - "/bin/bash"
+            - "sh"
+            - "-c"
             - "/scripts/pull-production-db.sh"
           env:
             - name: PROD_DB
