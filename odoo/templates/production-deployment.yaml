@@ -54,6 +54,10 @@ spec:
       containers:
         - name: odoo-{{ .Values.odoo.production.hostname }}
           image: {{ .Values.odoo.image }}
+          {{- if .Values.odoo.imageRegistry.url }}
+          imagePullSecrets:
+            - registry-secret
+          {{- end }}
           ports:
             - containerPort: 8069
           volumeMounts:

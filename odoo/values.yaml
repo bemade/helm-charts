@@ -1,5 +1,10 @@
 odoo:
   image: "odoo:17"
+  imageRegistry:
+    url: ""
+    username: ""
+    password: ""
+    email: ""
   domain: "odoo.bemade.org"
   production:
     hostname: "demo"
