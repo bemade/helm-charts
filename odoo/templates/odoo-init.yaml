@@ -30,7 +30,7 @@ data:
   restore-db.sh: |
     #!/bin/bash
 
-    BACKUP_DIR="/mnt/prod-backup"
+    BACKUP_FILE="/mnt/prod-backup/backup.zip"
     EXTRACT_DIR="/tmp/odoo_backup"
 
     # Function to restore the database
@@ -52,7 +52,7 @@ data:
       echo "Database $DB_NAME already exists. Dropping database."
       dropdb -U "$PG_USER" -h "$PG_HOST" "$DB_NAME"
     fi
-    unzip "$BACKUP_DIR/odoo_backup.zip" -d "$EXTRACT_DIR"
+    unzip "$BACKUP_FILE" -d "$EXTRACT_DIR"
     restore_database
 
     # Check if the filestore for the database already exists
