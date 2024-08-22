@@ -44,6 +44,10 @@ data:
 
     BACKUP_FILE="/mnt/prod-backup/backup.zip"
     EXTRACT_DIR="/tmp/odoo_backup/unzipped"
+    echo "Starting restore ..."
+    echo "Contents of /mnt/prod-backup:"
+    echo $(ls -la /mnt/prod-backup)
+    echo $(ls -la /mnt/prod-backup/unzipped)
 
     # Function to restore the database
     restore_database() {
