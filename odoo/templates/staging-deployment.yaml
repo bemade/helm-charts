@@ -38,7 +38,7 @@ spec:
             claimName: {{ .hostname }}-prod-backup
       initContainers:
         - name: pull-production-db
-          image: alpine/curl
+          image: alpine
           command:
             - "sh"
             - "/scripts/pull-production-db.sh"

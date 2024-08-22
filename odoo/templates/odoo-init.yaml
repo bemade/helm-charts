@@ -8,6 +8,7 @@ data:
     #!/bin/bash
 
     BACKUP_FILE="/mnt/prod-backup/backup.zip"
+    EXTRACT_DIR="/mnt/prod-backup/unzipped"
 
 
     if [ -f "$BACKUP_FILE" ]; then
@@ -18,6 +19,15 @@ data:
       -F"name=$PROD_DB" \
       -F "backup_format=zip" \
       "http://$PROD_HOST/web/database/backup"
+
+    if [ ! -d $EXTRACT_DIR ]; then
+      mkdir -p $EXTRACT_DIR
+    else
+      rm -rf $EXTRACT_DIR/*
+    fi
+
+    unzip "$BACKUP_FILE" -d "$EXTRACT_DIR"
+    rm "$BACKUP_FILE"
 
 ---
 
@@ -31,7 +41,7 @@ data:
     #!/bin/bash
 
     BACKUP_FILE="/mnt/prod-backup/backup.zip"
-    EXTRACT_DIR="/tmp/odoo_backup"
+    EXTRACT_DIR="/tmp/odoo_backup/unzipped"
 
     # Function to restore the database
     restore_database() {
@@ -47,18 +57,11 @@ data:
       cp -r "$EXTRACT_DIR/filestore" "$FILESTORE_DEST_DIR/$DB_NAME"
     }
 
-    if [ ! -d $EXTRACT_DIR ]; then
-      mkdir -p $EXTRACT_DIR
-    else
-      rm -rf $EXTRACT_DIR/*
-    fi
-
     # Check if the database already exists
     if psql -U "$PG_USER" -h "$PG_HOST" -lqt | cut -d \| -f 1 | grep -qw "$DB_NAME"; then
       echo "Database $DB_NAME already exists. Dropping database."
       dropdb -U "$PG_USER" -h "$PG_HOST" "$DB_NAME"
     fi
-    unzip "$BACKUP_FILE" -d "$EXTRACT_DIR"
     restore_database
 
     # Check if the filestore for the database already exists
