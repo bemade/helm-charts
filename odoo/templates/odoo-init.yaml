@@ -33,6 +33,7 @@ data:
     BACKUP_FILE="/mnt/prod-backup/backup.zip"
     EXTRACT_DIR="/tmp/odoo_backup"
 
+    sleep 60
     # Function to restore the database
     restore_database() {
       echo "Restoring database $DB_NAME..."
