@@ -56,7 +56,6 @@ data:
     # Function to copy the filestore
     copy_filestore() {
       echo "Copying filestore to $FILESTORE_DEST_DIR/$DB_NAME..."
-      chown -R odoo:odoo /var/lib/odoo
       if [ ! -d "$FILESTORE_DEST_DIR" ]; then
         mkdir -p "$FILESTORE_DEST_DIR" ]
       fi
@@ -77,6 +76,7 @@ data:
     fi
     echo "Copying filestore..."
     copy_filestore
+    chown -R odoo:odoo /var/lib/odoo
 
 ---
 
