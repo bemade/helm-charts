@@ -7,6 +7,8 @@ data:
   pull-production-db.sh: |
     #!/bin/bash
 
+    apk add --no-cache curl
+
     BACKUP_FILE="/mnt/prod-backup/backup.zip"
     EXTRACT_DIR="/mnt/prod-backup/unzipped"
 
