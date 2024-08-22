@@ -19,7 +19,7 @@ spec:
       labels:
         app: odoo-{{ .hostname }}
     spec:
-      {{- if .Values.odoo.imageRegistry.url }}
+      {{- if $.Values.odoo.imageRegistry.url }}
       imagePullSecrets:
         - name: registry-secret
       {{- end }}
