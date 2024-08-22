@@ -7,19 +7,17 @@ data:
   pull-production-db.sh: |
     #!/bin/bash
 
-    FILESTORE_DIR="/var/lib/odoo/$PROD_DB"
     BACKUP_FILE="/mnt/prod-backup/backup.zip"
 
-    if [ -d "$FILESTORE_DIR" ]; then
-      echo "Backup file already exists. Skipping download."
-    else
-      echo "Backup file not found. Downloading..."
-      curl -o "$BACKUP_FILE" -X POST \
-        -F "master_pwd=$MASTER_PW" \
-        -F"name=$PROD_DB" \
-        -F "backup_format=zip" \
-        "http://$PROD_HOST/web/database/backup"
+
+    if [ -f "$BACKUP_FILE" ]; then
+      rm "$BACKUP_FILE"
     fi
+    curl -o "$BACKUP_FILE" -X POST \
+      -F "master_pwd=$MASTER_PW" \
+      -F"name=$PROD_DB" \
+      -F "backup_format=zip" \
+      "http://$PROD_HOST/web/database/backup"
 
 ---
 
@@ -45,27 +43,25 @@ data:
     # Function to copy the filestore
     copy_filestore() {
       echo "Copying filestore to $FILESTORE_DEST_DIR/$DB_NAME..."
-      mkdir -p "$FILESTORE_DEST_DIR/$DB_NAME"
       chown -R odoo:odoo /var/lib/odoo
-      cp -r "$FILESTORE_SRC_DIR/"* "$FILESTORE_DEST_DIR/$DB_NAME/"
+      cp -r "$EXTRACT_DIR/filestore" "$FILESTORE_DEST_DIR/$DB_NAME"
     }
 
     # Check if the database already exists
     if psql -U "$PG_USER" -h "$PG_HOST" -lqt | cut -d \| -f 1 | grep -qw "$DB_NAME"; then
-      echo "Database $DB_NAME already exists. Skipping restore."
-    else
-      echo "Database $DB_NAME not found. Restoring..."
-      unzip "$BACKUP_DIR/odoo_backup.zip" -d "$EXTRACT_DIR"
-      restore_database
+      echo "Database $DB_NAME already exists. Dropping database."
+      dropdb -U "$PG_USER" -h "$PG_HOST" "$DB_NAME"
     fi
+    unzip "$BACKUP_DIR/odoo_backup.zip" -d "$EXTRACT_DIR"
+    restore_database
 
     # Check if the filestore for the database already exists
     if [ -d "$FILESTORE_DEST_DIR/$DB_NAME" ]; then
-      echo "Filestore for $DB_NAME already exists. Skipping copy."
-    else
-      echo "Filestore for $DB_NAME not found. Copying..."
-      copy_filestore
+      echo "Filestore for $DB_NAME already exists. Deleting."
+      rm -rf "$FILESTORE_DEST_DIR/$DB_NAME"
     fi
+    echo "Copying filestore..."
+    copy_filestore
 
 ---
 

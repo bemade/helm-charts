@@ -81,7 +81,7 @@ spec:
             - name: BACKUP_DIR
               value: "/mnt/prod-backup"
             - name: FILESTORE_DEST_DIR
-              value: "/var/lib/odoo"
+              value: "/var/lib/odoo/filestore"
           volumeMounts:
           - name: filestore
             mountPath: /var/lib/odoo
