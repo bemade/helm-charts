@@ -48,7 +48,7 @@ data:
     }
 
     echo "Contents of $EXTRACT_DIR:"
-  echo $(ls -la $EXTRACT_DIR)
+    echo $(ls -la $EXTRACT_DIR)
     # Check if the database already exists
     if psql -U "$PG_USER" -h "$PG_HOST" -lqt | cut -d \| -f 1 | grep -qw "$DB_NAME"; then
       echo "Database $DB_NAME already exists. Dropping database."
