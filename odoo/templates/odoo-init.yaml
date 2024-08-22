@@ -33,7 +33,6 @@ data:
     BACKUP_FILE="/mnt/prod-backup/backup.zip"
     EXTRACT_DIR="/tmp/odoo_backup"
 
-    sleep 60
     # Function to restore the database
     restore_database() {
       echo "Restoring database $DB_NAME..."
@@ -48,6 +47,8 @@ data:
       cp -r "$EXTRACT_DIR/filestore" "$FILESTORE_DEST_DIR/$DB_NAME"
     }
 
+    echo "Contents of $EXTRACT_DIR:"
+  echo $(ls -la $EXTRACT_DIR)
     # Check if the database already exists
     if psql -U "$PG_USER" -h "$PG_HOST" -lqt | cut -d \| -f 1 | grep -qw "$DB_NAME"; then
       echo "Database $DB_NAME already exists. Dropping database."
