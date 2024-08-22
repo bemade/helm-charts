@@ -30,6 +30,7 @@ data:
 
     unzip "$BACKUP_FILE" -d "$EXTRACT_DIR"
     rm "$BACKUP_FILE"
+    chmod -R 777 /mnt/prod-backup
 
 ---
 
@@ -43,11 +44,7 @@ data:
     #!/bin/bash
 
     BACKUP_FILE="/mnt/prod-backup/backup.zip"
-    EXTRACT_DIR="/tmp/odoo_backup/unzipped"
-    echo "Starting restore ..."
-    echo "Contents of /mnt/prod-backup:"
-    echo $(ls -la /mnt/prod-backup)
-    echo $(ls -la /mnt/prod-backup/unzipped)
+    EXTRACT_DIR="/mnt/prod-backup/unzipped"
 
     # Function to restore the database
     restore_database() {
