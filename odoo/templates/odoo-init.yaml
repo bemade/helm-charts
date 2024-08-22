@@ -37,7 +37,7 @@ data:
     restore_database() {
       echo "Restoring database $DB_NAME..."
       createdb -U "$PG_USER" -h "$PG_HOST" "$DB_NAME"
-      pg_restore -U "$PG_USER" -h "$PG_HOST" -d "$DB_NAME" "$EXTRACT_DIR/db.dump"
+      pg_restore -U "$PG_USER" -h "$PG_HOST" -d "$DB_NAME" "$EXTRACT_DIR/dump.sql"
     }
 
     # Function to copy the filestore
