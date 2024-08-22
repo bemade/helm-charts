@@ -50,13 +50,16 @@ data:
     restore_database() {
       echo "Restoring database $DB_NAME..."
       createdb -U "$PG_USER" -h "$PG_HOST" "$DB_NAME"
-      pg_restore -U "$PG_USER" -h "$PG_HOST" -d "$DB_NAME" "$EXTRACT_DIR/dump.sql"
+      psql -U "$PG_USER" -h "$PG_HOST" -d "$DB_NAME" -f "$EXTRACT_DIR/dump.sql"
     }
 
     # Function to copy the filestore
     copy_filestore() {
       echo "Copying filestore to $FILESTORE_DEST_DIR/$DB_NAME..."
       chown -R odoo:odoo /var/lib/odoo
+      if [ ! -d "$FILESTORE_DEST_DIR" ]; then
+        mkdir -p "$FILESTORE_DEST_DIR" ]
+      fi
       cp -r "$EXTRACT_DIR/filestore" "$FILESTORE_DEST_DIR/$DB_NAME"
     }
 
