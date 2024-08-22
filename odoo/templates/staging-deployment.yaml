@@ -60,6 +60,8 @@ spec:
           command:
             - "sh"
             - "/scripts/restore-db.sh"
+          securityContext:
+            runAsUser: 0 # Root necessary to mkdir and write in /var/lib/odoo
           env:
             - name: PG_HOST
               value: postgres-{{ .hostname }}
@@ -76,6 +78,7 @@ spec:
               value: "/mnt/prod-backup"
             - name: FILESTORE_DEST_DIR
               value: "/var/lib/odoo"
+            - 
           volumeMounts:
           - name: filestore
             mountPath: /var/lib/odoo
