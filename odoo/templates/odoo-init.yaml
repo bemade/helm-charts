@@ -46,6 +46,7 @@ data:
     copy_filestore() {
       echo "Copying filestore to $FILESTORE_DEST_DIR/$DB_NAME..."
       mkdir -p "$FILESTORE_DEST_DIR/$DB_NAME"
+      chown -R odoo:odoo /var/lib/odoo
       cp -r "$FILESTORE_SRC_DIR/"* "$FILESTORE_DEST_DIR/$DB_NAME/"
     }
 
