@@ -47,8 +47,12 @@ data:
       cp -r "$EXTRACT_DIR/filestore" "$FILESTORE_DEST_DIR/$DB_NAME"
     }
 
-    echo "Contents of $EXTRACT_DIR:"
-    echo $(ls -la $EXTRACT_DIR)
+    if [ ! -d $EXTRACT_DIR ]; then
+      mkdir -p $EXTRACT_DIR
+    else
+      rm -rf $EXTRACT_DIR/*
+    fi
+
     # Check if the database already exists
     if psql -U "$PG_USER" -h "$PG_HOST" -lqt | cut -d \| -f 1 | grep -qw "$DB_NAME"; then
       echo "Database $DB_NAME already exists. Dropping database."
