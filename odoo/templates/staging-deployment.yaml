@@ -33,12 +33,12 @@ spec:
         - name: restore-db
           configMap:
             name: restore-db
-        - name: prod-backup
-          persistentVolumeClaim:
-            claimName: {{ .hostname }}-prod-backup
         - name: git-pull-addons
           configMap:
             name: git-pull-addons
+        - name: prod-backup
+          persistentVolumeClaim:
+            claimName: {{ .hostname }}-prod-backup
         - name: repo
           persistentVolumeClaim:
             claimName: {{ .hostname }}-git-repos-pvc
