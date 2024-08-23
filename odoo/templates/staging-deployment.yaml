@@ -102,16 +102,16 @@ spec:
           image: "alpine/git"
           env:
             - name: REPO_URL
-              value: {{ $.Values.gitProject.url }}
+              value: {{ $.Values.odoo.gitProject.url }}
             - name: BRANCH
               value: {{ .branch | $.Values.odoo.production.branch }}
             - name: COMMIT
               value: {{ .commit | quote }}
             {{- if $.Values.odoo.enterprise }}
             - name: ENTERPRISE_BRANCH
-              value: {{ .Values.odoo.enterprise.branch | quote}}
+              value: {{ $.Values.odoo.enterprise.branch | quote}}
             - name: ENTERPRISE_COMMIT
-              value: {{ .Values.odoo.enterprise.commit | quote }}
+              value: {{ $.Values.odoo.enterprise.commit | quote }}
             {{- end }}
           command:
             - "sh"
