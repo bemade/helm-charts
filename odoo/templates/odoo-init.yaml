@@ -132,7 +132,7 @@ data:
     cp /mnt/secrets/ssh-privatekey $SSH_DIR/id_rsa
     chmod 600 $SSH_DIR/id_rsa
     eval "$(ssh-agent -s)"
-    ssh-add ~/.ssh/ssh-privatekey
+    ssh-add $SSH_DIR/id_rsa
 
     # Detect the format of REPO_URL and extract the host accordingly
     if [[ $REPO_URL == git@* ]]; then
