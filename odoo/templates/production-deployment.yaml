@@ -94,7 +94,7 @@ spec:
             - "-c"
             - |
               apk add bash
-              /bin/bash /scripts/git-pull-addons.sh
+              /bin/bash /scripts/git-pull-addons.sh > /dev/termination-log 2>&1
           volumeMounts:
             - name: repo
               mountPath: /mnt/repo
