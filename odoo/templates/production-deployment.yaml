@@ -27,6 +27,15 @@ spec:
         - name: init-db-script
           configMap:
             name: init-db-script
+        - name: git-pull-addons
+          configMap:
+            name: git-pull-addons
+        - name: repo
+          persistentVolumeClaim:
+            claimName: {{ .Values.odoo.production.hostname }}-git-repos-pvc
+        - name: extra-addons
+          persistentVolumeClaim:
+            claimName: {{ .Values.odoo.production.hostname }}-extra-addons-pvc
       initContainers:
         - name: init-permissions
           image: busybox
@@ -55,6 +64,32 @@ spec:
           volumeMounts:
             - name: init-db-script
               mountPath: /scripts
+        - name: git-clone
+          image: "alpine/git"
+          env:
+            - name: REPO_URL
+              value: {{ .Values.gitProject.url }}
+            - name: BRANCH
+              value: {{ .Values.odoo.production.branch }}
+            - name: COMMIT
+              value: {{ .Values.odoo.production.commit | quote }}
+            {{- if .Values.odoo.enterprise }}
+            - name: ENTERPRISE_BRANCH
+              value: {{ .Values.odoo.enterprise.branch | quote}}
+            - name: ENTERPRISE_COMMIT
+              value: {{ .Values.odoo.enterprise.commit | quote }}
+            {{- end }}
+          command:
+            - "sh"
+            - "-c"
+            - "/scripts/git-pull-addons.sh"
+          volumeMounts:
+            - name: repo
+              mountPath: /mnt/repo
+            - name: extra-addons
+              mountPath: /mnt/extra-addons
+            - name: git-pull-addons
+              mountPath: /scripts
       containers:
         - name: odoo-{{ .Values.odoo.production.hostname }}
           image: {{ .Values.odoo.image }}
@@ -63,6 +98,10 @@ spec:
           volumeMounts:
             - name: {{ .Values.odoo.production.hostname }}-filestore
               mountPath: /var/lib/odoo  # Mounting the filestore
+            - name: repos
+              mountPath: /mnt/repos
+            - name: extra-addons
+              mountPath: /mnt/extra-addons
           env:
             - name: HOST
               value: kubegres

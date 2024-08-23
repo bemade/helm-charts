@@ -6,15 +6,24 @@ odoo:
     password: ""
     email: ""
   domain: "odoo.bemade.org"
+  enterprise:
+    branch: "17.0" # Track a given branch, updating each pod restart.
+    commit: "" # Overrides branch to freeze on a commit. Optional.
   production:
     hostname: "demo"
+    branch: "17.0" # Branch to track. See commit to use a specific commit.
+    commit: "" # Optional. Overrides branch to use only a specific commit hash.
   staging:
     - hostname: "stg1"
       productionDatabase: "odoo"
       storageClassName: "non-replicated-storage"
+      branch: "17.0-stg1" # Optional. Leave blank to track the production branch.
+      commit: "" # Optional. Overrides branch to use only a specific commit hash.
     - hostname: "stg2"
       productionDatabase: "odoo"
       storageClassName: "non-replicated-storage"
+      branch: "" # Optional. Leave blank to track the production branch.
+      commit: "" # Optional. Overrides branch to use only a specific commit hash.
   filestore:
     size: ""
     storageClassName: "longhorn"
@@ -25,3 +34,8 @@ odoo:
     tlsSecretName: "odoo-tls-secret"
     clusterIssuer: "letsencrypt-dns"
   masterPassword: "$00p3rP4ssW0rD!"
+  gitProject:
+    url: "git@git.bemade.org:bemade/enterprise-demo.git"
+    ssh-key-secret: "secret-name" # Secret must already exist in the namespace
+    size: 5Gi
+    storageClassName: "non-replicated-storage"

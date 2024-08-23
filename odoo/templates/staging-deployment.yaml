@@ -36,6 +36,15 @@ spec:
         - name: prod-backup
           persistentVolumeClaim:
             claimName: {{ .hostname }}-prod-backup
+        - name: git-pull-addons
+          configMap:
+            name: git-pull-addons
+        - name: repo
+          persistentVolumeClaim:
+            claimName: {{ .hostname }}-git-repos-pvc
+        - name: extra-addons
+          persistentVolumeClaim:
+            claimName: {{ .hostname }}-extra-addons-pvc
       initContainers:
         - name: pull-production-db
           image: alpine
@@ -89,6 +98,32 @@ spec:
             mountPath: /mnt/prod-backup
           - name: restore-db
             mountPath: /scripts
+        - name: git-clone
+          image: "alpine/git"
+          env:
+            - name: REPO_URL
+              value: {{ $.Values.gitProject.url }}
+            - name: BRANCH
+              value: {{ .branch | $.Values.odoo.production.branch }}
+            - name: COMMIT
+              value: {{ .commit | quote }}
+            {{- if $.Values.odoo.enterprise }}
+            - name: ENTERPRISE_BRANCH
+              value: {{ .Values.odoo.enterprise.branch | quote}}
+            - name: ENTERPRISE_COMMIT
+              value: {{ .Values.odoo.enterprise.commit | quote }}
+            {{- end }}
+          command:
+            - "sh"
+            - "-c"
+            - "/scripts/git-pull-addons.sh"
+          volumeMounts:
+            - name: repo
+              mountPath: /mnt/repo
+            - name: extra-addons
+              mountPath: /mnt/extra-addons
+            - name: git-pull-addons
+              mountPath: /scripts
       containers:
         - name: odoo-{{ .hostname }}
           image: {{ $.Values.odoo.image }}
@@ -97,6 +132,10 @@ spec:
           volumeMounts:
             - name: filestore
               mountPath: /var/lib/odoo  # Mounting the filestore
+            - name: repos
+              mountPath: /mnt/repos
+            - name: extra-addons
+              mountPath: /mnt/extra-addons
           env:
             - name: HOST
               value: postgres-{{ .hostname }}

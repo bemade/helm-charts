@@ -11,6 +11,36 @@ spec:
       storage: {{ .Values.odoo.filestore.size | default "1Gi" }}
   storageClassName: {{ .Values.odoo.filestore.storageClassName | default "longhorn" }}
 
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.odoo.production.hostname }}-git-repos-pvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.odoo.gitProject.size | default "5Gi" }}
+  storageClassName: {{ .Values.odoo.gitProject.storageClassName | default "non-replicated-storage" }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.odoo.production.hostname }}-extra-addons-pvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.odoo.gitProject.size | default "5Gi" }}
+  storageClassName: {{ .Values.odoo.gitProject.storageClassName | default "non-replicated-storage" }}
+
 {{- range .Values.odoo.staging }}
 ---
 
@@ -56,4 +86,34 @@ spec:
     requests:
       storage: {{ $.Values.odoo.db.size | default "1Gi" }}
   storageClassName: {{ .storageClassName | default "longhorn" }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .hostname }}-git-repos-pvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.odoo.gitProject.size | default "5Gi" }}
+  storageClassName: {{ .Values.odoo.gitProject.storageClassName | default "non-replicated-storage" }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .hostname }}-extra-addons-pvc
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.odoo.gitProject.size | default "5Gi" }}
+  storageClassName: {{ .Values.odoo.gitProject.storageClassName | default "non-replicated-storage" }}
 {{- end }}
