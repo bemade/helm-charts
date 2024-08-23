@@ -123,9 +123,6 @@ data:
     #!/bin/bash
     set -e
 
-    #!/bin/bash
-    set -e
-
     REPO_DIR="/mnt/repo"
     EXTRA_ADDONS_DIR="/mnt/extra-addons"
     SSH_DIR="/root/.ssh"
@@ -135,8 +132,21 @@ data:
     cp /mnt/secrets/ssh-privatekey $SSH_DIR/id_rsa
     chmod 600 $SSH_DIR/id_rsa
 
-    # Extract the host from the git project URL and add it to known_hosts
-    GIT_HOST=$(echo $REPO_URL | awk -F'[@:]' '{print $2}')
+    # Detect the format of REPO_URL and extract the host accordingly
+    if [[ $REPO_URL == git@* ]]; then
+      # Handle git@repo.domain.name:org/repo.git format
+      GIT_HOST=$(echo $REPO_URL | awk -F'[@:]' '{print $2}')
+    elif [[ $REPO_URL == https://* ]]; then
+      # Handle https://repo.domain.name/org/repo.git format
+      GIT_HOST=$(echo $REPO_URL | awk -F'[/:]' '{print $4}')
+    else
+      echo "Unsupported REPO_URL format: $REPO_URL"
+      exit 1
+    fi
+
+    echo "Using GIT_HOST: $GIT_HOST"
+
+    # Add the Git host to known_hosts
     ssh-keyscan $GIT_HOST >> $SSH_DIR/known_hosts
     chmod 644 $SSH_DIR/known_hosts
 
