@@ -132,8 +132,11 @@ spec:
               value: {{ $.Values.odoo.enterprise.commit | quote }}
             {{- end }}
           command:
-            - "/bin/bash"
-            - "/scripts/git-pull-addons.sh"
+            - "sh"
+            - "-c"
+            - |
+              chmod +x /scripts/git-pull-addons.sh
+              /scripts/git-pull-addons.sh
           volumeMounts:
             - name: repo
               mountPath: /mnt/repo
