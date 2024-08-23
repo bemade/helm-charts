@@ -36,10 +36,10 @@ spec:
         - name: extra-addons
           persistentVolumeClaim:
             claimName: {{ .Values.odoo.production.hostname }}-extra-addons-pvc
-        {{- if .Values.gitProject.sshKeySecret }}
+        {{- if .Values.odoo.gitProject.sshKeySecret }}
         - name: ssh-key
           secret:
-            secretName: {{ .Values.gitProject.sshKeySecret }}
+            secretName: {{ .Values.odoo.gitProject.sshKeySecret }}
             items:
               - key: ssh-privatekey
                 path: ssh-privatekey
