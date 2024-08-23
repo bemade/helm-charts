@@ -113,18 +113,18 @@ spec:
           env:
             - name: REPO_URL
               value: {{ $.Values.odoo.gitProject.url | quote }}
-            - name: BRANCH
-              {{- if .branch }}
-              value: {{ .branch | quote }}
-              {{- else }}
-              value: {{ $.Values.odoo.production.branch | quote }}
-              {{- end }}
-            - name: COMMIT
-              {{- if .commit }}
-              value: {{ .commit | quote }}
-              {{- else }}
-              value: {{ $.Values.odoo.production.commit | quote }}
-              {{- end }}
+            # - name: BRANCH
+            #   {{- if .branch }}
+            #   value: {{ .branch | quote }}
+            #   {{- else }}
+            #   value: {{ $.Values.odoo.production.branch | quote }}
+            #   {{- end }}
+            # - name: COMMIT
+            #   {{- if .commit }}
+            #   value: {{ .commit | quote }}
+            #   {{- else }}
+            #   value: {{ $.Values.odoo.production.commit | quote }}
+            #   {{- end }}
             {{- if $.Values.odoo.enterprise }}
             - name: ENTERPRISE_BRANCH
               value: {{ $.Values.odoo.enterprise.branch | quote }}
