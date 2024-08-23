@@ -136,7 +136,7 @@ data:
     chmod 600 $SSH_DIR/id_rsa
 
     # Extract the host from the git project URL and add it to known_hosts
-    GIT_HOST=$(echo $REPO_URL | awk -F'[@:/]' '{print $4}')
+    GIT_HOST=$(echo $REPO_URL | awk -F'[@:]' '{print $2}')
     ssh-keyscan $GIT_HOST >> $SSH_DIR/known_hosts
     chmod 644 $SSH_DIR/known_hosts
 
