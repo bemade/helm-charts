@@ -68,9 +68,9 @@ spec:
           image: "alpine/git"
           env:
             - name: REPO_URL
-              value: {{ .Values.odoo.gitProject.url }}
+              value: {{ .Values.odoo.gitProject.url | quote }}
             - name: BRANCH
-              value: {{ .Values.odoo.production.branch }}
+              value: {{ .Values.odoo.production.branch | quote }}
             - name: COMMIT
               value: {{ .Values.odoo.production.commit | quote }}
             {{- if .Values.odoo.enterprise }}
