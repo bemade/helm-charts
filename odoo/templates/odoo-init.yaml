@@ -130,7 +130,7 @@ data:
     # Ensure the SSH directory exists and is properly set up
     mkdir -p $SSH_DIR
     cp /mnt/secrets/ssh-privatekey $SSH_DIR/privatekey
-    chmod 600 $SSH_DIR/id_rsa
+    chmod 600 $SSH_DIR/privatekey
     eval "$(ssh-agent -s)"
     ssh-add $SSH_DIR/privatekey
 
