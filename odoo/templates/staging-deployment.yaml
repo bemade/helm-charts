@@ -45,6 +45,16 @@ spec:
         - name: extra-addons
           persistentVolumeClaim:
             claimName: {{ .hostname }}-extra-addons-pvc
+        {{- if .Values.gitProject.ssh-key-secret }}
+        - name: ssh-key
+          secret:
+            secretName: {{ .Values.gitProject.ssh-key-secret }}
+            items:
+              - key: ssh-privatekey
+                path: ssh-privatekey
+              - key: ssh-publickey
+                path: ssh-publickey
+        {{- end }}
       initContainers:
         - name: pull-production-db
           image: alpine
@@ -123,6 +133,8 @@ spec:
               mountPath: /mnt/extra-addons
             - name: git-pull-addons
               mountPath: /scripts
+            - name: ssh-key
+              mountPath: /mnt/secrets
       containers:
         - name: odoo-{{ .hostname }}
           image: {{ $.Values.odoo.image }}
