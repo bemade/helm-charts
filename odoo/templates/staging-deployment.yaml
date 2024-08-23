@@ -125,7 +125,7 @@ spec:
               {{- else }}
               value: {{ $.Values.odoo.production.commit | quote }}
               {{- end }}
-              {{- if $.Values.odoo.enterprise }}
+            {{- if $.Values.odoo.enterprise }}
             - name: ENTERPRISE_BRANCH
               value: {{ $.Values.odoo.enterprise.branch | quote }}
             - name: ENTERPRISE_COMMIT
