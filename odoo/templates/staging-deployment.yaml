@@ -114,8 +114,7 @@ spec:
               value: {{ $.Values.odoo.enterprise.commit | quote }}
             {{- end }}
           command:
-            - "sh"
-            - "-c"
+            - "/bin/bash"
             - "/scripts/git-pull-addons.sh"
           volumeMounts:
             - name: repo
