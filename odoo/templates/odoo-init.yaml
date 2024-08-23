@@ -121,7 +121,7 @@ metadata:
 data:
   git-pull-addons.sh: |
     #!/bin/bash
-    set -e
+    set -ex
 
     REPO_DIR="/mnt/repo"
     EXTRA_ADDONS_DIR="/mnt/extra-addons"
@@ -129,10 +129,10 @@ data:
 
     # Ensure the SSH directory exists and is properly set up
     mkdir -p $SSH_DIR
-    cp /mnt/secrets/ssh-privatekey $SSH_DIR/id_rsa
+    cp /mnt/secrets/ssh-privatekey $SSH_DIR/privatekey
     chmod 600 $SSH_DIR/id_rsa
     eval "$(ssh-agent -s)"
-    ssh-add $SSH_DIR/id_rsa
+    ssh-add $SSH_DIR/privatekey
 
     # Detect the format of REPO_URL and extract the host accordingly
     if [[ $REPO_URL == git@* ]]; then
@@ -150,7 +150,6 @@ data:
 
     # Add the Git host to known_hosts
     ssh-keyscan $GIT_HOST >> $SSH_DIR/known_hosts
-    chmod 644 $SSH_DIR/known_hosts
 
     # Clear the /mnt/extra-addons directory
     rm -rf $EXTRA_ADDONS_DIR/*
