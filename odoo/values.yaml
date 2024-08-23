@@ -36,6 +36,6 @@ odoo:
   masterPassword: "$00p3rP4ssW0rD!"
   gitProject:
     url: "git@git.bemade.org:bemade/enterprise-demo.git"
-    ssh-key-secret: "secret-name" # Secret must already exist in the namespace
+    sshKeySecret: "secret-name" # Secret must already exist in the namespace
     size: 5Gi
     storageClassName: "non-replicated-storage"

@@ -36,16 +36,16 @@ spec:
         - name: extra-addons
           persistentVolumeClaim:
             claimName: {{ .Values.odoo.production.hostname }}-extra-addons-pvc
-        # {{- if .Values.gitProject.ssh-key-secret }}
-        # - name: ssh-key
-        #   secret:
-        #     secretName: {{ .Values.gitProject.ssh-key-secret }}
-        #     items:
-        #       - key: ssh-privatekey
-        #         path: ssh-privatekey
-        #       - key: ssh-publickey
-        #         path: ssh-publickey
-        # {{- end }}
+        {{- if .Values.gitProject.sshKeySecret }}
+        - name: ssh-key
+          secret:
+            secretName: {{ .Values.gitProject.sshKeySecret }}
+            items:
+              - key: ssh-privatekey
+                path: ssh-privatekey
+              - key: ssh-publickey
+                path: ssh-publickey
+        {{- end }}
       initContainers:
         - name: init-permissions
           image: busybox
