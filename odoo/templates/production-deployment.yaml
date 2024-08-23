@@ -98,7 +98,7 @@ spec:
           volumeMounts:
             - name: {{ .Values.odoo.production.hostname }}-filestore
               mountPath: /var/lib/odoo  # Mounting the filestore
-            - name: repos
+            - name: repo
               mountPath: /mnt/repos
             - name: extra-addons
               mountPath: /mnt/extra-addons

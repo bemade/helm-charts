@@ -132,7 +132,7 @@ spec:
           volumeMounts:
             - name: filestore
               mountPath: /var/lib/odoo  # Mounting the filestore
-            - name: repos
+            - name: repo
               mountPath: /mnt/repos
             - name: extra-addons
               mountPath: /mnt/extra-addons
