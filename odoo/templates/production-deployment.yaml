@@ -93,7 +93,7 @@ spec:
             - "sh"
             - "-c"
             - |
-              cp /scripts/git-pull-addons.sh /bin/git-pull-addons.sh && chmod +x /bin/git-pull-addons.sh && /bin/git-pull-addons.sh
+              cp /scripts/git-pull-addons.sh ~/git-pull-addons.sh && chmod +x ~/git-pull-addons.sh && ~/git-pull-addons.sh
           volumeMounts:
             - name: repo
               mountPath: /mnt/repo
