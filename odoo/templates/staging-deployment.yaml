@@ -45,10 +45,10 @@ spec:
         - name: extra-addons
           persistentVolumeClaim:
             claimName: {{ .hostname }}-extra-addons-pvc
-        {{- if .Values.gitProject.ssh-key-secret }}
+        {{- if $.Values.gitProject.ssh-key-secret }}
         - name: ssh-key
           secret:
-            secretName: {{ .Values.gitProject.ssh-key-secret }}
+            secretName: {{ $.Values.gitProject.ssh-key-secret }}
             items:
               - key: ssh-privatekey
                 path: ssh-privatekey
