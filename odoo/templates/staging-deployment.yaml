@@ -45,16 +45,16 @@ spec:
         - name: extra-addons
           persistentVolumeClaim:
             claimName: {{ .hostname }}-extra-addons-pvc
-        {{- if $.Values.gitProject.ssh-key-secret }}
-        - name: ssh-key
-          secret:
-            secretName: {{ $.Values.gitProject.ssh-key-secret }}
-            items:
-              - key: ssh-privatekey
-                path: ssh-privatekey
-              - key: ssh-publickey
-                path: ssh-publickey
-        {{- end }}
+        # {{- if $.Values.gitProject.ssh-key-secret }}
+        # - name: ssh-key
+        #   secret:
+        #     secretName: {{ $.Values.gitProject.ssh-key-secret }}
+        #     items:
+        #       - key: ssh-privatekey
+        #         path: ssh-privatekey
+        #       - key: ssh-publickey
+        #         path: ssh-publickey
+        # {{- end }}
       initContainers:
         - name: pull-production-db
           image: alpine
@@ -113,18 +113,18 @@ spec:
           env:
             - name: REPO_URL
               value: {{ $.Values.odoo.gitProject.url | quote }}
-            # - name: BRANCH
-            #   {{- if .branch }}
-            #   value: {{ .branch | quote }}
-            #   {{- else }}
-            #   value: {{ $.Values.odoo.production.branch | quote }}
-            #   {{- end }}
-            # - name: COMMIT
-            #   {{- if .commit }}
-            #   value: {{ .commit | quote }}
-            #   {{- else }}
-            #   value: {{ $.Values.odoo.production.commit | quote }}
-            #   {{- end }}
+            - name: BRANCH
+              {{- if .branch }}
+              value: {{ .branch | quote }}
+              {{- else }}
+              value: {{ $.Values.odoo.production.branch | quote }}
+              {{- end }}
+            - name: COMMIT
+              {{- if .commit }}
+              value: {{ .commit | quote }}
+              {{- else }}
+              value: {{ $.Values.odoo.production.commit | quote }}
+              {{- end }}
             {{- if $.Values.odoo.enterprise }}
             - name: ENTERPRISE_BRANCH
               value: {{ $.Values.odoo.enterprise.branch | quote }}
