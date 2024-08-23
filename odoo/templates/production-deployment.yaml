@@ -75,7 +75,7 @@ spec:
               value: {{ .Values.odoo.production.commit | quote }}
             {{- if .Values.odoo.enterprise }}
             - name: ENTERPRISE_BRANCH
-              value: {{ .Values.odoo.enterprise.branch | quote}}
+              value: {{ .Values.odoo.enterprise.branch | quote }}
             - name: ENTERPRISE_COMMIT
               value: {{ .Values.odoo.enterprise.commit | quote }}
             {{- end }}
