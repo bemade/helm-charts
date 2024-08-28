@@ -199,6 +199,8 @@ data:
 
     # Clone or update the main Odoo repository
     clone_or_update_repo "$REPO_URL" "$BRANCH" "$COMMIT" "$REPO_DIR/project"
+    # Link addons from the main repo to /mnt/extra-addons
+    ln -s "$REPO_DIR/project/addons/*" "$EXTRA_ADDONS_DIR/"
 
     # Optionally clone or update the Odoo enterprise repository
     if [ -n "$ENTERPRISE_REPO_URL" ]; then
@@ -208,5 +210,3 @@ data:
       ln -s "$REPO_DIR/enterprise/*" "$EXTRA_ADDONS_DIR/"
     fi
 
-    # Link addons from the main repo to /mnt/extra-addons
-    ln -s "$REPO_DIR/project/addons/*" "$EXTRA_ADDONS_DIR/"
