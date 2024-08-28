@@ -203,9 +203,8 @@ data:
     clone_or_update_repo "$REPO_URL" "$BRANCH" "$COMMIT" "$REPO_DIR"
 
     # Optionally clone or update the Odoo enterprise repository
-    if [ -n "$ENTERPRISE_BRANCH" ] || [ -n "$ENTERPRISE_COMMIT" ]; then
-      ENTERPRISE_REPO_URL="git@git.bemade.org:odoo/enterprise.git"
-      # ssh-keyscan github.com >> $SSH_DIR/known_hosts
+    if [ -n "$ENTERPRISE_REPO_URL" ]; then
+      ssh-keyscan github.com >> $SSH_DIR/known_hosts
       clone_or_update_repo $ENTERPRISE_REPO_URL $ENTERPRISE_BRANCH $ENTERPRISE_COMMIT "$REPO_DIR/enterprise"
       ln -s "$REPO_DIR/enterprise/*" "$EXTRA_ADDONS_DIR/"
     fi

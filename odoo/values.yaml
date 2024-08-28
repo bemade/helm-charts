@@ -7,6 +7,7 @@ odoo:
     email: ""
   domain: "odoo.bemade.org"
   enterprise:
+    repo: git@github.com:odoo/enterprise
     branch: "17.0" # Track a given branch, updating each pod restart.
     commit: "" # Overrides branch to freeze on a commit. Optional.
   production:
