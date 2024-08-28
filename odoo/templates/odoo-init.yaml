@@ -126,6 +126,7 @@ data:
     REPO_DIR="/mnt/repo"
     EXTRA_ADDONS_DIR="/mnt/extra-addons"
     SSH_DIR="/root/.ssh"
+    export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
 
     # Ensure the SSH directory exists and is properly set up
     mkdir -p $SSH_DIR
@@ -149,7 +150,7 @@ data:
     echo "Using GIT_HOST: $GIT_HOST"
 
     # Add the Git host to known_hosts
-    ssh-keyscan $GIT_HOST >> $SSH_DIR/known_hosts
+    # ssh-keyscan $GIT_HOST >> $SSH_DIR/known_hosts
 
     # Clear the /mnt/extra-addons directory
     rm -rf $EXTRA_ADDONS_DIR/*
@@ -204,7 +205,8 @@ data:
 
     # Optionally clone or update the Odoo enterprise repository
     if [ -n "$ENTERPRISE_REPO_URL" ]; then
-      ssh-keyscan github.com >> $SSH_DIR/known_hosts
+
+      # ssh-keyscan github.com >> $SSH_DIR/known_hosts
       clone_or_update_repo $ENTERPRISE_REPO_URL $ENTERPRISE_BRANCH $ENTERPRISE_COMMIT "$REPO_DIR/enterprise"
       ln -s "$REPO_DIR/enterprise/*" "$EXTRA_ADDONS_DIR/"
     fi
