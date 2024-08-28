@@ -174,7 +174,7 @@ data:
         fi
       else
         echo "Cloning repository $repo_url."
-        git clone --depth 1 --shalow-submodules -b "$branch" "$repo_url" "$target_dir"
+        git clone --depth 1 --recurse-submodules --shalow-submodules -b "$branch" "$repo_url" "$target_dir"
         cd "$target_dir"
         if [ -n "$commit" ]; then
           git reset --hard $commit
@@ -199,13 +199,10 @@ data:
 
     # Clone or update the main Odoo repository
     clone_or_update_repo "$REPO_URL" "$BRANCH" "$COMMIT" "$REPO_DIR/project"
-    # Link addons from the main repo to /mnt/extra-addons
-    ln -s "$REPO_DIR/project/addons/*" "$EXTRA_ADDONS_DIR/"
 
     # Optionally clone or update the Odoo enterprise repository
     if [ -n "$ENTERPRISE_REPO_URL" ]; then
       # ssh-keyscan github.com >> $SSH_DIR/known_hosts
       clone_or_update_repo "$ENTERPRISE_REPO_URL" "$ENTERPRISE_BRANCH" "$ENTERPRISE_COMMIT" "$REPO_DIR/enterprise"
-      ln -s "$REPO_DIR/enterprise/*" "$EXTRA_ADDONS_DIR/"
     fi
 

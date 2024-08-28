@@ -100,8 +100,6 @@ spec:
           volumeMounts:
             - name: repo
               mountPath: /mnt/repo
-            - name: extra-addons
-              mountPath: /mnt/extra-addons
             - name: git-pull-addons
               mountPath: /scripts
             - name: ssh-key
@@ -111,13 +109,15 @@ spec:
           image: {{ .Values.odoo.image }}
           ports:
             - containerPort: 8069
+          command:
+            - "/opt/odoo-bin"
+            - "-c /etc/odoo/odoo.conf"
+            - "--addons-path /mnt/repo/project,/mnt/repo/enterprise"
           volumeMounts:
             - name: {{ .Values.odoo.production.hostname }}-filestore
               mountPath: /var/lib/odoo  # Mounting the filestore
             - name: repo
               mountPath: /mnt/repos
-            - name: extra-addons
-              mountPath: /mnt/extra-addons
           env:
             - name: HOST
               value: kubegres
