@@ -36,6 +36,9 @@ spec:
         - name: extra-addons
           persistentVolumeClaim:
             claimName: {{ .Values.odoo.production.hostname }}-extra-addons-pvc
+        - name: odoo-conf
+          configMap:
+            name: odoo-conf
         {{- if .Values.odoo.gitProject.sshKeySecret }}
         - name: ssh-key
           secret:
@@ -109,15 +112,13 @@ spec:
           image: {{ .Values.odoo.image }}
           ports:
             - containerPort: 8069
-          command:
-            - "odoo"
-            - "-c /etc/odoo/odoo.conf"
-            - "--addons-path /mnt/repo/project,/mnt/repo/enterprise"
           volumeMounts:
             - name: {{ .Values.odoo.production.hostname }}-filestore
               mountPath: /var/lib/odoo  # Mounting the filestore
             - name: repo
               mountPath: /mnt/repos
+            - name: odoo-conf
+              mountPath: /etc/odoo
           env:
             - name: HOST
               value: kubegres
