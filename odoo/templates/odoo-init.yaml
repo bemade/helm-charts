@@ -203,10 +203,10 @@ data:
   odoo.conf: |
     [options]
     addons_path = /mnt/extra-addons,
-                  /mnt/repo/project/addons,
+                  /mnt/repos/project/addons,
                   {{- if .Values.enterprise }}
-                  /mnt/repo/enterprise,
-                  /mnt/repo/design-themes
+                  /mnt/repos/enterprise,
+                  /mnt/repos/design-themes
                   {{- end }}
     data_dir = /var/lib/odoo
     ; admin_passwd = admin
