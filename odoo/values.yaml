@@ -7,9 +7,13 @@ odoo:
     email: ""
   domain: "odoo.bemade.org"
   enterprise:
-    repo: git@github.com:odoo/enterprise
+    repo: git@git.bemade.org:odoo/enterprise
     branch: "17.0" # Track a given branch, updating each pod restart.
     commit: "" # Overrides branch to freeze on a commit. Optional.
+  themes:
+    repo: git@git.bemade.org:odoo/design-themes
+    branch: "17.0"
+    commit: ""
   production:
     hostname: "demo"
     branch: "17.0" # Branch to track. See commit to use a specific commit.

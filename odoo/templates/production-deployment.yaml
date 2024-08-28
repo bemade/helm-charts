@@ -94,6 +94,14 @@ spec:
             - name: ENTERPRISE_COMMIT
               value: {{ .Values.odoo.enterprise.commit | quote }}
             {{- end }}
+            {{- if .Values.odoo.themes }}
+            - name: THEMES_REPO_URL
+              value: {{ .Values.odoo.themes.repo | quote }}
+            - name: THEMES_BRANCH
+              value: {{ .Values.odoo.themes.branch | quote }}
+            - name: THEMES_COMMIT
+              value: {{ .Values.odoo.themes.commit | quote }}
+            {{- end }}
           command:
             - "sh"
             - "-c"

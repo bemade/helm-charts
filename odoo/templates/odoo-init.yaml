@@ -180,21 +180,6 @@ data:
           git reset --hard $commit
         fi
       fi
-
-      # # Update and initialize submodules
-      # echo "Updating submodules for $repo_url..."
-      # if ! git submodule update --init --recursive; then
-      #   echo "Submodule update failed. Attempting to reset submodules..."
-      #   git submodule deinit --all --force
-      #   git submodule sync --recursive
-      #   git submodule update --init --recursive --force
-      #   if ! git submodule update --init --recursive --force; then
-      #     echo "Submodule update failed after retry. Cleaning and reinitializing submodules."
-      #     git submodule foreach --recursive 'rm -rf $toplevel/$sm_path'
-      #     git submodule update --init --recursive --force
-      #   fi
-      # fi
-      # echo "Submodules updated successfully for $repo_url."
     }
 
     # Clone or update the main Odoo repository
@@ -204,6 +189,7 @@ data:
     if [ -n "$ENTERPRISE_REPO_URL" ]; then
       # ssh-keyscan github.com >> $SSH_DIR/known_hosts
       clone_or_update_repo "$ENTERPRISE_REPO_URL" "$ENTERPRISE_BRANCH" "$ENTERPRISE_COMMIT" "$REPO_DIR/enterprise"
+      clone_or_update_repo "$THEMES_REPO_URL" "$THEMES_BRANCH" "$THEMES_COMMIT" "$REPO_DIR/design-themes"
     fi
 
 ---
@@ -216,7 +202,12 @@ metadata:
 data:
   odoo.conf: |
     [options]
-    addons_path = /mnt/extra-addons,/mnt/repo/project/addons,/mnt/repo/enterprise,/mnt/repo/design-themes
+    addons_path = /mnt/extra-addons,
+                  /mnt/repo/project/addons,
+                  {{- if .Values.enterprise }}
+                  /mnt/repo/enterprise,
+                  /mnt/repo/design-themes
+                  {{- end }}
     data_dir = /var/lib/odoo
     ; admin_passwd = admin
     ; csv_internal_sep = ,
@@ -247,8 +238,8 @@ data:
     ; smtp_user = False
     ; workers = 0
     ; xmlrpc = True
-    ; xmlrpc_interface = 
+    ; xmlrpc_interface =
     ; xmlrpc_port = 8069
     ; xmlrpcs = True
-    ; xmlrpcs_interface = 
+    ; xmlrpcs_interface =
     ; xmlrpcs_port = 8071
