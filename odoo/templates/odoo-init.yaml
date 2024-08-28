@@ -174,9 +174,6 @@ data:
         fi
       else
         echo "Cloning repository $repo_url."
-        if [ -d "$target_dir" ]; then
-          rm -rf "$target_dir/*"
-        fi
         git clone --recursive -b $branch $repo_url $target_dir
         cd $target_dir
         if [ -n "$commit" ]; then
@@ -201,7 +198,7 @@ data:
     }
 
     # Clone or update the main Odoo repository
-    clone_or_update_repo "$REPO_URL" "$BRANCH" "$COMMIT" "$REPO_DIR"
+    clone_or_update_repo "$REPO_URL" "$BRANCH" "$COMMIT" "$REPO_DIR/project"
 
     # Optionally clone or update the Odoo enterprise repository
     if [ -n "$ENTERPRISE_REPO_URL" ]; then
@@ -212,4 +209,4 @@ data:
     fi
 
     # Link addons from the main repo to /mnt/extra-addons
-    ln -s "$REPO_DIR/addons/*" "$EXTRA_ADDONS_DIR/"
+    ln -s "$REPO_DIR/project/addons/*" "$EXTRA_ADDONS_DIR/"
