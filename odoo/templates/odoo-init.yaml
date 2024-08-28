@@ -173,6 +173,9 @@ data:
         fi
       else
         echo "Cloning repository $repo_url."
+        if [ -d "$target_dir" ]; then
+          rm -rf "$target_dir/*"
+        fi
         git clone --recursive -b $branch $repo_url $target_dir
         cd $target_dir
         if [ -n "$commit" ]; then
@@ -197,12 +200,12 @@ data:
     }
 
     # Clone or update the main Odoo repository
-    clone_or_update_repo $REPO_URL $BRANCH $COMMIT $REPO_DIR
+    clone_or_update_repo "$REPO_URL" "$BRANCH" "$COMMIT" "$REPO_DIR"
 
     # Optionally clone or update the Odoo enterprise repository
     if [ -n "$ENTERPRISE_BRANCH" ] || [ -n "$ENTERPRISE_COMMIT" ]; then
-      ENTERPRISE_REPO_URL="git@github.com:odoo/enterprise.git"
-      ssh-keyscan github.com >> $SSH_DIR/known_hosts
+      ENTERPRISE_REPO_URL="git@git.bemade.org:odoo/enterprise.git"
+      # ssh-keyscan github.com >> $SSH_DIR/known_hosts
       clone_or_update_repo $ENTERPRISE_REPO_URL $ENTERPRISE_BRANCH $ENTERPRISE_COMMIT "$REPO_DIR/enterprise"
       ln -s "$REPO_DIR/enterprise/*" "$EXTRA_ADDONS_DIR/"
     fi
