@@ -110,7 +110,7 @@ spec:
           ports:
             - containerPort: 8069
           command:
-            - "/opt/odoo-bin"
+            - "odoo"
             - "-c /etc/odoo/odoo.conf"
             - "--addons-path /mnt/repo/project,/mnt/repo/enterprise"
           volumeMounts:
