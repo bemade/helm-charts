@@ -66,13 +66,15 @@ spec:
           initialDelaySeconds: 60
           periodSeconds: 30
       - name: mssql-init
-        image: mcr.microsoft.com/mssql-tools
+        image: ubuntu:22.04
         env:
         - name: SA_PASSWORD
           valueFrom:
             secretKeyRef:
               name: mssql-secret
               key: sa-password
+        - name: ACCEPT_EULA
+          value: "Y"
         - name: DB_NAME
           value: {{ .Values.mssql.dbName | quote }}
         - name: BAKFILE
@@ -80,6 +82,7 @@ spec:
         command: ["/bin/bash", "-c", "--"]
         args:
         - |
+          apt-get install mssql-tools18 unixodbc-dev
           echo "Waiting for MSSQL Server to be available...";
           until /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$SA_PASSWORD" -Q "SELECT 1" &> /dev/null;
           do
