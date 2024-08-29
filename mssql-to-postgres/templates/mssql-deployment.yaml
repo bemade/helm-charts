@@ -23,7 +23,8 @@ spec:
           mc cp myminio/{{ .Values.mssql.bakFileUrl }} /var/opt/mssql/backup/backup.bak
         volumeMounts:
         - name: mssql-backup
-          mountPath: /var/opt/mssql/backup      containers:
+          mountPath: /var/opt/mssql/backup
+      containers:
       - name: mssql-server
         image: mcr.microsoft.com/mssql/server
         env:
