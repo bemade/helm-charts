@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pgloader
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-mssql-init
+        image: busybox
+        command: ['sh', '-c', 'until nc -z mssql-server 1433; do echo waiting for mssql; sleep 2; done;']
+      - name: wait-for-postgres
+        image: postgres:{{ .Values.postgresql.version | default "latest" | quote }}
+        command: ['sh', '-c', 'until pg_isready -h postgres -U postgres; do echo waiting for postgres; sleep 2; done;']
+        env:
+          - name: PGPASSWORD
+            value: "pgpassword"
+      containers:
+      - name: pgloader
+        image: dimitri/pgloader
+        volumeMounts:
+        - name: pgloader-script
+          mountPath: /pgloader.load
+        command: ["pgloader", "/pgloader.load"]
+        env:
+          - name: "MSSQL_HOST"
+            value: "mssql-server"
+          - name: "MSSQL_USER"
+            value: "sa"
+          - name: "MSSQL_PASS"
+            valueFrom:
+              secretKeyRef:
+                name: mssql-secret
+                key: sa-password
+          - name: "MSSQL_DB"
+            value: {{ .Values.mssql.dbName }}
+          - name: "PG_HOST"
+            value: "postgres"
+          - name: "PG_USER"
+            value: "postgres"
+          - name: "PG_PASSWORD"
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: pgpassword
+          - name: "PG_DB"
+            value: {{ .Values.postgresql.dbName }}
+      restartPolicy: OnFailure
+      volumes:
+      - name: pgloader-script
+        configMap:
+          name: cm-pgloader

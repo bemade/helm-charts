@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mssql-server
+  template:
+    metadata:
+      labels:
+        app: mssql-server
+    spec:
+      initContainers:
+      - name: download-bak-file
+        image: amazon/aws-cli
+        command:
+        - sh
+        - -c
+        - |
+          aws configure set aws_access_key_id {{ .Values.mssql.s3AccessKeyId }} && \
+          aws configure set aws_secret_access_key {{ .Values.mssql.s3SecretAccessKey }} && \
+          aws configure set region {{ .Values.mssql.s3Region }} && \
+          aws configure set default.s3.endpoint_url {{ .Values.mssql.s3Endpoint }} && \
+          aws s3 cp {{ .Values.mssql.bakFileUrl }} /var/opt/mssql/backup/backup.bak
+        volumeMounts:
+        - name: mssql-backup
+          mountPath: /var/opt/mssql/backup
+      containers:
+      - name: mssql-server
+        image: mcr.microsoft.com/mssql/server
+        env:
+        - name: ACCEPT_EULA
+          value: "Y"
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mssql-secret
+              key: sa-password
+        volumeMounts:
+        - name: mssql-backup
+          mountPath: /var/opt/mssql/backup
+        - name: mssql-data
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - |
+              /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$SA_PASSWORD" -Q "SELECT 1 FROM sys.databases WHERE name = '{{ .Values.mssql.dbName }}'" | grep -q 1
+          initialDelaySeconds: 60  # Adjust based on expected restore time
+          periodSeconds: 10
+        livenessProbe:
+          exec:
+            command:
+            - /opt/mssql-tools/bin/sqlcmd
+            - -S
+            - localhost
+            - -U
+            - SA
+            - -P
+            - "$SA_PASSWORD"
+            - -Q
+            - "SELECT 1"
+          initialDelaySeconds: 60
+          periodSeconds: 30         mountPath: /var/opt/mssql/data
+      - name: mssql-init
+        image: mcr.microsoft.com/mssql-tools
+        env:
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mssql-secret
+              key: sa-password
+        - name: DB_NAME
+          value: {{ .Values.mssql.dbName | quote }}
+        - name: BAKFILE
+          value: "backup.bak"
+        command: ["/bin/bash", "-c", "--"]
+        args:
+        - |
+          echo "Waiting for MSSQL Server to be available...";
+          until /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$SA_PASSWORD" -Q "SELECT 1" &> /dev/null;
+          do
+              sleep 3;
+          done;
+          echo "MSSQL Server is now available.";
+          echo "Attaching the database...";
+          # Drop and restore the database
+          /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$SA_PASSWORD" -Q "
+          IF DB_ID('$DBNAME') IS NOT NULL
+          BEGIN
+              ALTER DATABASE Pneuprod SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+              DROP DATABASE Pneuprod;
+          END
+          GO
+
+          RESTORE FILELISTONLY
+          FROM DISK = '/var/opt/mssql/backup/${BAK_FILE}'
+          GO
+
+          RESTORE DATABASE Pneuprod
+          FROM DISK = '/var/opt/mssql/backup/${BAK_FILE}'
+          WITH MOVE '$DB_NAME' TO '/var/opt/mssql/data/Pneuprod.mdf',
+               MOVE '$DB_NAME_log' TO '/var/opt/mssql/data/Pneuprod_log.ldf',
+               REPLACE, RECOVERY;
+          GO
+          "
+
+          echo "DB backup restored to MSSQL."
+        volumeMounts:
+        - name: mssql-backup
+          mountPath: /var/opt/mssql/backup
+      volumes:
+      - name: mssql-backup
+        persistentVolumeClaim:
+          claimName: mssql-bak-pvc
+      - name: mssql-data
+        persistentVolumeClaim:
+          claimName: mssql-data-pvc

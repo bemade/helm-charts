@@ -1,0 +1,9 @@
+apiVersion: v3
+name: mssql-to-postgres
+description: A Helm chart for converting MSSQL databases into Postgresql
+type: application
+version: 0.1.0
+
+maintainers:
+  - name: Marc Durepos
+    email: marc@bemade.org

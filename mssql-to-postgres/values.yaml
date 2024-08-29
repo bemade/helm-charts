@@ -1,0 +1,16 @@
+mssql:
+  version: "" # Leave blank for latest
+  size: "20Gi"
+  dbName: "Pneuprod"
+  storageClassName: "non-replicated-storage"
+  bakFileUrl: "s3://bucket@bhs/file"
+  s3Endpoint: "s3.bhs.io.cloud.ovh.net"
+  s3AccessKeyId: ""
+  s3SecretAccessKey: ""
+  s3Region: "bhs"
+  bakVolumeSize: "20Gi"
+postgresql:
+  version: "" # Leave blank for latest
+  size: "20Gi"
+  storageClassName: "non-replicated-storage"
+  dbName: "pneuprod"
