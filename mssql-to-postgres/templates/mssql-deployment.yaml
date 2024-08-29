@@ -20,7 +20,7 @@ spec:
         - -c
         - |
           mc alias set myminio {{ .Values.mssql.s3Endpoint }} {{ .Values.mssql.s3AccessKeyId }} {{ .Values.mssql.s3SecretAccessKey }} && \
-          mc cp myminio{{ .Values.mssql.bakFileUrl }} /var/opt/mssql/backup/backup.bak
+          mc get myminio{{ .Values.mssql.bakFileUrl }} /var/opt/mssql/backup/backup.bak
         volumeMounts:
         - name: mssql-backup
           mountPath: /var/opt/mssql/backup
