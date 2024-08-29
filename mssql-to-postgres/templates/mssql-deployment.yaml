@@ -116,7 +116,7 @@ spec:
       volumes:
       - name: mssql-backup
         persistentVolumeClaim:
-          claimName: mssql-bak-pvc
+          claimName: mssql-backup
       - name: mssql-data
         persistentVolumeClaim:
-          claimName: mssql-data-pvc
+          claimName: mssql-pvc
