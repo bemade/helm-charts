@@ -12,6 +12,8 @@ spec:
       labels:
         app: mssql-server
     spec:
+      securityContext:
+        fsGroup: 10001  # Ensure filesystem group ownership is correct
       initContainers:
       - name: download-bak-file
         image: minio/mc
@@ -112,7 +114,6 @@ spec:
           mountPath: /var/opt/mssql/backup
         securityContext:
           runAsUser: 10001 # mssql User UID
-          fsGroup: 10001  # Ensure filesystem group ownership is correct
           runAsNonRoot: true
           allowPrivilegeEscalation: false
       volumes:
