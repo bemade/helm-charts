@@ -11,7 +11,7 @@ spec:
         image: busybox
         command: ['sh', '-c', 'until nc -z mssql-server 1433; do echo waiting for mssql; sleep 2; done;']
       - name: wait-for-postgres
-        image: postgres:{{ .Values.postgresql.version | default "latest" | quote }}
+        image: postgres:{{ .Values.postgresql.version | default latest }}
         command: ['sh', '-c', 'until pg_isready -h postgres -U postgres; do echo waiting for postgres; sleep 2; done;']
         env:
           - name: PGPASSWORD
