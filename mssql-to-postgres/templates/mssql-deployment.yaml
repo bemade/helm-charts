@@ -12,8 +12,6 @@ spec:
       labels:
         app: mssql-server
     spec:
-      imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
       securityContext:
         fsGroup: 10001  # Ensure filesystem group ownership is correct
       initContainers:
@@ -39,7 +37,7 @@ spec:
           value: "mssqlP4ss"
         volumeMounts:
         - name: mssql-backup
-          mountPath: /var/opt/mssql/backup
+          mountPath: /backup
         - name: mssql-data
           mountPath: /var/opt/mssql/data
         readinessProbe:
@@ -65,55 +63,9 @@ spec:
             - "SELECT 1"
           initialDelaySeconds: 60
           periodSeconds: 30
-      - name: mssql-init
-        image: docker.bemade.org/bemade/docker-mssql-tools:0.0.1-amd64
-        env:
-        - name: SA_PASSWORD
-          value: "mssqlP4ss"
-        - name: ACCEPT_EULA
-          value: "Y"
-        - name: DB_NAME
-          value: {{ .Values.mssql.dbName | quote }}
-        - name: BAKFILE
-          value: "backup.bak"
-        command: ["/bin/bash", "-c", "--"]
-        args:
-        - |
-          set +e
-          set +x
-          echo "Waiting for MSSQL Server to be available...";
-          until /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P "$SA_PASSWORD" -Q "SELECT 1" &> /dev/null;
-          do
-              sleep 3;
-          done;
-          echo "MSSQL Server is now available.";
-          echo "Attaching the database...";
-          DB_LOG_NAME="$DB_NAME""_log"
-          # Drop and restore the database
-          /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P "$SA_PASSWORD" -Q "
-          IF DB_ID('$DBNAME') IS NOT NULL
-          BEGIN
-              ALTER DATABASE Pneuprod SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-              DROP DATABASE Pneuprod;
-          END
-          GO
-
-          RESTORE FILELISTONLY
-          FROM DISK = '/var/opt/mssql/backup/backup.bak'
-          GO
-
-          RESTORE DATABASE Pneuprod
-          FROM DISK = '/var/opt/mssql/backup/backup.bak'
-          WITH MOVE '$DB_NAME' TO '/var/opt/mssql/data/Pneuprod.mdf',
-               MOVE '$DB_LOG_NAME' TO '/var/opt/mssql/data/Pneuprod_log.ldf',
-               REPLACE, RECOVERY;
-          GO
-          "
-
-          echo "DB backup restored to MSSQL."
         volumeMounts:
         - name: mssql-backup
-          mountPath: /var/opt/mssql/backup
+          mountPath: /backup
         securityContext:
           runAsUser: 10001 # mssql User UID
           runAsNonRoot: true
