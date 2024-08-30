@@ -66,7 +66,7 @@ spec:
           initialDelaySeconds: 60
           periodSeconds: 30
       - name: mssql-init
-        image: ubuntu:22.04
+        image: docker.bemade.org/docker-mssql-tools:0.0.1
         env:
         - name: SA_PASSWORD
           valueFrom:
@@ -82,7 +82,6 @@ spec:
         command: ["/bin/bash", "-c", "--"]
         args:
         - |
-          apt-get install mssql-tools18 unixodbc-dev
           echo "Waiting for MSSQL Server to be available...";
           until /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "$SA_PASSWORD" -Q "SELECT 1" &> /dev/null;
           do
@@ -115,10 +114,10 @@ spec:
         volumeMounts:
         - name: mssql-backup
           mountPath: /var/opt/mssql/backup
-        securityContext:
-          runAsUser: 10001 # mssql User UID
-          runAsNonRoot: true
-          allowPrivilegeEscalation: false
+        # securityContext:
+        #   runAsUser: 10001 # mssql User UID
+        #   runAsNonRoot: true
+        #   allowPrivilegeEscalation: false
       volumes:
       - name: mssql-backup
         persistentVolumeClaim:
