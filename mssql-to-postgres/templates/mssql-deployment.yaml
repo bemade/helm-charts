@@ -94,7 +94,7 @@ spec:
           done;
           echo "MSSQL Server is now available.";
           echo "Attaching the database...";
-          $DB_LOG_NAME = "DB_NAME""_log"
+          DB_LOG_NAME="$DB_NAME""_log"
           # Drop and restore the database
           /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P "$SA_PASSWORD" -Q "
           IF DB_ID('$DBNAME') IS NOT NULL
