@@ -23,19 +23,19 @@ spec:
         - name: pgloader-script
           mountPath: /pgloader.load
           subPath: pgloader.load
-        command: ["pgloader", "/pgloader.load"]
+        command: ["pgloader", "--verbose", "--debug", "/pgloader.load"]
         env:
           - name: "MSSQL_HOST"
             value: "mssql-server"
           - name: "MSSQL_USER"
-            value: "sa"
+            value: "SA"
           - name: "MSSQL_PASS"
             valueFrom:
               secretKeyRef:
                 name: mssql-secret
                 key: sa-password
           - name: "MSSQL_DB"
-            value: {{ .Values.mssql.dbName }}
+            value: {{ .Values.mssql.dbName | quote }}
           - name: "PG_HOST"
             value: "postgres"
           - name: "PG_USER"
@@ -48,7 +48,7 @@ spec:
           - name: "PG_DB"
             value: {{ .Values.postgresql.dbName }}
           - name: TDS_MAX_CONN
-            value: 20
+            value: 2000
       restartPolicy: OnFailure
       volumes:
       - name: pgloader-script
