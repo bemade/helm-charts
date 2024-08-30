@@ -30,7 +30,7 @@ spec:
           - name: "MSSQL_USER"
             value: "SA"
           - name: "MSSQL_PASS"
-            value: "mssqlpass"
+            value: "mssqlP4ss"
           - name: "MSSQL_DB"
             value: {{ .Values.mssql.dbName }}
           - name: "PG_HOST"
