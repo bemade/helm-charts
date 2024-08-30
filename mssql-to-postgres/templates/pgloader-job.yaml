@@ -29,11 +29,13 @@ spec:
           value: {{ .Values.mssql.dbName | quote }}
         - name: BAKFILE
           value: "backup.bak"
+        - name: MSSQL_HOST
+          value: "mssql-server"
         command: ["/bin/bash", "-c", "--"]
         args:
         - |
           set +e
-          until /opt/mssql-tools18/bin/sqlcmd -C -S mssql-server -U SA -P "$SA_PASSWORD" -Q "SELECT 1" &> /dev/null;
+          until /opt/mssql-tools18/bin/sqlcmd -C -S "$MSSQL_HOST" -U SA -P "$SA_PASSWORD" -Q "SELECT 1" &> /dev/null;
           do
             echo "Waiting for MSSQL Server to be available...";
             sleep 3;
@@ -42,7 +44,7 @@ spec:
           echo "Restoring the database...";
           DB_LOG_NAME="$DB_NAME""_log"
           # Drop and restore the database
-          /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P "$SA_PASSWORD" -Q "
+          /opt/mssql-tools18/bin/sqlcmd -C -S "$MSSQL_HOST" -U SA -P "$SA_PASSWORD" -Q "
           IF DB_ID('$DBNAME') IS NOT NULL
           BEGIN
               ALTER DATABASE Pneuprod SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
