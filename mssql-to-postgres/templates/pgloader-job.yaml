@@ -47,6 +47,8 @@ spec:
                 key: pgpassword
           - name: "PG_DB"
             value: {{ .Values.postgresql.dbName }}
+          - name: TDS_MAX_CONN
+            value: 20
       restartPolicy: OnFailure
       volumes:
       - name: pgloader-script
