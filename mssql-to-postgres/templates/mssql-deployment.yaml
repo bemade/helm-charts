@@ -12,6 +12,8 @@ spec:
       labels:
         app: mssql-server
     spec:
+      imagePullSecrets:
+        - name: {{ .Values.pullSecret }}
       securityContext:
         fsGroup: 10001  # Ensure filesystem group ownership is correct
       initContainers:
@@ -66,7 +68,7 @@ spec:
           initialDelaySeconds: 60
           periodSeconds: 30
       - name: mssql-init
-        image: docker.bemade.org/docker-mssql-tools:0.0.1
+        image: docker.bemade.org/bemade/docker-mssql-tools:0.0.1
         env:
         - name: SA_PASSWORD
           valueFrom:

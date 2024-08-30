@@ -1,3 +1,4 @@
+pullSecret: docker-bemade-org-credentials
 mssql:
   version: "" # Leave blank for latest
   size: "20Gi"
