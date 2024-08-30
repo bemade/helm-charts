@@ -36,10 +36,7 @@ spec:
         - name: ACCEPT_EULA
           value: "Y"
         - name: SA_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mssql-secret
-              key: sa-password
+          value: "mssqlpass"
         volumeMounts:
         - name: mssql-backup
           mountPath: /var/opt/mssql/backup
@@ -72,10 +69,7 @@ spec:
         image: docker.bemade.org/bemade/docker-mssql-tools:0.0.1-amd64
         env:
         - name: SA_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mssql-secret
-              key: sa-password
+          value: "mssqlpass"
         - name: ACCEPT_EULA
           value: "Y"
         - name: DB_NAME

@@ -30,10 +30,7 @@ spec:
           - name: "MSSQL_USER"
             value: "SA"
           - name: "MSSQL_PASS"
-            valueFrom:
-              secretKeyRef:
-                name: mssql-secret
-                key: sa-password
+            value: "mssqlpass"
           - name: "MSSQL_DB"
             value: {{ .Values.mssql.dbName }}
           - name: "PG_HOST"
