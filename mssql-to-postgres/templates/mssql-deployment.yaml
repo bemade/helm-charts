@@ -101,11 +101,11 @@ spec:
           GO
 
           RESTORE FILELISTONLY
-          FROM DISK = '/var/opt/mssql/backup/${BAK_FILE}'
+          FROM DISK = '/var/opt/mssql/backup/backup.bak'
           GO
 
           RESTORE DATABASE Pneuprod
-          FROM DISK = '/var/opt/mssql/backup/${BAK_FILE}'
+          FROM DISK = '/var/opt/mssql/backup/backup.bak
           WITH MOVE '$DB_NAME' TO '/var/opt/mssql/data/Pneuprod.mdf',
                MOVE '$DB_NAME_log' TO '/var/opt/mssql/data/Pneuprod_log.ldf',
                REPLACE, RECOVERY;
@@ -116,10 +116,10 @@ spec:
         volumeMounts:
         - name: mssql-backup
           mountPath: /var/opt/mssql/backup
-        # securityContext:
-        #   runAsUser: 10001 # mssql User UID
-        #   runAsNonRoot: true
-        #   allowPrivilegeEscalation: false
+        securityContext:
+          runAsUser: 10001 # mssql User UID
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
       volumes:
       - name: mssql-backup
         persistentVolumeClaim:
