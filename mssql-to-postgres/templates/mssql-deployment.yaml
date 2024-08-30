@@ -68,7 +68,7 @@ spec:
           initialDelaySeconds: 60
           periodSeconds: 30
       - name: mssql-init
-        image: docker.bemade.org/bemade/docker-mssql-tools:0.0.1
+        image: docker.bemade.org/bemade/docker-mssql-tools:0.0.1-amd64
         env:
         - name: SA_PASSWORD
           valueFrom:
