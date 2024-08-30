@@ -23,6 +23,7 @@ spec:
         - sh
         - -c
         - |
+          set +e
           mc alias set myminio {{ .Values.mssql.s3Endpoint }} {{ .Values.mssql.s3AccessKeyId }} {{ .Values.mssql.s3SecretAccessKey }} && \
           mc get myminio/{{ .Values.mssql.bakFileUrl }} /var/opt/mssql/backup/backup.bak
         volumeMounts:
@@ -84,6 +85,8 @@ spec:
         command: ["/bin/bash", "-c", "--"]
         args:
         - |
+          set +e
+          set +x
           echo "Waiting for MSSQL Server to be available...";
           until /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P "$SA_PASSWORD" -Q "SELECT 1" &> /dev/null;
           do
@@ -105,9 +108,9 @@ spec:
           GO
 
           RESTORE DATABASE Pneuprod
-          FROM DISK = '/var/opt/mssql/backup/backup.bak
+          FROM DISK = '/var/opt/mssql/backup/backup.bak'
           WITH MOVE '$DB_NAME' TO '/var/opt/mssql/data/Pneuprod.mdf',
-               MOVE '$DB_NAME_log' TO '/var/opt/mssql/data/Pneuprod_log.ldf',
+               MOVE '$DB_NAME' + '_log' TO '/var/opt/mssql/data/Pneuprod_log.ldf',
                REPLACE, RECOVERY;
           GO
           "
