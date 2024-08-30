@@ -22,6 +22,7 @@ spec:
         volumeMounts:
         - name: pgloader-script
           mountPath: /pgloader.load
+          subPath: pgloader.load
         command: ["pgloader", "/pgloader.load"]
         env:
           - name: "MSSQL_HOST"
