@@ -7,7 +7,7 @@ spec:
   template:
     spec:
       imagePullSecrets:
-        - name: {{ .Values.pullSecret }}
+      - name: {{ .Values.pullSecret }}
       initContainers:
       - name: wait-for-postgres
         image: postgres:{{ .Values.postgresql.version | default "latest" }}
