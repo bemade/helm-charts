@@ -73,8 +73,8 @@ spec:
         - name: pgloader-script
           mountPath: /etc/freetds/freetds.conf
           subPath: freetds.conf
-        # command: ["pgloader", "--verbose", "--debug", "/pgloader.load"]
-        command: ["sleep", "3600"]
+        command: ["pgloader", "--verbose", "--debug", "/pgloader.load"]
+        # command: ["sleep", "3600"]
         env:
           - name: "MSSQL_HOST"
             value: "mssql-server"
