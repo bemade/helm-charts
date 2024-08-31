@@ -12,8 +12,6 @@ spec:
       labels:
         app: mssql-server
     spec:
-      securityContext:
-        fsGroup: 10001  # Ensure filesystem group ownership is correct
       initContainers:
       - name: download-bak-file
         image: minio/mc
@@ -49,6 +47,7 @@ spec:
               /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P "$SA_PASSWORD" -Q "SELECT 1"
           initialDelaySeconds: 60  # Adjust based on expected restore time
           periodSeconds: 10
+          timeoutSeconds: 5
         livenessProbe:
           exec:
             command:
@@ -63,13 +62,10 @@ spec:
             - "SELECT 1"
           initialDelaySeconds: 60
           periodSeconds: 30
+          timeoutSeconds: 5
         volumeMounts:
         - name: mssql-backup
           mountPath: /backup
-        securityContext:
-          runAsUser: 10001 # mssql User UID
-          runAsNonRoot: true
-          allowPrivilegeEscalation: false
       volumes:
       - name: mssql-backup
         persistentVolumeClaim:
