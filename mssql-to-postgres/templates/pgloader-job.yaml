@@ -70,6 +70,9 @@ spec:
         - name: pgloader-script
           mountPath: /pgloader.load
           subPath: pgloader.load
+        - name: pgloader-script
+          mountPath: /etc/freetds/freetds.conf
+          subPath: freetds.conf
         command: ["pgloader", "--verbose", "--debug", "/pgloader.load"]
         env:
           - name: "MSSQL_HOST"

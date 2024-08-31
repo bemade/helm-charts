@@ -21,3 +21,6 @@ data:
 
      BEFORE LOAD DO
      $$ create schema if not exists public; $$;
+  freetds.conf: |
+    [global]
+        tds version = 8.0
