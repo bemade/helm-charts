@@ -9,11 +9,11 @@ data:
         FROM mssql://{{"{{"}}MSSQL_USER{{"}}"}}:{{"{{"}}MSSQL_PASS{{"}}"}}@{{"{{"}}MSSQL_HOST{{"}}"}}:1433/{{"{{"}}MSSQL_DB{{"}}"}}
         INTO postgresql://{{"{{"}}PG_USER{{"}}"}}:{{"{{"}}PG_PASSWORD{{"}}"}}@{{"{{"}}PG_HOST{{"}}"}}:5432/{{"{{"}}PG_DB{{"}}"}}
 
-     WITH include drop, create tables, create indexes, reset sequences,
+     WITH include drop, create tables,
           workers = 2, concurrency = 1, batch rows = 5000, batch size = 10MB,
           prefetch rows = 1000
 
-     SET maintenance_work_mem to '128MB', work_mem to '12MB', search_path to 'public'
+     SET maintenance_work_mem to '512MB', work_mem to '128MB', search_path to 'public'
 
      CAST type datetime to timestamptz
           drop default drop not null using zero-dates-to-null,

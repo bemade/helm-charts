@@ -65,7 +65,7 @@ spec:
           "
       containers:
       - name: pgloader
-        image: dimitri/pgloader
+        image: dimitri/pgloader:ccl.latest
         volumeMounts:
         - name: pgloader-script
           mountPath: /pgloader.load
@@ -73,7 +73,8 @@ spec:
         - name: pgloader-script
           mountPath: /etc/freetds/freetds.conf
           subPath: freetds.conf
-        command: ["pgloader", "--verbose", "--debug", "/pgloader.load"]
+        # command: ["pgloader", "--verbose", "--debug", "/pgloader.load"]
+        command: ["sleep", "3600"]
         env:
           - name: "MSSQL_HOST"
             value: "mssql-server"

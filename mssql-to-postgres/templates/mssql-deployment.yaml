@@ -38,34 +38,6 @@ spec:
           mountPath: /backup
         - name: mssql-data
           mountPath: /var/opt/mssql/data
-        readinessProbe:
-          exec:
-            command:
-            - /bin/bash
-            - -c
-            - |
-              /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P "$SA_PASSWORD" -Q "SELECT 1"
-          initialDelaySeconds: 60  # Adjust based on expected restore time
-          periodSeconds: 10
-          timeoutSeconds: 5
-        livenessProbe:
-          exec:
-            command:
-            - /opt/mssql-tools18/bin/sqlcmd
-            - -S
-            - localhost
-            - -U
-            - SA
-            - -P
-            - "$SA_PASSWORD"
-            - -Q
-            - "SELECT 1"
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          timeoutSeconds: 5
-        volumeMounts:
-        - name: mssql-backup
-          mountPath: /backup
       volumes:
       - name: mssql-backup
         persistentVolumeClaim:
