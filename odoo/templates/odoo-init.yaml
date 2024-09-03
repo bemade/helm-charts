@@ -204,7 +204,7 @@ data:
     [options]
     addons_path = /mnt/extra-addons,
                   /mnt/repos/project/addons,
-                  {{- if .Values.enterprise }}
+                  {{- if .Values.odoo.enterprise }}
                   /mnt/repos/enterprise,
                   /mnt/repos/design-themes
                   {{- end }}
