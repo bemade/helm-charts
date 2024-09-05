@@ -209,6 +209,9 @@ data:
                   /mnt/repos/design-themes
                   {{- end }}
     data_dir = /var/lib/odoo
+    {{- range $key, $value = .Values.odoo.conf }}
+    {{ $key }} = {{ $value }}
+    {{- end}}
     ; admin_passwd = admin
     ; csv_internal_sep = ,
     ; db_maxconn = 64
