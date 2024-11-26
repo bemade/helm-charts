@@ -1,4 +1,4 @@
-# Deployment for the Odoo production server
+# Deployment for the Odoo production server with WebSocket support
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -119,7 +119,8 @@ spec:
         - name: odoo-{{ .Values.odoo.production.hostname }}
           image: {{ .Values.odoo.image }}
           ports:
-            - containerPort: 8069
+            - containerPort: 8069  # Odoo HTTP
+            - containerPort: 8072  # WebSocket port
           volumeMounts:
             - name: {{ .Values.odoo.production.hostname }}-filestore
               mountPath: /var/lib/odoo  # Mounting the filestore
@@ -137,3 +138,6 @@ spec:
                 secretKeyRef:
                   name: credentials
                   key: password
+            # Optional: Specific env var to enable WebSocket handling
+            - name: WEBSOCKET_PORT
+              value: "8072"
