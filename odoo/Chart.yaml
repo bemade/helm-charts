@@ -2,7 +2,7 @@ apiVersion: v3
 name: odoo-bemade
 description: A Helm chart for deploying Odoo instances the Bemade way
 type: application
-version: 0.6.1
+version: 0.6.2
 appVersion: "17.0"
 
 maintainers:
