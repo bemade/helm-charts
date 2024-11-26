@@ -7,7 +7,13 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: {{ .Values.odoo.ingress.clusterIssuer }}
     nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/configuration-snippet: more_set_headers "X-Forwarded-For $http_x_forwarded_for";
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "720"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "720"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10g"
+    nginx.ingress.kubernetes.io/websocket-services: "odoo-websocket"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "X-Forwarded-For $http_x_forwarded_for";
+      more_set_headers "X-Real-IP $remote_addr";
 
 spec:
   ingressClassName: nginx
@@ -22,6 +28,18 @@ spec:
                 name: odoo-{{ .Values.odoo.production.hostname }}
                 port:
                   number: 8069
+          - path: /websocket
+            pathType: Prefix
+            backend:
+              service:
+                name: odoo-{{ .Values.odoo.production.hostname }}
+                port:
+                  number: 8072
+            annotations:
+              nginx.ingress.kubernetes.io/configuration-snippet: |
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+
     {{- range .Values.odoo.staging }}
     - host: {{ .hostname }}.{{ $.Values.odoo.domain }}
       http:
