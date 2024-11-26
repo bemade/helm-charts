@@ -7,7 +7,9 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: {{ .Values.odoo.ingress.clusterIssuer }}
     nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/configuration-snippet: more_set_headers "X-Forwarded-For $http_x_forwarded_for";
 spec:
+  ingressClassName: nginx
   rules:
     - host: {{ .Values.odoo.production.hostname }}.{{ .Values.odoo.domain }}
       http:
