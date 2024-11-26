@@ -11,7 +11,10 @@ spec:
   ports:
     - protocol: TCP
       port: 8069
-      targetPort: 8069
+      targetPort: 8069  # HTTP port
+    - protocol: TCP
+      port: 8072
+      targetPort: 8072  # WebSocket port    
 
 {{- range .Values.odoo.staging }}
 ---
@@ -29,7 +32,10 @@ spec:
   ports:
     - protocol: TCP
       port: 8069
-      targetPort: 8069
+      targetPort: 8069  # HTTP port
+    - protocol: TCP
+      port: 8072
+      targetPort: 8072  # WebSocket port
 
 ---
 
