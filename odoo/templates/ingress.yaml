@@ -11,6 +11,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "720"
     nginx.ingress.kubernetes.io/proxy-body-size: "10g"
     nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
+    nginx.ingress.kubernetes.io/permanent-redirect: "https://$host$request_uri"
     nginx.ingress.kubernetes.io/server-snippet: |
       add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
       proxy_cookie_flags session_id samesite=lax secure;  # requires nginx 1.19.8
