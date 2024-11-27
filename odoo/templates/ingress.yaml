@@ -52,7 +52,7 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure  # Listen on HTTPS (port 443)
     traefik.ingress.kubernetes.io/router.tls: "true"             # Enable TLS
-    traefik.ingress.kubernetes.io/router.middleware: websocket-strip-prefix@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: websocket-strip-prefix@kubernetescrd
 spec:
   rules:
     - host: {{ .Values.odoo.production.hostname }}.{{ .Values.odoo.domain }}
