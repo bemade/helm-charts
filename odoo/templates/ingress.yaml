@@ -6,12 +6,13 @@ metadata:
   namespace: {{ .Release.Namespace }}
   annotations:
     cert-manager.io/cluster-issuer: {{ .Values.odoo.ingress.clusterIssuer }}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/proxy-read-timeout: "720"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "720"
     nginx.ingress.kubernetes.io/proxy-body-size: "10g"
     nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
-    nginx.ingress.kubernetes.io/server-snippets: |
+    nginx.ingress.kubernetes.io/location-snippets: |
         proxy_set_header Upgrade $http_upgrade
         proxy_set_header Connection "Upgrade";
         proxy_set_header X-Forwarded-Host $http_host;
