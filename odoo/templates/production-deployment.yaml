@@ -138,6 +138,3 @@ spec:
                 secretKeyRef:
                   name: credentials
                   key: password
-            # Optional: Specific env var to enable WebSocket handling
-            - name: WEBSOCKET_PORT
-              value: "8072"
