@@ -2,23 +2,46 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx-odoo
+  name: odoo-http-redirect
   namespace: {{ .Release.Namespace }}
   annotations:
-    cert-manager.io/cluster-issuer: {{ .Values.odoo.ingress.clusterIssuer }}
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "720"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "720"
-    nginx.ingress.kubernetes.io/proxy-body-size: "10g"
-    nginx.ingress.kubernetes.io/enable-rewrite-log: "true"
-    nginx.ingress.kubernetes.io/permanent-redirect: "https://$host$request_uri"
-    nginx.ingress.kubernetes.io/server-snippet: |
-      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
-      proxy_cookie_flags session_id samesite=lax secure;  # requires nginx 1.19.8
+    traefik.ingress.kubernetes.io/router.entrypoints: web  # Listen on HTTP (port 80)
+    traefik.ingress.kubernetes.io/router.middlewares: odoo-http-to-https
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: odoo-http-to-https
+  namespace: {{ .Release.Namespace }}
 spec:
-  ingressClassName: nginx
+  redirectScheme:
+    scheme: https
+    permanent: true  # Sends a 301 Moved Permanently
+
+---
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: websocket-strip-prefix
+  namespace: {{ .Release.Namespace }}
+spec:
+  stripPrefix:
+    prefixes:
+      - /websocket
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: odoo-https
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure  # Listen on HTTPS (port 443)
+    traefik.ingress.kubernetes.io/router.tls: "true"             # Enable TLS
+spec:
   rules:
-    # Production
     - host: {{ .Values.odoo.production.hostname }}.{{ .Values.odoo.domain }}
       http:
         paths:
@@ -38,35 +61,11 @@ spec:
                 name: odoo-{{ .Values.odoo.production.hostname }}
                 port:
                   number: 8072
-                appProtocol: kubernetes.io/ws
-
-    # Staging (if applicable)
-    {{- range .Values.odoo.staging }}
-    - host: {{ .hostname }}.{{ $.Values.odoo.domain }}
-      http:
-        paths:
-          # HTTP traffic
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: odoo-{{ .hostname }}
-                port:
-                  number: 8069
-          # WebSocket traffic
-          - path: /websocket
-            pathType: Prefix
-            backend:
-              service:
-                name: odoo-{{ .hostname }}
-                port:
-                  number: 8072
-    {{- end }}
+            annotations:
+              traefik.ingress.kubernetes.io/router.middleware: websocket-strip-prefix@kubernetescrd
   tls:
     - hosts:
         - {{ .Values.odoo.production.hostname }}.{{ .Values.odoo.domain }}
-        {{- range .Values.odoo.staging }}
-        - {{ .hostname }}.{{ $.Values.odoo.domain }}
-        {{- end }}
       secretName: {{ .Values.odoo.ingress.tlsSecretName }}
-{{- end }}
+
+{{- end}}
