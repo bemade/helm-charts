@@ -12,7 +12,7 @@ spec:
     - host: {{ .Values.odoo.production.hostname }}.{{ .Values.odoo.domain }}
       http:
         paths:
-          - path: /
+          - path: /dummy
             pathType: Prefix
             backend:
               service:
