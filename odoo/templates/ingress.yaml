@@ -67,7 +67,6 @@ spec:
                 name: odoo-{{ .hostname }}
                 port:
                   number: 8072
-                appProtocol: kubernetes.io/ws
     {{- end }}
   tls:
     - hosts:
