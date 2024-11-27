@@ -17,7 +17,6 @@ spec:
       port: 8072
       targetPort: 8072  # WebSocket port
       name: websocket
-      appProtocol: kubernetes.io/ws
 
 {{- range .Values.odoo.staging }}
 ---
