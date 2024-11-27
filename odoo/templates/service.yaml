@@ -12,9 +12,11 @@ spec:
     - protocol: TCP
       port: 8069
       targetPort: 8069  # HTTP port
+      name: http
     - protocol: TCP
       port: 8072
-      targetPort: 8072  # WebSocket port    
+      targetPort: 8072  # WebSocket port
+      name: websocket
 
 {{- range .Values.odoo.staging }}
 ---
@@ -33,9 +35,11 @@ spec:
     - protocol: TCP
       port: 8069
       targetPort: 8069  # HTTP port
+      name: http
     - protocol: TCP
       port: 8072
       targetPort: 8072  # WebSocket port
+      name: websocket
 
 ---
 
@@ -53,5 +57,6 @@ spec:
     - protocol: TCP
       port: 5432
       targetPort: 5432
+      name: postgres
 
 {{- end }}
