@@ -31,7 +31,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: web  # Listen on HTTP (port 80)
-    traefik.ingress.kubernetes.io/router.middlewares: odoo-http-to-https@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: odoo-http-to-https
 spec:
   rules:
     - host: {{ .Values.odoo.production.hostname }}.{{ .Values.odoo.domain }}
@@ -54,7 +54,7 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure  # Listen on HTTPS (port 443)
     traefik.ingress.kubernetes.io/router.tls: "true"             # Enable TLS
-    traefik.ingress.kubernetes.io/router.middlewares: websocket-strip-prefix@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: websocket-strip-prefix
 spec:
   rules:
     - host: {{ .Values.odoo.production.hostname }}.{{ .Values.odoo.domain }}
