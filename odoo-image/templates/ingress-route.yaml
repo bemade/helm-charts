@@ -17,25 +17,25 @@ kind: IngressRoute
 metadata:
   name: odoo-https
   namespace: {{ .Release.Namespace }}
-  spec:
-    entryPoints:
-      - websecure
-    routes:
-      - kind: Rule
-        match: Host(`{{ .Values.odoo.production.hostname  }}.{{ .Values.odoo.domain }}`)
-        priority: 10
-        services:
-          - kind: Service
-            name: odoo-{{ .Values.odoo.production.hostname }}
-            namespace: {{ .Release.Namespace }}
-            passHostHeader: true
-            port: 8069
-            scheme: http
-            healthCheck:
-              path: /web/health
-              interval: 30s
-    tls:
-      secretName: odoo-cert
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.odoo.production.hostname  }}.{{ .Values.odoo.domain }}`)
+      priority: 10
+      services:
+        - kind: Service
+          name: odoo-{{ .Values.odoo.production.hostname }}
+          namespace: {{ .Release.Namespace }}
+          passHostHeader: true
+          port: 8069
+          scheme: http
+          healthCheck:
+            path: /web/health
+            interval: 30s
+  tls:
+    secretName: odoo-cert
 
 ---
 
@@ -57,15 +57,15 @@ kind: IngressRoute
 metadata:
   name: odoo-http
   namespace: {{ .Release.Namespace }}
-  spec:
-    entryPoints:
-      - web
-    routes:
-      - kind: Rule
-        match: Host(`{{ .Values.odoo.production.hostname  }}.{{ .Values.odoo.domain }}`)
-        middlewares:
-          - name: redirect-https
-            namespace: {{ .Release.Namespace }}
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.odoo.production.hostname  }}.{{ .Values.odoo.domain }}`)
+      middlewares:
+        - name: redirect-https
+          namespace: {{ .Release.Namespace }}
 
 ---
 
