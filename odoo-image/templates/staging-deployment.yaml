@@ -39,7 +39,6 @@ spec:
         - name: repo
           persistentVolumeClaim:
             claimName: {{ .hostname }}-git-repos-pvc
-        {{- if .Values.gitProject.sshKeySecret }}
       initContainers:
         - name: pull-production-db
           image: alpine
@@ -156,3 +155,4 @@ spec:
               mountPath: /var/lib/postgresql/data
 ---
 {{- end }}
+

@@ -1,4 +1,4 @@
-apiVersion: v3
+apiVersion: v2
 name: odoo-image
 description: A Helm chart for deploying Odoo instances straight from an image
 type: application
