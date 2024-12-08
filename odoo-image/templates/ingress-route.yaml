@@ -9,7 +9,7 @@ spec:
     - {{ .Values.odoo.production.hostname }}.{{ .Values.odoo.domain }}
   issuerRef:
     name: {{ .Values.odoo.ingress.clusterIssuer }}
-    kind: Issuer
+    kind: ClusterIssuer
 ---
 
 apiVersion: traefik.io/v1alpha1
