@@ -1,0 +1,33 @@
+odoo:
+  image: "odoo:18"
+  imageRegistry:
+    url: ""
+    username: ""
+    password: ""
+    email: ""
+  domain: "odoo.bemade.org"
+  production:
+    hostname: "demo"
+  staging:
+    - hostname: "stg1"
+      image: "odoo:18"
+      productionDatabase: "odoo"
+      storageClassName: "non-replicated-storage"
+    - hostname: "stg2"
+      image: "odoo:18"
+      productionDatabase: "odoo"
+      storageClassName: "non-replicated-storage"
+  filestore:
+    size: ""
+    storageClassName: "longhorn"
+  db:
+    size: ""
+  ingress:
+    enabled: true
+    tlsSecretName: "odoo-tls-secret"
+    clusterIssuer: "letsencrypt-dns"
+  masterPassword: "$00p3rP4ssW0rD!"
+  conf:
+    limit_time_real: 600
+    limit_time_cpu: 600
+

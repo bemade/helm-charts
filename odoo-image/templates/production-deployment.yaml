@@ -1,0 +1,81 @@
+# Deployment for the Odoo production server with WebSocket support
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: odoo
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: odoo-{{ .Values.odoo.production.hostname }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: odoo-{{ .Values.odoo.production.hostname }}
+  template:
+    metadata:
+      labels:
+        app: odoo-{{ .Values.odoo.production.hostname }}
+    spec:
+      {{- if .Values.odoo.imageRegistry.url }}
+      imagePullSecrets:
+        - name: registry-secret
+      {{- end }}
+      volumes:
+        - name: {{ .Values.odoo.production.hostname }}-filestore
+          persistentVolumeClaim:
+            claimName: {{ .Values.odoo.production.hostname }}-filestore-pvc
+        - name: init-db-script
+          configMap:
+            name: init-db-script
+        - name: odoo-conf
+          configMap:
+            name: odoo-conf
+      initContainers:
+        - name: init-permissions
+          image: busybox
+          command: ["sh", "-c", "chown -R 101:101 /var/lib/odoo"]
+          volumeMounts:
+            - name: {{ .Values.odoo.production.hostname }}-filestore
+              mountPath: /var/lib/odoo
+        - name: init-db-user
+          image: postgres:16.1
+          command: ["/bin/bash", "/scripts/init-db-user.sh"]
+          env:
+            - name: HOST
+              value: kubegres
+            - name: USER
+              value: odoo
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: password
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: superUserPassword
+          volumeMounts:
+            - name: init-db-script
+              mountPath: /scripts
+      containers:
+        - name: odoo-{{ .Values.odoo.production.hostname }}
+          image: {{ .Values.odoo.image }}
+          ports:
+            - containerPort: 8069  # Odoo HTTP
+            - containerPort: 8072  # WebSocket port
+          volumeMounts:
+            - name: {{ .Values.odoo.production.hostname }}-filestore
+              mountPath: /var/lib/odoo  # Mounting the filestore
+            - name: odoo-conf
+              mountPath: /etc/odoo
+          env:
+            - name: HOST
+              value: kubegres
+            - name: USER
+              value: odoo
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: password

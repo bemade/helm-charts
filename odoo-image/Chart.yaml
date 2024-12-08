@@ -1,0 +1,10 @@
+apiVersion: v3
+name: odoo-image
+description: A Helm chart for deploying Odoo instances straight from an image
+type: application
+version: 0.6.5
+appVersion: "17.0"
+
+maintainers:
+  - name: Marc Durepos
+    email: marc@bemade.org
