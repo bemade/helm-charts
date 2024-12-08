@@ -31,9 +31,6 @@ spec:
           passHostHeader: true
           port: 8069
           scheme: http
-          healthCheck:
-            path: /web/health
-            interval: 30s
   tls:
     secretName: odoo-cert
 
@@ -66,6 +63,13 @@ spec:
       middlewares:
         - name: redirect-https
           namespace: {{ .Release.Namespace }}
+      services:
+        - kind: Service
+          name: odoo-{{ .Values.odoo.production.hostname }}
+          namespace: {{ .Release.Namespace }}
+          passHostHeader: true
+          port: 8069
+          scheme: http
 
 ---
 
