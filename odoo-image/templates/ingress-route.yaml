@@ -15,57 +15,57 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-name: odoo-https
-namespace: {{ .Release.Namespace }}
+  name: odoo-https
+  namespace: {{ .Release.Namespace }}
 spec:
-entryPoints:
-  - websecure
-routes:
-  - kind: Rule
-    match: Host(`{{ .Values.odoo.production.hostname  }}.{{ .Values.odoo.domain }}`)
-    priority: 10
-    services:
-      - kind: Service
-        name: odoo-{{ .Values.odoo.production.hostname }}
-        namespace: {{ .Release.Namespace }}
-        passHostHeader: true
-        port: 8069
-        scheme: http
-        healthCheck:
-          path: /web/health
-          interval: 30s
-tls:
-  secretName: odoo-cert
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.odoo.production.hostname  }}.{{ .Values.odoo.domain }}`)
+      priority: 10
+      services:
+        - kind: Service
+          name: odoo-{{ .Values.odoo.production.hostname }}
+          namespace: {{ .Release.Namespace }}
+          passHostHeader: true
+          port: 8069
+          scheme: http
+          healthCheck:
+            path: /web/health
+            interval: 30s
+  tls:
+    secretName: odoo-cert
 
 ---
 
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-name: redirect-https
-namespace: {{ .Release.Namespace }}
+  name: redirect-https
+  namespace: {{ .Release.Namespace }}
 
 spec:
-redirectScheme:
-  scheme: https
-  permanent: true
+  redirectScheme:
+    scheme: https
+    permanent: true
 
 ---
 
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-name: odoo-http
-namespace: {{ .Release.Namespace }}
+  name: odoo-http
+  namespace: {{ .Release.Namespace }}
 spec:
-entryPoints:
-  - web
-routes:
-  - kind: Rule
-    match: Host(`{{ .Values.odoo.production.hostname  }}.{{ .Values.odoo.domain }}`)
-    middlewares:
-      - name: redirect-https
-        namespace: {{ .Release.Namespace }}
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.odoo.production.hostname  }}.{{ .Values.odoo.domain }}`)
+      middlewares:
+        - name: redirect-https
+          namespace: {{ .Release.Namespace }}
 
 ---
 
@@ -73,19 +73,19 @@ routes:
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-name: remove-prefix
-namespace: {{ .Release.Namespace }}
+  name: remove-prefix
+  namespace: {{ .Release.Namespace }}
 spec:
-replacePath:
-  path: "/"
+  replacePath:
+    path: "/"
 
 ---
 
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-name: odoo-http
-namespace: {{ .Release.Namespace }}
+  name: odoo-http
+  namespace: {{ .Release.Namespace }}
 spec:
   entryPoints:
     - websecure
