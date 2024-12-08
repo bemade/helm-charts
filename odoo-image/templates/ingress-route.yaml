@@ -84,7 +84,7 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: odoo-http
+  name: odoo-websocket
   namespace: {{ .Release.Namespace }}
 spec:
   entryPoints:
