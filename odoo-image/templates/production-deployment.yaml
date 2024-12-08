@@ -33,6 +33,7 @@ spec:
       initContainers:
         - name: init-permissions
           image: {{ .Values.odoo.image }}
+          user: root
           command: ["sh", "-c", "chown -R odoo:odoo /var/lib/odoo"]
           volumeMounts:
             - name: {{ .Values.odoo.production.hostname }}-filestore
