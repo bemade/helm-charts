@@ -32,8 +32,8 @@ spec:
             name: odoo-conf
       initContainers:
         - name: init-permissions
-          image: busybox
-          command: ["sh", "-c", "chown -R 1000:1000 /var/lib/odoo"]
+          image: {{ .Values.odoo.image }}
+          command: ["sh", "-c", "chown -R odoo:odoo /var/lib/odoo"]
           volumeMounts:
             - name: {{ .Values.odoo.production.hostname }}-filestore
               mountPath: /var/lib/odoo
