@@ -122,13 +122,8 @@ data:
   odoo.conf: |
     [options]
     addons_path = /mnt/extra-addons,
-                  /mnt/repos/project/addons,
-                  {{- if .Values.odoo.enterprise }}
-                  /mnt/repos/enterprise,
-                  /mnt/repos/design-themes
-                  {{- end }}
     data_dir = /var/lib/odoo
+    proxy_mode = True
     {{- range $key, $value := .Values.odoo.conf }}
     {{ $key }} = {{ $value }}
     {{- end}}
-    proxy_mode = True
