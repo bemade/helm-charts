@@ -111,6 +111,8 @@ data:
     \$\$;
     EOSQL
 
+---
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
