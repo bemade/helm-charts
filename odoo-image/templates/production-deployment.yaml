@@ -36,10 +36,12 @@ spec:
           securityContext:
             runAsUser: 0
             runAsGroup: 0
-          command: ["sh", "-c", "chown -R odoo:odoo /var/lib/odoo"]
+          command: ["sh", "-c", "chown -R odoo:odoo /var/lib/odoo & chown -R odoo:odoo /etc/odoo"]
           volumeMounts:
             - name: {{ .Values.odoo.production.hostname }}-filestore
               mountPath: /var/lib/odoo
+            - name: odoo-conf
+              mountPath: /etc/odoo
         - name: init-db-user
           image: postgres:16.1
           command: ["/bin/bash", "/scripts/init-db-user.sh"]
