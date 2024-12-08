@@ -30,5 +30,4 @@ odoo:
   conf:
     limit_time_real: 600
     limit_time_cpu: 600
-    proxy_mode: True
 
