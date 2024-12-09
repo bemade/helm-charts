@@ -1,0 +1,89 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: traefik-config
+  namespace: traefik
+data:
+  traefik.yml: |
+    providers:
+      kubernetesingress:
+    entrypoints:
+      web:
+        address: ":80"
+        transport:
+          respondingTimeouts:
+            readTimeout: 600s
+            writeTimeout: 600s
+            idleTimeout: 600s
+      websecure:
+        address: ":443"
+        transport:
+          respondingTimeouts:
+            readTimeout: 600s
+            writeTimeout: 600s
+            idleTimeout: 600s
+    log:
+      level: DEBUG
+    accessLog: {}
+    api:
+      dashboard: True
+      debug: True
+      insecure: True
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: traefik-certs-pvc
+  namespace: traefik
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 64Mi
+  storageClassName: longhorn
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: traefik-deployment
+  namespace: traefik
+  labels:
+    app: traefik
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  volumes:
+    - name: traefik-config
+      configMap:
+        name: traefik-config
+    - name: traefik-certs
+      persistentVolumeClaim:
+        claimName: traefik-certs-pvc
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      serviceAccountName: traefik-ingress-controller
+      containers:
+        - name: traefik
+          image: traefik:v3.2
+          args:
+            - --api.insecure
+            - --providers.kubernetesingress
+          ports:
+            - name: web
+              containerPort: 80
+            - name: dashboard
+              containerPort: 8080
+          volumeMounts:
+            - name: traefik-config
+              mountPath: /etc/traefik/traefik.yml
