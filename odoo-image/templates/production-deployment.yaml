@@ -36,7 +36,7 @@ spec:
           securityContext:
             runAsUser: 0
             runAsGroup: 0
-          command: ["sh", "-c", "chown -R odoo:odoo /var/lib/odoo & chown -R odoo:odoo /etc/odoo"]
+          command: ["sh", "-c", "chown -R odoo:odoo /var/lib/odoo"]
           volumeMounts:
             - name: {{ .Values.odoo.production.hostname }}-filestore
               mountPath: /var/lib/odoo
