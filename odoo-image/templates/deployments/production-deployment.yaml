@@ -37,7 +37,8 @@ spec:
           configMap:
             name: addon-repos-json
         - name: pull-git-repos
-          configMap: name: pull-git-repos
+          configMap:
+            name: pull-git-repos
         {{- range .Values.odoo.addonRepos }}
         {{- if .sshAuth.secretName }}
         - name: pull-secret-{{ .name }}
@@ -113,7 +114,7 @@ spec:
             - name: odoo-conf
               mountPath: /etc/odoo
             - name: {{ .Values.odoo.production.hostname }}-repos
-              mountPath: /mnt/repos
+              mountPath: /mnt/project-addons
           env:
             - name: HOST
               value: kubegres
