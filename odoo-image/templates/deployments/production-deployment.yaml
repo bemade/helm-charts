@@ -78,7 +78,7 @@ spec:
             - |
               apk add bash jq
               /bin/bash /scripts/pull-git-addons.sh
-          volumesMounts:
+          volumeMounts:
             - name: {{ .Values.odoo.production.hostname }}-repos
               mountPath: /mnt/repos
             - name: repo-config
