@@ -86,7 +86,7 @@ spec:
             - "sh"
             - "-c"
             - |
-              apk add bash jq
+              apk add bash jq openssh
               /bin/bash /scripts/pull-git-repos.sh
           volumeMounts:
             - name: {{ .Values.odoo.production.hostname }}-repos
