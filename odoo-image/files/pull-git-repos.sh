@@ -84,7 +84,7 @@ for repo_config in /mnt/config/addon-repos/*.json; do
   fi
 
   # Clone or update the repository
-  clone_or_update_repo "$REPO_URL" "$BRANCH" "$COMMIT" "$REPO_DIR" "$USERNAME" "$PASSWORD"
+  clone_or_update_repo "$REPO_URL" "$BRANCH" "$COMMIT" "$REPO_DIR/$REPO_NAME" "$USERNAME" "$PASSWORD"
 
   # Create symlinks for active addons
   ACTIVE_ADDONS=$(jq -r '.activeAddons[]?.name' "$repo_config")
