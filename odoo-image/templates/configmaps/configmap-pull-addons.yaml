@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: git-pull-addons
+  namespace: {{ .Release.Namespace }}
+data:
+  git-pull-addons.sh: |
+{{ .Files.Get "files/pull-git-repos.sh" | nindent 4 }}

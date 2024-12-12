@@ -30,6 +30,12 @@ spec:
         - name: odoo-conf
           configMap:
             name: odoo-conf
+        - name: {{ .Values.odoo.production.hostname }}-repos
+          persistentVolumeClaim:
+            claimName: {{ .Values.odoo.production.hostname }}-repos-pvc
+        - name: repo-config
+          configMap:
+            name: addon-repos-json
       initContainers:
         - name: init-permissions
           image: {{ .Values.odoo.image }}
@@ -63,6 +69,21 @@ spec:
           volumeMounts:
             - name: init-db-script
               mountPath: /scripts
+        {{- if .Values.odoo.addonRepos }}
+        - name: pull-git-repos
+          image: alpine/git
+          command:
+            - "sh"
+            - "-c"
+            - |
+              apk add bash jq
+              /bin/bash /scripts/pull-git-addons.sh
+          volumes:
+            - name: {{ .Values.odoo.production.hostname }}-repos
+              mountPath: /mnt/repos
+            - name: repo-config
+              mountPath: /mnt/config/addon-repos
+        {{- end }}
       containers:
         - name: odoo-{{ .Values.odoo.production.hostname }}
           image: {{ .Values.odoo.image }}
@@ -74,6 +95,8 @@ spec:
               mountPath: /var/lib/odoo  # Mounting the filestore
             - name: odoo-conf
               mountPath: /etc/odoo
+            - name: {{ .Values.odoo.production.hostname }}-repos
+              mountPath: /mnt/repos
           env:
             - name: HOST
               value: kubegres

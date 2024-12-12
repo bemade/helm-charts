@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: odoo-conf
+  namespace: {{ .Release.Namespace }}
+data:
+  odoo.conf: |
+    [options]
+    addons_path = /mnt/extra-addons,/mnt/project-addons
+    data_dir = /var/lib/odoo
+    proxy_mode = True
+    admin_passwd = {{ .Values.odoo.masterPassword }}
+    {{- range $key, $value := .Values.odoo.conf }}
+    {{ $key }} = {{ $value }}
+    {{- end}}

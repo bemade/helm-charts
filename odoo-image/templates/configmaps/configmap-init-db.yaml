@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-db-script
+  namespace: {{ .Release.Namespace }}
+data:
+  init-db-user.sh: |
+    #!/bin/bash
+    set -e
+
+    # Environment variables passed to the container
+    HOST=${HOST}
+    USER=${USER}
+    PASSWORD=${PASSWORD}
+
+    psql -v ON_ERROR_STOP=1 --host="$HOST" --username="postgres" --dbname="postgres" <<-EOSQL
+    DO \$\$
+    BEGIN
+      IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = '$USER') THEN
+        CREATE USER $USER WITH PASSWORD '$PASSWORD' CREATEDB;
+      END IF;
+    END
+    \$\$;
+    EOSQL
