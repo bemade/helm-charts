@@ -4,7 +4,6 @@ metadata:
   name: odoo
   namespace: {{ .Release.Namespace }}
 spec:
-  secretName: odoo-cert
   dnsNames:
     - {{ .Values.odoo.production.hostname }}.{{ .Values.odoo.domain }}
   issuerRef:
