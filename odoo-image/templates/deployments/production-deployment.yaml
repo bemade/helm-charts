@@ -36,6 +36,10 @@ spec:
         - name: repo-config
           configMap:
             name: addon-repos-json
+        - name: pull-git-repos
+          configMap:
+            name: pull-git-repos
+
       initContainers:
         - name: init-permissions
           image: {{ .Values.odoo.image }}
@@ -83,6 +87,8 @@ spec:
               mountPath: /mnt/repos
             - name: repo-config
               mountPath: /mnt/config/addon-repos
+            - name: pull-git-repos
+              mountPath: /scripts
         {{- end }}
       containers:
         - name: odoo-{{ .Values.odoo.production.hostname }}
