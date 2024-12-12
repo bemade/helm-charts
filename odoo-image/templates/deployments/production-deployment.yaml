@@ -40,10 +40,10 @@ spec:
           configMap:
             name: pull-git-repos
         {{- range .Values.odoo.addonRepos }}
-        {{- if .ssh-auth.secretName }}
+        {{- if .sshAuth.secretName }}
         - name: pull-secret-{{ .name }}
           secret:
-            secretName: {{ .ssh-auth.secretName }}
+            secretName: {{ .sshAuth.secretName }}
         {{- end }}
         {{- end }}
       initContainers:
@@ -96,9 +96,9 @@ spec:
             - name: pull-git-repos
               mountPath: /scripts
             {{- range .Values.odoo.addonRepos }}
-            {{- if .ssh-auth.secretName }}
+            {{- if .sshAuth.secretName }}
             - name: pull-secret-{{ .name }}
-              mountPath: /mnt/secrets/{{ .ssh-auth.secretName }}
+              mountPath: /mnt/secrets/{{ .sshAuth.secretName }}
             {{- end }}
             {{- end }}
         {{- end }}

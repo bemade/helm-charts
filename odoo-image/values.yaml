@@ -35,7 +35,7 @@ odoo:
       url: "git@git.bemade.org:bemade/bemade-addons.git"
       branch: "18.0"
       commit: null
-      ssh-auth:
+      sshAuth:
         secretName: "bemade-gitlab-ssh"
       passwordAuth:
         username: ""
