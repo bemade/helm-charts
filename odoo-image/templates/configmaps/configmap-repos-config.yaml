@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: addon-repos-json
   namespace: {{ .Release.Namespace }}
-data:
+data: |
   {{- range .Values.odoo.addonRepos }}
-  {{ .name }}.json: {{ toPrettyJson (.) }}
+  {{ .name }}.json: {{ toPrettyJson (.) | indent 4}}
   {{- end }}
