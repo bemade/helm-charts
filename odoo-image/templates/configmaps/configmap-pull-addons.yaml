@@ -4,5 +4,5 @@ metadata:
   name: pull-git-repos
   namespace: {{ .Release.Namespace }}
 data:
-  git-pull-addons.sh: |
+  pull-git-repos.sh: |
 {{ .Files.Get "files/pull-git-repos.sh" | nindent 4 }}
