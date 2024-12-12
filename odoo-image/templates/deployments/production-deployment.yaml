@@ -39,7 +39,13 @@ spec:
         - name: pull-git-repos
           configMap:
             name: pull-git-repos
-
+        {{- range .Values.odoo.addonRepos }}
+        {{- if .ssh-auth.secretName }}
+        - name: pull-secret-{{ .name }}
+          secret:
+            secretName: {{ .ssh-auth.secretName }}
+        {{- end}}
+        {{- end }}
       initContainers:
         - name: init-permissions
           image: {{ .Values.odoo.image }}
@@ -89,6 +95,13 @@ spec:
               mountPath: /mnt/config/addon-repos
             - name: pull-git-repos
               mountPath: /scripts
+            {{- range .Values.odoo.addonRepos }}
+            {{- if .ssh-auth.secretName }}
+            - name: pull-secret-{{ .name }}
+              mountPath: /mnt/secrets/{{ .ssh-auth.secretName }}
+            {{- end}}
+            {{- end }}
+
         {{- end }}
       containers:
         - name: odoo-{{ .Values.odoo.production.hostname }}
