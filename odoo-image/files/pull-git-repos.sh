@@ -69,8 +69,9 @@ for repo_config in /mnt/config/addon-repos/*.json; do
   # Configure SSH key if a specific secret is defined
   if [ -n "$SSH_SECRET_NAME" ]; then
     SECRET_KEY_PATH="/mnt/secrets/$SSH_SECRET_NAME"
-    if [ -f "$SECRET_KEY_PATH" ]; then
-      cp "$SECRET_KEY_PATH" $SSH_DIR/privatekey
+    PRIVATE_KEY_FILE="$SECRET_KEY_PATH/ssh-privatekey"
+    if [ -f "$PRIVATE_KEY_FILE" ]; then
+      cp "$PRIVATE_KEY_FILE" $SSH_DIR/privatekey
       chmod 600 $SSH_DIR/privatekey
       ssh-add $SSH_DIR/privatekey
     fi
