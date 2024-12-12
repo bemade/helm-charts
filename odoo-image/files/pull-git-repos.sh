@@ -6,6 +6,12 @@ EXTRA_ADDONS_DIR="/mnt/project-addons"
 SSH_DIR="/root/.ssh"
 export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
 
+# Start ssh-agent if not already running
+if [ -z "$SSH_AUTH_SOCK" ]; then
+  echo "Starting ssh-agent..."
+  eval "$(ssh-agent -s)" > /dev/null
+fi
+
 # Ensure the SSH directory exists and is properly set up
 mkdir -p $SSH_DIR
 if [[ -f /mnt/secrets/ssh-privatekey ]]; then
