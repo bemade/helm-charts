@@ -114,7 +114,7 @@ spec:
             - name: odoo-conf
               mountPath: /etc/odoo
             - name: {{ .Values.odoo.production.hostname }}-repos
-              mountPath: /mnt/repos
+              mountPath: /mnt/project-addons
           env:
             - name: HOST
               value: kubegres
