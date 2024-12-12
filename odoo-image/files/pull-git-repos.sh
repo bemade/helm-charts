@@ -53,13 +53,12 @@ clone_or_update_repo() {
   fi
 }
 
-# Iterate over addon repositories
 for repo_config in /mnt/config/addon-repos/*.json; do
   REPO_NAME=$(jq -r '.name' "$repo_config")
   REPO_URL=$(jq -r '.url' "$repo_config")
   BRANCH=$(jq -r '.branch' "$repo_config")
   COMMIT=$(jq -r '.commit // empty' "$repo_config")
-  SSH_SECRET_NAME=$(jq -r '.ssh-auth.secretName // empty' "$repo_config")
+  SSH_SECRET_NAME=$(jq -r '."ssh-auth".secretName // empty' "$repo_config")
   USERNAME=$(jq -r '.passwordAuth.username // empty' "$repo_config")
   PASSWORD=$(jq -r '.passwordAuth.password // empty' "$repo_config")
 
@@ -93,4 +92,3 @@ for repo_config in /mnt/config/addon-repos/*.json; do
   fi
 
 done
-
