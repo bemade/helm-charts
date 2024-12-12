@@ -64,6 +64,8 @@ for repo_config in /mnt/config/addon-repos/*.json; do
 
   TARGET_DIR="$REPO_DIR/$REPO_NAME"
 
+  echo "Listing contents of /mnt/secrets for debugging"
+  ls -l /mnt/secrets
   # Configure SSH key if a specific secret is defined
   if [ -n "$SSH_SECRET_NAME" ]; then
     SECRET_KEY_PATH="/mnt/secrets/$SSH_SECRET_NAME"
