@@ -42,22 +42,27 @@ spec:
                 secretKeyRef:
                   name: jwtsecret
                   key: jwtsecret
-            - name: SSL_CERTIFICATE_PATH
-              value: /etc/ssl/onlyoffice.crt
-            - name: SSL_KEY_PATH
-              value: /etc/ssl/onlyoffice.key
-            - name: SSL_DHPARAM_PATH
-              value: /etc/ssl/dhparam.pem
-          volumeMounts:
-            - name: ssl-cert
-              mountPath: /etc/ssl/onlyoffice.crt
-              subPath: tls.crt
-              readOnly: true
-            - name: ssl-cert
-              mountPath: /etc/ssl/onlyoffice.key
-              subPath: tls.key
-              readOnly: true
-            - name: dhparam
-              mountPath: /etc/ssl/dhparam.pem
-              subPath: dhparam.pem
-              readOnly: true
+            - name: LETS_ENCRYPT_DOMAIN
+              value: {{ .Values.onlyoffice.hostname }}
+            - name: LETS_ENCRYPT_EMAIL
+              value: it@bemade.org
+
+            # - name: SSL_CERTIFICATE_PATH
+            #   value: /etc/ssl/onlyoffice.crt
+            # - name: SSL_KEY_PATH
+            #   value: /etc/ssl/onlyoffice.key
+            # - name: SSL_DHPARAM_PATH
+            #   value: /etc/ssl/dhparam.pem
+          # volumeMounts:
+          #   - name: ssl-cert
+          #     mountPath: /etc/ssl/onlyoffice.crt
+          #     subPath: tls.crt
+          #     readOnly: true
+          #   - name: ssl-cert
+          #     mountPath: /etc/ssl/onlyoffice.key
+          #     subPath: tls.key
+          #     readOnly: true
+          #   - name: dhparam
+          #     mountPath: /etc/ssl/dhparam.pem
+          #     subPath: dhparam.pem
+          #     readOnly: true
