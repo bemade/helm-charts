@@ -39,12 +39,16 @@ spec:
                 secretKeyRef:
                   name: jwtsecret
                   key: jwtsecret
+            - name: SSL_CERTIFICATE_PATH
+              value: /etc/ssl/onlyoffice.crt
+            - name: SSL_KEY_PATH
+              value: /etc/ssl/onlyoffice.key
           volumeMounts:
             - name: ssl-cert
-              mountPath: /var/www/onlyoffice/Data/certs/onlyoffice.crt
+              mountPath: /etc/ssl/onlyoffice.crt
               subPath: tls.crt
               readOnly: true
             - name: ssl-cert
-              mountPath: /var/www/onlyoffice/Data/certs/onlyoffice.key
+              mountPath: /etc/ssl/onlyoffice.key
               subPath: tls.key
               readOnly: true
