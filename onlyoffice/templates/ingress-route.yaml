@@ -17,5 +17,5 @@ spec:
           name: onlyoffice
           namespace: {{ .Release.Namespace }}
           passHostHeader: true
-          port: 8069
+          port: 80
           scheme: http
