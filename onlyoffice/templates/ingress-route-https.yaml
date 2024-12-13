@@ -18,5 +18,4 @@ spec:
           port: 443
           scheme: https
   tls:
-    secretName: onlyoffice-cert
-
+    passthrough: true
