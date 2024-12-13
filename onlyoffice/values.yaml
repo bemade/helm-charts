@@ -3,3 +3,5 @@ onlyoffice:
   hostname: "office.bemade.org"
   ingress:
     clusterIssuer: "letsencrypt-dns"
+  letsencryptDomain: "bemade.org"
+  letsencryptEmail: "it@bemade.org"

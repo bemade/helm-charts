@@ -34,3 +34,7 @@ spec:
                 secretKeyRef:
                   name: jwtsecret
                   key: jwtsecret
+            - name: LETS_ENCRYPT_DOMAIN
+              value: {{ .Values.onlyoffice.letsencryptDomain }}
+            - name: LETS_ENCRYPT_EMAIL
+              value: {{ .Values.onlyoffice.letsencryptEmail }}
