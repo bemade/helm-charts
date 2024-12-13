@@ -15,8 +15,8 @@ spec:
           name: onlyoffice
           namespace: {{ .Release.Namespace }}
           passHostHeader: true
-          port: 80
-          scheme: http
+          port: 443
+          scheme: https
   tls:
     secretName: onlyoffice-cert
 

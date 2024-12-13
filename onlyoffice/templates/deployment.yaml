@@ -15,6 +15,10 @@ spec:
       labels:
         app: onlyoffice
     spec:
+      volumes:
+        - name: ssl-cert
+          secret:
+            secretName: onlyoffice-cert
       containers:
         - name: onlyoffice
           image: onlyoffice/documentserver
@@ -23,7 +27,6 @@ spec:
               cpu: 2
               memory: 4Gi
           ports:
-            - containerPort: 80
             - containerPort: 443
           env:
             - name: JWT_ENABLED
@@ -35,7 +38,12 @@ spec:
                 secretKeyRef:
                   name: jwtsecret
                   key: jwtsecret
-            - name: LETS_ENCRYPT_DOMAIN
-              value: {{ .Values.onlyoffice.letsencryptDomain }}
-            - name: LETS_ENCRYPT_EMAIL
-              value: {{ .Values.onlyoffice.letsencryptEmail }}
+          volumeMounts:
+            - name: ssl-cert
+              mountPath: /var/www/onlyoffice/Data/certs/onlyoffice.crt
+              subPath: tls.crt
+              readOnly: true
+            - name: ssl-cert
+              mountPath: /var/www/onlyoffice/Data/certs/onlyoffice.key
+              subPath: tls.key
+              readOnly: true
