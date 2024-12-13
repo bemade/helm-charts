@@ -31,5 +31,5 @@ spec:
           - name: JWT_SECRET
             valueFrom:
               secretKeyRef:
-                name: jwtSecret
-                key: jwtSecret
+                name: jwtsecret
+                key: jwtsecret
