@@ -17,8 +17,5 @@ spec:
           passHostHeader: true
           port: 80
           scheme: http
-      forwardedHeaders:
-        customRequestHeaders:
-          X-Forwarded-Proto: https
   tls:
     secretName: onlyoffice-cert

@@ -10,7 +10,7 @@ spec:
     - kind: Rule
       match: Host(`{{ .Values.onlyoffice.hostname  }}`)
       middlewares:
-        - name: redirect-https
+        - name: rewrite-to-https
           namespace: {{ .Release.Namespace }}
       services:
         - kind: Service
