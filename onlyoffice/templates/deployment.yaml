@@ -15,22 +15,6 @@ spec:
       labels:
         app: onlyoffice
     spec:
-      volumes:
-        - name: ssl-cert
-          secret:
-            secretName: onlyoffice-cert
-        - name: dhparam
-      initContainers:
-        - name: setup-ssl
-          image: alpine/openssl
-          command:
-            - sh
-            - -c
-            - >
-              openssl dhparam -out /mnt/ssl/dhparam.pem 2048
-          volumeMounts:
-            - name: dhparam
-              mountPath: /mnt/ssl
       containers:
         - name: onlyoffice
           image: onlyoffice/documentserver
@@ -39,7 +23,6 @@ spec:
               cpu: 2
               memory: 4Gi
           ports:
-            - containerPort: 443
             - containerPort: 80
           env:
             - name: JWT_ENABLED
@@ -51,20 +34,3 @@ spec:
                 secretKeyRef:
                   name: jwtsecret
                   key: jwtsecret
-            - name: SSL_CERTIFICATE_PATH
-              value: /etc/ssl/onlyoffice.crt
-            - name: SSL_KEY_PATH
-              value: /etc/ssl/onlyoffice.key
-            - name: SSL_DHPARAM_PATH
-              value: /mnt/ssl/dhparam.pem
-          volumeMounts:
-            - name: ssl-cert
-              mountPath: /etc/ssl/onlyoffice.crt
-              subPath: tls.crt
-              readOnly: true
-            - name: ssl-cert
-              mountPath: /etc/ssl/onlyoffice.key
-              subPath: tls.key
-              readOnly: true
-            - name: dhparam
-              mountPath: /mnt/ssl
