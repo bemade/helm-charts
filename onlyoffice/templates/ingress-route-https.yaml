@@ -17,5 +17,8 @@ spec:
           passHostHeader: true
           port: 80
           scheme: http
+      middlewares:
+        - name: headers
+          namespace: {{ .Release.Namespace }}
   tls:
     secretName: onlyoffice-cert
