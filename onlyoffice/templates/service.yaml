@@ -13,3 +13,4 @@ spec:
       port: 443
       targetPort: 443
       name: https
+  externalName: office.bemade.org
