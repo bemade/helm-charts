@@ -19,6 +19,9 @@ spec:
         - name: ssl-cert
           secret:
             secretName: onlyoffice-cert
+        - name: dhparam
+          secret:
+            secretName: dhparam
       containers:
         - name: onlyoffice
           image: onlyoffice/documentserver
@@ -43,6 +46,8 @@ spec:
               value: /etc/ssl/onlyoffice.crt
             - name: SSL_KEY_PATH
               value: /etc/ssl/onlyoffice.key
+            - name: SSL_DHPARAM_PATH
+              value: /etc/ssl/dhparam.pem
           volumeMounts:
             - name: ssl-cert
               mountPath: /etc/ssl/onlyoffice.crt
@@ -51,4 +56,8 @@ spec:
             - name: ssl-cert
               mountPath: /etc/ssl/onlyoffice.key
               subPath: tls.key
+              readOnly: true
+            - name: dhparam
+              mountPath: /etc/ssl/dhparam.pem
+              subPath: dhparam.pem
               readOnly: true
