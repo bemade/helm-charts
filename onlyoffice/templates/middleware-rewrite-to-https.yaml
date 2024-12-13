@@ -1,0 +1,9 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: rewrite-to-https
+  namespace: {{ .Release.Namespace }}
+spec:
+  replacePathRegex:
+    regex: "^http://(.*)"
+    replacement: "https://$1"
