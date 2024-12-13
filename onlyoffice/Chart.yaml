@@ -1,0 +1,9 @@
+apiVersion: v2
+name: onlyoffice
+description: A Helm chart for deploying OnlyOffice CE instances
+type: application
+version: 1.0.0
+
+maintainers:
+  - name: Marc Durepos
+    email: marc@bemade.org

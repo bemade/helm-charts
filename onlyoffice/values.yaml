@@ -1,0 +1,5 @@
+onlyoffice:
+  jwtSecret: ""
+  hostname: "office.bemade.org"
+  ingress:
+    clusterIssuer: "letsencrypt-dns"

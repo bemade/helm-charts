@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: onlyoffice
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: onlyoffice-cert
+  dnsNames:
+    - {{ .Values.onlyoffice.hostname }}
+  issuerRef:
+    name: {{ .Values.onlyoffice.ingress.clusterIssuer }}
+    kind: ClusterIssuer

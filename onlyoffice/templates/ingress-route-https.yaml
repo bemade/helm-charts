@@ -1,0 +1,22 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: onlyoffice-https
+  namespace: {{ .Release.Namespace }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.onlyoffice.hostname  }}`)
+      priority: 10
+      services:
+        - kind: Service
+          name: onlyoffice
+          namespace: {{ .Release.Namespace }}
+          passHostHeader: true
+          port: 80
+          scheme: http
+  tls:
+    secretName: onlyoffice-cert
+
