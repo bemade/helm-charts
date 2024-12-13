@@ -16,20 +16,21 @@ spec:
         app: onlyoffice
     spec:
       containers:
-        image: onlyoffice/documentserver
-        resources:
-          requests:
-            cpu: 2
-            memory: 4Gi
-        ports:
-          - containerPort: 80
-        env:
-          - name: JWT_ENABLED
-            value: true
-          - name: JWT_HEADER
-            value: Authorization
-          - name: JWT_SECRET
-            valueFrom:
-              secretKeyRef:
-                name: jwtsecret
-                key: jwtsecret
+        - name: onlyoffice
+          image: onlyoffice/documentserver
+          resources:
+            requests:
+              cpu: 2
+              memory: 4Gi
+          ports:
+            - containerPort: 80
+          env:
+            - name: JWT_ENABLED
+              value: true
+            - name: JWT_HEADER
+              value: Authorization
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwtsecret
+                  key: jwtsecret
