@@ -20,8 +20,17 @@ spec:
           secret:
             secretName: onlyoffice-cert
         - name: dhparam
-          secret:
-            secretName: dhparam
+      initContainers:
+        - name: setup-ssl
+          image: alpine/openssl
+          command:
+            - sh
+            - -c
+            - >
+              openssl dhparam -out /mnt/ssl/dhparam.pem 2048;
+          volumeMounts:
+            - name: dhparam
+              mountPath: /mnt/ssl
       containers:
         - name: onlyoffice
           image: onlyoffice/documentserver
@@ -42,16 +51,12 @@ spec:
                 secretKeyRef:
                   name: jwtsecret
                   key: jwtsecret
-            # - name: LETS_ENCRYPT_DOMAIN
-            #   value: {{ .Values.onlyoffice.hostname }}
-            # - name: LETS_ENCRYPT_EMAIL
-            #   value: it@bemade.org
             - name: SSL_CERTIFICATE_PATH
               value: /etc/ssl/onlyoffice.crt
             - name: SSL_KEY_PATH
               value: /etc/ssl/onlyoffice.key
             - name: SSL_DHPARAM_PATH
-              value: /etc/ssl/dhparam.pem
+              value: /mnt/ssl/dhparam.pem
           volumeMounts:
             - name: ssl-cert
               mountPath: /etc/ssl/onlyoffice.crt
@@ -62,6 +67,4 @@ spec:
               subPath: tls.key
               readOnly: true
             - name: dhparam
-              mountPath: /etc/ssl/dhparam.pem
-              subPath: dhparam.pem
-              readOnly: true
+              mountPath: /mnt/ssl
