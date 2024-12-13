@@ -27,7 +27,7 @@ spec:
             - sh
             - -c
             - >
-              openssl dhparam -out /mnt/ssl/dhparam.pem 2048;
+              openssl dhparam -out /mnt/ssl/dhparam.pem 2048
           volumeMounts:
             - name: dhparam
               mountPath: /mnt/ssl
