@@ -24,6 +24,7 @@ spec:
               memory: 4Gi
           ports:
             - containerPort: 80
+            - containerPort: 443
           env:
             - name: JWT_ENABLED
               value: "true"
