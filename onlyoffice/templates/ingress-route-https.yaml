@@ -17,7 +17,6 @@ spec:
           passHostHeader: true
           port: 443
           scheme: https
-          serversTransport: onlyoffice-transport
       middlewares:
         - name: headers
           namespace: {{ .Release.Namespace }}
