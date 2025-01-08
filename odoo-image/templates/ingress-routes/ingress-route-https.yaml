@@ -9,7 +9,6 @@ spec:
   routes:
     - kind: Rule
       match: Host(`{{ .Values.odoo.production.hostname  }}.{{ .Values.odoo.domain }}`)
-      priority: 10
       services:
         - kind: Service
           name: odoo-{{ .Values.odoo.production.hostname }}

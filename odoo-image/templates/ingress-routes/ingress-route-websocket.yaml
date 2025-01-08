@@ -12,7 +12,6 @@ spec:
       middlewares:
         - name: remove-prefix
           namespace: {{ .Release.Namespace }}
-      priority: 10
       services:
         - kind: Service
           name: odoo-{{ .Values.odoo.production.hostname }}
