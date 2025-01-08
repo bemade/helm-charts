@@ -4,6 +4,5 @@ metadata:
   name: remove-prefix
   namespace: {{ .Release.Namespace }}
 spec:
-  replacePath:
-    path: "/"
+  stripPrefix: {}
 
