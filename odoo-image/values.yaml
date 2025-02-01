@@ -30,6 +30,10 @@ odoo:
   conf:
     limit_time_real: 600
     limit_time_cpu: 600
+    # addons_path - add /mnt/enterprise-addons for enterprise
+    #              - add /mnt/extra-addons for custom addons
+    #              - add /mnt/repos for custom repos
+    addons_path: /mnt/extra-addons
   addonRepos:
     - name: "bemade-addons"
       url: "git@git.bemade.org:bemade/bemade-addons.git"

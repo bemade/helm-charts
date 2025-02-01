@@ -6,7 +6,6 @@ metadata:
 data:
   odoo.conf: |
     [options]
-    addons_path = /mnt/extra-addons,/mnt/repos
     data_dir = /var/lib/odoo
     proxy_mode = True
     admin_passwd = {{ .Values.odoo.masterPassword }}
