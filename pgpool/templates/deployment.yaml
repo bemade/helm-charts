@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: pgpool
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: pgpool
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: pgpool
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: pgpool
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 5432
+        env:
+        - name: PGPOOL_ADMIN_USERNAME
+          value: {{ .Values.admin.username | quote }}
+        - name: PGPOOL_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.admin.secretName }}
+              key: {{ .Values.admin.passwordKey }}
+        - name: PGPOOL_POSTGRES_USERNAME
+          value: {{ .Values.postgresql.username | quote }}
+        - name: PGPOOL_POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgresql.secretName }}
+              key: {{ .Values.postgresql.passwordKey }}
+        - name: PGPOOL_BACKEND_NODES
+          value: "{{- range $i, $e := .Values.backendNodes }}{{ if $i }},{{ end }}{{ $i }}:{{ $e.host }}:{{ $e.port }}{{- end }}"
+        - name: PGPOOL_SR_CHECK_USER
+          value: {{ .Values.postgresql.username | quote }}
+        - name: PGPOOL_SR_CHECK_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.postgresql.secretName }}
+              key: {{ .Values.postgresql.passwordKey }}
+        - name: PGPOOL_ENABLE_LOAD_BALANCING
+          value: {{ .Values.pgpool.enableLoadBalancing | quote }}
+        - name: PGPOOL_ENABLE_STATEMENT_LOAD_BALANCING
+          value: {{ .Values.pgpool.enableStatementLoadBalancing | quote }}
+        {{- if .Values.resources }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

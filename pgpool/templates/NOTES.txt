@@ -1,0 +1,29 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your pgpool-II installation is now ready to use.
+
+1. Get the application URL by running these commands:
+{{- if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ .Release.Name }}-pgpool)
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "pgpool is available at $NODE_IP:$NODE_PORT"
+{{- else if contains "LoadBalancer" .Values.service.type }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ .Release.Name }}-pgpool'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Release.Name }}-pgpool --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo "pgpool is available at $SERVICE_IP:{{ .Values.service.port }}"
+{{- else if contains "ClusterIP" .Values.service.type }}
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ .Release.Name }}-pgpool {{ .Values.service.port }}:{{ .Values.service.port }}
+  echo "pgpool is available at localhost:{{ .Values.service.port }}"
+{{- end }}
+
+2. Connect to pgpool using a PostgreSQL client:
+   psql -h <pgpool-host> -p {{ .Values.service.port }} -U {{ .Values.postgresql.username }} -d postgres
+
+Configuration Details:
+- Backend nodes:
+{{- range $i, $e := .Values.backendNodes }}
+  * Node {{ $i }}: {{ $e.host }}:{{ $e.port }} (weight: {{ $e.weight }})
+{{- end }}
+- Load balancing: {{ .Values.pgpool.enableLoadBalancing }}
+- Statement-level load balancing: {{ .Values.pgpool.enableStatementLoadBalancing }}

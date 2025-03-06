@@ -1,0 +1,16 @@
+apiVersion: v2
+name: pgpool
+description: A Helm chart for pgpool-II - a PostgreSQL connection pooler and load balancer
+type: application
+version: 0.1.0
+appVersion: "4.4.0"
+keywords:
+  - postgresql
+  - pgpool
+  - database
+  - sql
+  - postgres
+  - pooler
+maintainers:
+  - name: Marc Durepos
+    email: marc@bemade.org

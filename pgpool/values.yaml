@@ -1,0 +1,71 @@
+replicaCount: 2
+
+image:
+  repository: bitnami/pgpool
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 5432
+
+# PostgreSQL configuration
+postgresql:
+  # Secret name containing PostgreSQL credentials
+  secretName: "postgresql-ha-postgresql"
+  # Username for PostgreSQL connection
+  username: "postgres"
+  # Key in the secret that contains the PostgreSQL password
+  passwordKey: "password"
+
+# Backend nodes configuration
+# For a setup with 1 read/write master and 2 read replicas
+backendNodes:
+  # Primary node (read/write)
+  - host: "postgresql-ha-postgresql-primary"
+    port: 5432
+    weight: 0.5
+  # First read replica
+  - host: "postgresql-ha-postgresql-read"
+    port: 5432
+    weight: 0.25
+  # Second read replica (adjust service name if different)
+  - host: "postgresql-ha-postgresql-read-2"
+    port: 5432
+    weight: 0.25
+
+# pgpool admin user configuration
+admin:
+  username: "admin"
+  # Secret containing admin password
+  secretName: "pgpool-secret"
+  passwordKey: "admin-password"
+  # Whether to generate a ConfigMap with instructions on how to retrieve the password
+  generatePasswordHelperFile: false
+
+# pgpool configuration
+pgpool:
+  enableLoadBalancing: "yes"
+  enableStatementLoadBalancing: "yes"
+
+# Resource limits and requests
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Pod security context
+securityContext: {}
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}
