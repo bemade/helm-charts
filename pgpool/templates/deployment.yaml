@@ -52,6 +52,10 @@ spec:
           value: {{ .Values.pgpool.enableLoadBalancing | quote }}
         - name: PGPOOL_ENABLE_STATEMENT_LOAD_BALANCING
           value: {{ .Values.pgpool.enableStatementLoadBalancing | quote }}
+        - name: PGPOOL_ENABLE_POOL_HBA
+          value: no
+        - name: PGPOOL_ENABLE_POOL_PASSWORD
+          value: no
         {{- if .Values.resources }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
