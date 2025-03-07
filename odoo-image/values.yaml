@@ -10,7 +10,7 @@ odoo:
     hostname: "demo"
   filestore:
     size: ""
-    storageClassName: "standard"
+    storageClassName: "longhorn"
   # Database connection configuration
   database:
     host: ""
@@ -51,3 +51,6 @@ odoo:
         password: ""
       activeAddons:
         - name: caldav_sync
+  repoStorage:
+    size: ""
+    storageClassName: "longhorn"

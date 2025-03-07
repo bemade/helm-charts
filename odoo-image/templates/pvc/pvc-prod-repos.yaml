@@ -8,7 +8,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ $.Values.odoo.filestore.size | default "1Gi" }}
-  storageClassName: {{ .storageClassName | default "standard" }}
+      storage: {{ $.Values.odoo.repoStorage.size | default "1Gi" }}
+  storageClassName: {{ $.Values.odoo.repoStorage.storageClassName | default "longhorn" }}
 
 
