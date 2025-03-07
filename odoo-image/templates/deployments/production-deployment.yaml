@@ -106,3 +106,10 @@ spec:
                 secretKeyRef:
                   name: credentials
                   key: password
+          resources:
+            requests:
+              cpu: "2"
+              memory: "2Gi"
+            limits:
+              cpu: "4"
+              memory: "8Gi"
