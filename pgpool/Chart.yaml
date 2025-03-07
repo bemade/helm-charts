@@ -2,7 +2,7 @@ apiVersion: v2
 name: pgpool
 description: A Helm chart for pgpool-II - a PostgreSQL connection pooler and load balancer
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: "4.4.0"
 keywords:
   - postgresql

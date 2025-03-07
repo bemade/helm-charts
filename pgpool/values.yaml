@@ -58,6 +58,10 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+# Affinity is set directly in the deployment template to target worker nodes by default.
+# To override this behavior, set useCustomAffinity to true and define your custom affinity below.
+affinity: {}
+
 # Pod security context
 securityContext: {}
 
