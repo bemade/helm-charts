@@ -1,0 +1,21 @@
+# Default values for internal-ca.
+# This is a YAML-formatted file.
+
+# CA configuration
+ca:
+  # Name of the CA
+  name: "internal-ca"
+  # Namespace where the CA will be created
+  namespace: "cert-manager"
+  # Common name for the CA
+  commonName: "Internal Certificate Authority"
+  # Duration of the CA certificate
+  duration: "87600h"  # 10 years
+  # Whether the CA is a ClusterIssuer (true) or namespace-scoped Issuer (false)
+  clusterWide: true
+
+# Labels to apply to all resources
+labels: {}
+
+# Annotations to apply to all resources
+annotations: {}

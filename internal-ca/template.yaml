@@ -1,0 +1,339 @@
+---
+# Source: internal-ca/templates/ca-certificate.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: internal-ca
+  namespace: cert-manager
+  labels:
+    app.kubernetes.io/name: internal-ca
+    app.kubernetes.io/instance: internal-ca
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: internal-ca-0.1.0
+spec:
+  isCA: true
+  commonName: Internal Certificate Authority
+  duration: 87600h
+  secretName: internal-ca
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  issuerRef:
+    name: internal-ca-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+# Source: internal-ca/templates/ca-issuer.yaml
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: internal-ca-issuer
+  labels:
+    app.kubernetes.io/name: internal-ca
+    app.kubernetes.io/instance: internal-ca
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: internal-ca-0.1.0
+spec:
+  selfSigned: {}
+---
+# Source: internal-ca/templates/tests/test-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: internal-ca-test-files
+  annotations:
+    "helm.sh/hook": test
+    # "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded,hook-failed
+  labels:
+    app.kubernetes.io/name: internal-ca
+    app.kubernetes.io/instance: internal-ca
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: internal-ca-0.1.0
+data:
+  run-test.sh: |
+    #!/bin/bash
+    set -e
+    
+    # Create temporary RBAC resources for the test
+    echo "Creating temporary RBAC resources for the test..."
+    
+    # Apply the test-resources.yaml file
+    echo "Applying test-resources.yaml..."
+    cat /files/tests/test-resources.yaml | envsubst | kubectl apply -f -
+    
+    # Wait for the ServiceAccount to be ready
+    echo "Waiting for the ServiceAccount to be ready..."
+    kubectl get serviceaccount ${RELEASE_NAME}-test-sa -n ${RELEASE_NAMESPACE} -o name
+    
+    # Run the test script directly
+    echo "Running test script directly..."
+    
+    # Run the test script with bash (no need to make it executable)
+    bash /files/tests/test-ca-certificate.sh
+    
+    # Clean up the RBAC resources
+    echo "Cleaning up the RBAC resources..."
+    kubectl delete clusterrolebinding ${RELEASE_NAME}-test-role-binding
+    kubectl delete clusterrole ${RELEASE_NAME}-test-role
+    kubectl delete serviceaccount ${RELEASE_NAME}-test-sa -n ${RELEASE_NAMESPACE}
+    
+    echo "Test completed successfully!"
+    
+  test-ca-certificate.sh: |
+    #!/bin/bash
+    set -e
+    
+    # Redirect all output to stdout for helm test --logs
+    exec > >(tee /dev/stdout) 2>&1
+    echo "==================================================="
+    echo "INTERNAL-CA CHART TEST RESULTS"
+    echo "==================================================="
+    
+    # Colors for output
+    GREEN='\033[0;32m'
+    RED='\033[0;31m'
+    YELLOW='\033[0;33m'
+    NC='\033[0m' # No Color
+    
+    # Variables
+    CA_NAME="${CA_NAME}"
+    NAMESPACE="${NAMESPACE}"
+    CLUSTER_WIDE="${CLUSTER_WIDE}"
+    
+    echo -e "${YELLOW}Starting test for internal-ca Helm chart${NC}"
+    
+    # Verify ClusterIssuer or Issuer based on the configuration
+    if [ "$CLUSTER_WIDE" == "true" ]; then
+      echo -e "${YELLOW}Verifying ClusterIssuer creation...${NC}"
+      if kubectl get clusterissuer $CA_NAME-issuer &> /dev/null; then
+        echo -e "${GREEN}✓ ClusterIssuer $CA_NAME-issuer created successfully${NC}"
+      else
+        echo -e "${RED}✗ ClusterIssuer $CA_NAME-issuer not found${NC}"
+        exit 1
+      fi
+    
+      echo -e "${YELLOW}Checking ClusterIssuer status...${NC}"
+      ISSUER_READY=$(kubectl get clusterissuer $CA_NAME-issuer -o jsonpath='{.status.conditions[0].status}')
+    else
+      echo -e "${YELLOW}Verifying Issuer creation...${NC}"
+      if kubectl get issuer -n $NAMESPACE $CA_NAME-issuer &> /dev/null; then
+        echo -e "${GREEN}✓ Issuer $CA_NAME-issuer created successfully${NC}"
+      else
+        echo -e "${RED}✗ Issuer $CA_NAME-issuer not found in namespace $NAMESPACE${NC}"
+        exit 1
+      fi
+    
+      echo -e "${YELLOW}Checking Issuer status...${NC}"
+      ISSUER_READY=$(kubectl get issuer -n $NAMESPACE $CA_NAME-issuer -o jsonpath='{.status.conditions[0].status}')
+    fi
+    
+    if [ "$ISSUER_READY" == "True" ]; then
+      echo -e "${GREEN}✓ Issuer is in Ready state${NC}"
+    else
+      echo -e "${RED}✗ Issuer is not Ready. Status: $ISSUER_READY${NC}"
+      exit 1
+    fi
+    
+    echo -e "${YELLOW}Verifying Certificate creation...${NC}"
+    if kubectl get certificate -n $NAMESPACE $CA_NAME &> /dev/null; then
+      echo -e "${GREEN}✓ Certificate $CA_NAME created successfully${NC}"
+    else
+      echo -e "${RED}✗ Certificate $CA_NAME not found in namespace $NAMESPACE${NC}"
+      exit 1
+    fi
+    
+    echo -e "${YELLOW}Checking Certificate status...${NC}"
+    CERT_READY=$(kubectl get certificate -n $NAMESPACE $CA_NAME -o jsonpath='{.status.conditions[0].status}')
+    if [ "$CERT_READY" == "True" ]; then
+      echo -e "${GREEN}✓ Certificate is in Ready state${NC}"
+    else
+      echo -e "${RED}✗ Certificate is not Ready. Status: $CERT_READY${NC}"
+      exit 1
+    fi
+    
+    echo -e "${YELLOW}Verifying Secret creation...${NC}"
+    if kubectl get secret -n $NAMESPACE $CA_NAME &> /dev/null; then
+      echo -e "${GREEN}✓ Secret $CA_NAME created successfully${NC}"
+    else
+      echo -e "${RED}✗ Secret $CA_NAME not found in namespace $NAMESPACE${NC}"
+      exit 1
+    fi
+    
+    echo -e "${YELLOW}Checking Secret contents...${NC}"
+    # Check if the secret has the expected keys
+    TLS_CRT=$(kubectl get secret -n $NAMESPACE $CA_NAME -o jsonpath='{.data.tls\.crt}')
+    TLS_KEY=$(kubectl get secret -n $NAMESPACE $CA_NAME -o jsonpath='{.data.tls\.key}')
+    CA_CRT=$(kubectl get secret -n $NAMESPACE $CA_NAME -o jsonpath='{.data.ca\.crt}')
+    
+    if [ -z "$TLS_CRT" ]; then
+      echo -e "${RED}✗ Secret is missing tls.crt${NC}"
+      exit 1
+    fi
+    
+    if [ -z "$TLS_KEY" ]; then
+      echo -e "${RED}✗ Secret is missing tls.key${NC}"
+      exit 1
+    fi
+    
+    if [ -z "$CA_CRT" ]; then
+      echo -e "${RED}✗ Secret is missing ca.crt${NC}"
+      exit 1
+    fi
+    
+    echo -e "${GREEN}✓ Secret contains all required keys${NC}"
+    
+    # Create a temporary directory for certificate validation
+    TEMP_DIR=$(mktemp -d)
+    echo -e "${YELLOW}Creating temporary directory for certificate validation: $TEMP_DIR${NC}"
+    
+    # Extract the certificate and save it to a file
+    echo $TLS_CRT | base64 -d > $TEMP_DIR/tls.crt
+    echo $TLS_KEY | base64 -d > $TEMP_DIR/tls.key
+    echo $CA_CRT | base64 -d > $TEMP_DIR/ca.crt
+    
+    # Install OpenSSL if not available
+    if ! command -v openssl &> /dev/null; then
+      echo -e "${YELLOW}Installing OpenSSL...${NC}"
+      apt-get update && apt-get install -y openssl
+    fi
+    
+    # Validate the certificate using OpenSSL
+    echo -e "${YELLOW}Validating certificate with OpenSSL...${NC}"
+    
+    # Check if the certificate is valid
+    if openssl x509 -in $TEMP_DIR/tls.crt -text -noout &> /dev/null; then
+      echo -e "${GREEN}✓ Certificate is valid${NC}"
+    else
+      echo -e "${RED}✗ Certificate is not valid${NC}"
+      exit 1
+    fi
+    
+    # Check if the certificate is a CA certificate
+    IS_CA=$(openssl x509 -in $TEMP_DIR/tls.crt -text -noout | grep "CA:TRUE")
+    if [ -n "$IS_CA" ]; then
+      echo -e "${GREEN}✓ Certificate is a CA certificate${NC}"
+    else
+      echo -e "${RED}✗ Certificate is not a CA certificate${NC}"
+      exit 1
+    fi
+    
+    # Check if the private key matches the certificate
+    # For ECDSA keys, we need to extract the public key from both the certificate and the private key
+    # and compare them
+    CERT_PUBKEY=$(openssl x509 -in $TEMP_DIR/tls.crt -noout -pubkey | openssl pkey -pubin -outform DER | openssl dgst -sha256)
+    KEY_PUBKEY=$(openssl pkey -in $TEMP_DIR/tls.key -pubout -outform DER | openssl dgst -sha256)
+    
+    if [ "$CERT_PUBKEY" == "$KEY_PUBKEY" ]; then
+      echo -e "${GREEN}✓ Private key matches the certificate${NC}"
+    else
+      echo -e "${RED}✗ Private key does not match the certificate${NC}"
+      exit 1
+    fi
+    
+    # Check if ca.crt is the same as tls.crt (they should be for a self-signed CA)
+    if diff $TEMP_DIR/ca.crt $TEMP_DIR/tls.crt &> /dev/null; then
+      echo -e "${GREEN}✓ ca.crt is the same as tls.crt (as expected for a self-signed CA)${NC}"
+    else
+      echo -e "${RED}✗ ca.crt is different from tls.crt (unexpected for a self-signed CA)${NC}"
+      exit 1
+    fi
+    
+    # Clean up the temporary directory
+    rm -rf $TEMP_DIR
+    
+    echo -e "${GREEN}All tests passed successfully!${NC}"
+    echo "==================================================="
+    echo "INTERNAL-CA CHART TEST SUMMARY"
+    echo "==================================================="
+    echo "✓ ClusterIssuer/Issuer: READY"
+    echo "✓ Certificate: READY"
+    echo "✓ Secret: VALID"
+    echo "✓ Certificate validation: PASSED"
+    echo "==================================================="
+    exit 0
+    
+  test-resources.yaml: |
+    apiVersion: v1
+    kind: ServiceAccount
+    metadata:
+      name: ${RELEASE_NAME}-test-sa
+      namespace: ${RELEASE_NAMESPACE}
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      name: ${RELEASE_NAME}-test-role
+    rules:
+    - apiGroups: ["cert-manager.io"]
+      resources: ["certificates", "issuers", "clusterissuers"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: [""]
+      resources: ["secrets"]
+      verbs: ["get", "list", "watch"]
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      name: ${RELEASE_NAME}-test-role-binding
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: ${RELEASE_NAME}-test-role
+    subjects:
+    - kind: ServiceAccount
+      name: ${RELEASE_NAME}-test-sa
+      namespace: ${RELEASE_NAMESPACE}
+---
+# Source: internal-ca/templates/tests/test-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: internal-ca-test
+  annotations:
+    "helm.sh/hook": test
+    # "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded,hook-failed
+  labels:
+    app.kubernetes.io/name: internal-ca
+    app.kubernetes.io/instance: internal-ca
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: internal-ca-0.1.0
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      name: internal-ca-test
+      labels:
+        app.kubernetes.io/name: internal-ca
+        app.kubernetes.io/instance: internal-ca
+    spec:
+      restartPolicy: Never
+      serviceAccountName: default
+      containers:
+        - name: test
+          image: "bitnami/kubectl:latest"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CA_NAME
+              value: "internal-ca"
+            - name: NAMESPACE
+              value: "cert-manager"
+            - name: CLUSTER_WIDE
+              value: "true"
+            - name: RELEASE_NAME
+              value: "internal-ca"
+            - name: RELEASE_NAMESPACE
+              value: "default"
+          volumeMounts:
+            - name: test-files
+              mountPath: /files/tests
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              # Run the test script using bash (no need to make it executable)
+              bash /files/tests/run-test.sh
+      volumes:
+        - name: test-files
+          configMap:
+            name: internal-ca-test-files
+            defaultMode: 0755

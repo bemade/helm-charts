@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-test-files
+  annotations:
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded,hook-failed
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+data:
+  run-test.sh: |
+    {{- .Files.Get "files/tests/run-test.sh" | nindent 4 }}
+  test-ca-certificate.sh: |
+    {{- .Files.Get "files/tests/test-ca-certificate.sh" | nindent 4 }}

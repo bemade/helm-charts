@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-test
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded,hook-failed
+  labels:
+    app.kubernetes.io/name: {{ .Chart.Name }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      name: {{ .Release.Name }}-test
+      labels:
+        app.kubernetes.io/name: {{ .Chart.Name }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ .Release.Name }}-test-runner
+      containers:
+        - name: test
+          image: "bitnami/kubectl:latest"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: CA_NAME
+              value: "{{ .Values.ca.name }}"
+            - name: NAMESPACE
+              value: "{{ .Values.ca.namespace }}"
+            - name: CLUSTER_WIDE
+              value: "{{ .Values.ca.clusterWide }}"
+            - name: RELEASE_NAME
+              value: "{{ .Release.Name }}"
+            - name: RELEASE_NAMESPACE
+              value: "{{ .Release.Namespace }}"
+          volumeMounts:
+            - name: test-files
+              mountPath: /files/tests
+          command:
+            - /bin/bash
+            - -ec
+            - |
+              # Run the test script using bash (no need to make it executable)
+              bash /files/tests/run-test.sh
+      volumes:
+        - name: test-files
+          configMap:
+            name: {{ .Release.Name }}-test-files
+            defaultMode: 0755
