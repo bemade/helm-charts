@@ -8,32 +8,37 @@ odoo:
   domain: "odoo.bemade.org"
   production:
     hostname: "demo"
-  staging:
-    - hostname: "stg1"
-      image: "odoo:18"
-      productionDatabase: "odoo"
-      storageClassName: "non-replicated-storage"
-    - hostname: "stg2"
-      image: "odoo:18"
-      productionDatabase: "odoo"
-      storageClassName: "non-replicated-storage"
   filestore:
     size: ""
-    storageClassName: "longhorn"
-  db:
-    size: ""
+    storageClassName: "standard"
+  # Database connection configuration
+  database:
+    host: ""
+    port: 5432
+    adminUser: "postgres"
+    # Secret containing admin password
+    # This secret will be copied from the adminSecretNamespace to the release namespace
+    # as a secret named <release-name>-postgres-secret
+    adminSecretName: "postgres-postgresql"
+    # Namespace where the admin secret is located
+    # If specified, RBAC resources will be created to allow reading the secret from this namespace
+    # If not specified, the chart will look for the secret in the release namespace
+    adminSecretNamespace: "postgres"
+    # Key in the secret that contains the admin password
+    adminPasswordKey: "postgres-password"
   ingress:
     enabled: true
     tlsSecretName: "odoo-tls-secret"
     clusterIssuer: "letsencrypt-dns"
   masterPassword: "$00p3rP4ssW0rD!"
-  conf:
+  enterprise:
+    enabled: false
+    path: "/mnt/enterprise-addons"  # Path where enterprise addons are located in the image
+  # Odoo configuration parameters
+  conf:    
     limit_time_real: 600
     limit_time_cpu: 600
     workers: 2
-    # addons_path - add /mnt/enterprise-addons for enterprise
-    #             - add /mnt/repos for custom repos
-    addons_path: /mnt/extra-addons
   addonRepos:
     - name: "bemade-addons"
       url: "git@git.bemade.org:bemade/bemade-addons.git"

@@ -1,3 +1,4 @@
+{{- if .Values.odoo.ingress.enabled }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -7,6 +8,10 @@ spec:
   secretName: odoo-cert
   dnsNames:
     - {{ .Values.odoo.production.hostname }}.{{ .Values.odoo.domain }}
+    {{- range .Values.odoo.staging }}
+    - {{ .hostname }}.{{ $.Values.odoo.domain }}
+    {{- end }}
   issuerRef:
     name: {{ .Values.odoo.ingress.clusterIssuer }}
     kind: ClusterIssuer
+{{- end }}

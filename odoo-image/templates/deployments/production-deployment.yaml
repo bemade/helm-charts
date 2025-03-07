@@ -58,27 +58,6 @@ spec:
               mountPath: /var/lib/odoo
             - name: odoo-conf
               mountPath: /etc/odoo
-        - name: init-db-user
-          image: postgres:16.1
-          command: ["/bin/bash", "/scripts/init-db-user.sh"]
-          env:
-            - name: HOST
-              value: kubegres
-            - name: USER
-              value: odoo
-            - name: PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: credentials
-                  key: password
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: credentials
-                  key: superUserPassword
-          volumeMounts:
-            - name: init-db-script
-              mountPath: /scripts
         {{- if .Values.odoo.addonRepos }}
         - name: pull-git-repos
           image: alpine/git
@@ -117,9 +96,11 @@ spec:
               mountPath: /mnt/repos
           env:
             - name: HOST
-              value: kubegres
+              value: {{ .Values.odoo.database.host | quote }}
+            - name: PORT
+              value: {{ .Values.odoo.database.port | quote }}
             - name: USER
-              value: odoo
+              value: {{ printf "%s-%s-%s" .Release.Namespace .Release.Name .Values.odoo.production.hostname | lower | replace "_" "-" | quote }}
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:

@@ -1,3 +1,4 @@
+{{- if .Values.odoo.ingress.enabled }}
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
@@ -5,4 +6,4 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   stripPrefix: {}
-
+{{- end }}

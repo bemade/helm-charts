@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cleanup-removed-users-script
+  namespace: {{ .Release.Namespace }}
+data:
+  cleanup-removed-users.sh: {{ .Files.Get "files/cleanup-removed-users.sh" | quote }}

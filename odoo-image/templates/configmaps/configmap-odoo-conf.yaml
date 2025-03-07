@@ -9,6 +9,16 @@ data:
     data_dir = /var/lib/odoo
     proxy_mode = True
     admin_passwd = {{ .Values.odoo.masterPassword }}
+    {{- /* Construct addons_path based on configuration */}}
+    {{- $addons_path := "/mnt/extra-addons" }}
+    {{- if .Values.odoo.enterprise.enabled }}
+    {{- /* Enterprise addons are baked into the image */}}
+    {{- $addons_path = printf "%s,%s" $addons_path .Values.odoo.enterprise.path }}
+    {{- end }}
+    {{- if .Values.odoo.addonRepos }}
+    {{- $addons_path = printf "%s,%s" $addons_path "/mnt/repos" }}
+    {{- end }}
+    addons_path = {{ $addons_path }}
     {{- range $key, $value := .Values.odoo.conf }}
     {{ $key }} = {{ $value }}
     {{- end}}

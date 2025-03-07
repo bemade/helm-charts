@@ -1,0 +1,38 @@
+{{- if .Values.odoo.database.name -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-test-production-connectivity"
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": test
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+        - name: test-production-connectivity
+          image: nicolaka/netshoot:latest
+          command:
+            - /bin/sh
+            - /scripts/test-production-connectivity.sh
+          env:
+            - name: PROD_HOSTNAME
+              value: {{ .Values.odoo.production.hostname | quote }}
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+      volumes:
+        - name: scripts
+          configMap:
+            name: test-scripts
+            defaultMode: 0755
+      restartPolicy: Never
+{{- end }}
