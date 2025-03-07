@@ -113,3 +113,22 @@ spec:
             limits:
               cpu: "4"
               memory: "8Gi"
+      # Apply custom affinity if defined, otherwise use default worker node affinity
+      affinity:
+      {{- if .Values.odoo.affinity }}
+        {{- toYaml .Values.odoo.affinity | nindent 8 }}
+      {{- else }}
+        # Default affinity to target worker nodes
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/worker
+                operator: Exists
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            preference:
+              matchExpressions:
+              - key: node-role.kubernetes.io/worker
+                operator: Exists
+      {{- end }}

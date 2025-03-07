@@ -54,3 +54,6 @@ odoo:
   repoStorage:
     size: ""
     storageClassName: "longhorn"
+  # Affinity is set directly in the deployment template to target worker nodes by default.
+  # To override this behavior, set useCustomAffinity to true and define your custom affinity below.
+  affinity: {}
