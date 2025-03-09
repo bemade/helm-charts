@@ -110,8 +110,8 @@ spec:
                   key: password
           resources:
             requests:
-              cpu: "2"
-              memory: "2Gi"
+              cpu: "500m"
+              memory: "500Mi"
             limits:
               cpu: "4"
               memory: "8Gi"
