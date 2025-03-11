@@ -1,0 +1,60 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: {{ if .Values.rbac.clusterWide }}Cluster{{ end }}Role
+metadata:
+  name: {{ include "odoo-operator.fullname" . }}
+  labels:
+    {{- include "odoo-operator.labels" . | nindent 4 }}
+rules:
+  # Permissions for managing Odoo custom resources
+  - apiGroups: ["odoo.bemade.org"]
+    resources: ["odooinstances", "odoostagings", "odoobackups"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Permissions for managing status subresources
+  - apiGroups: ["odoo.bemade.org"]
+    resources: ["odooinstances/status", "odoostagings/status", "odoobackups/status"]
+    verbs: ["get", "update", "patch"]
+  
+  # Permissions for managing core Kubernetes resources
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps", "secrets", "persistentvolumeclaims", "events"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Permissions for managing apps resources
+  - apiGroups: ["apps"]
+    resources: ["deployments", "statefulsets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Permissions for managing batch resources
+  - apiGroups: ["batch"]
+    resources: ["jobs", "cronjobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Permissions for managing networking resources
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Permissions for managing snapshot resources
+  - apiGroups: ["snapshot.storage.k8s.io"]
+    resources: ["volumesnapshots", "volumesnapshotcontents", "volumesnapshotclasses"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Permissions for managing storage resources
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
+  
+  # Permissions for leader election
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  
+  # Permissions for managing namespaces (if cluster-wide)
+  {{- if .Values.rbac.clusterWide }}
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "list", "watch"]
+  {{- end }}
+{{- end }}

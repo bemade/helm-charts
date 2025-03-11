@@ -1,0 +1,15 @@
+apiVersion: odoo.bemade.org/v1
+kind: OdooInstance
+metadata:
+  name: simple
+  namespace: default
+spec:
+  version: "17.0"
+  replicas: 1
+  database:
+    storageSize: "5Gi"
+  filestore:
+    storageSize: "10Gi"
+  ingress:
+    enabled: true
+    hostname: "simple.odoo.example.com"

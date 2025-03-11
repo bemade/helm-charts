@@ -1,0 +1,32 @@
+apiVersion: v2
+name: odoo-operator
+description: A Kubernetes operator for managing Odoo instances
+
+# This is an application chart that deploys the Odoo operator
+type: application
+
+# Chart version - increment with changes to the chart
+version: 0.1.0
+
+# Application version - the version of the operator itself
+appVersion: "0.1.0"
+
+# Keywords for this chart
+keywords:
+  - odoo
+  - operator
+  - kubernetes
+  - bemade
+
+# Home URL for the project
+home: https://github.com/bemade/helm-charts
+
+# Maintainers of this chart
+maintainers:
+  - name: BeMade
+    email: info@bemade.org
+    url: https://bemade.org
+
+# Sources for this chart
+sources:
+  - https://github.com/bemade/helm-charts

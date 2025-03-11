@@ -1,0 +1,39 @@
+apiVersion: odoo.bemade.org/v1
+kind: OdooInstance
+metadata:
+  name: demo
+  namespace: default
+spec:
+  version: "17.0"
+  replicas: 1
+  resources:
+    limits:
+      cpu: "2"
+      memory: "4Gi"
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+  database:
+    storageSize: "10Gi"
+    storageClass: "longhorn"  # Will use the default from operator if not specified
+  filestore:
+    storageSize: "20Gi"
+    storageClass: "longhorn"  # Will use the default from operator if not specified
+    snapshotClass: "csi-hostpath-snapclass"  # Optional, for enabling snapshots
+  addons:
+    - repo: "https://github.com/OCA/web"
+      branch: "17.0"
+    - repo: "https://github.com/bemade/custom-addons"
+      branch: "main"
+  ingress:
+    enabled: true
+    hostname: "demo.odoo.example.com"
+    tls: true
+  env:
+    - name: ODOO_ADMIN_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: odoo-admin-secret
+          key: password
+    - name: TZ
+      value: "America/New_York"

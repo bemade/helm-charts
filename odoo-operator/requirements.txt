@@ -1,0 +1,6 @@
+kopf>=1.35.0
+kubernetes>=24.2.0
+psycopg2-binary>=2.9.5
+flask>=2.2.0
+jsonpatch>=1.32
+PyYAML>=6.0
