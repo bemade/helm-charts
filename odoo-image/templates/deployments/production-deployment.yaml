@@ -115,6 +115,24 @@ spec:
             limits:
               cpu: "4"
               memory: "8Gi"
+          readinessProbe:
+            httpGet:
+              path: /web/health
+              port: 8069
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /web/health
+              port: 8069
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 10
+            successThreshold: 1
+            failureThreshold: 2
       # Apply custom affinity if defined, otherwise use default worker node affinity
       affinity:
       {{- if .Values.odoo.affinity }}
