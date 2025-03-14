@@ -1,0 +1,53 @@
+{{- if .Values.odoo.database.pgpool.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-pgpool-user-{{ .Release.Name }}-{{ .Values.odoo.production.hostname }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "1"  # Run after the init-db-user job (weight 0)
+spec:
+  template:
+    spec:
+      {{- if .Values.odoo.database.adminSecretNamespace }}
+      serviceAccountName: {{ .Release.Name }}-db-jobs
+      {{- end }}
+      restartPolicy: OnFailure
+      containers:
+        - name: init-pgpool-user
+          image: bitnami/postgresql-repmgr:latest
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              # Use the database host directly from values
+              PGPOOL_HOST={{ .Values.odoo.database.host | quote }}
+              
+              echo "Using pgpool host: $PGPOOL_HOST"
+              
+              # Add the user to pool_passwd
+              echo "Adding user {{ .NEW_USER }} to pool_passwd"
+              pg_md5 --md5auth --username={{ .NEW_USER }} "$NEW_PASSWORD" --host=$PGPOOL_HOST --port={{ .Values.odoo.database.port | default "5432" }}
+              
+              echo "Pgpool user setup completed successfully"
+          env:
+            - name: NEW_USER
+              value: {{ printf "%s-%s-%s" .Release.Namespace .Release.Name .Values.odoo.production.hostname | lower | replace "_" "-" | quote }}
+            - name: NEW_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: password
+            - name: PGPASSWORD
+              value: {{ .Values.odoo.database.pgpool.adminPassword | quote }}
+          {{- if .Values.odoo.database.adminSecretNamespace }}
+          volumeMounts:
+            - name: kubeconfig
+              mountPath: /root/.kube
+      volumes:
+        - name: kubeconfig
+          secret:
+            secretName: {{ .Release.Name }}-kubeconfig
+          {{- end }}
+  backoffLimit: 4
+{{- end }}

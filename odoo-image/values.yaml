@@ -26,6 +26,9 @@ odoo:
     adminSecretNamespace: "postgres"
     # Key in the secret that contains the admin password
     adminPasswordKey: "postgres-password"
+    pgpool:
+      enabled: true
+      adminPassword: ""
   ingress:
     enabled: true
     tlsSecretName: "odoo-tls-secret"
