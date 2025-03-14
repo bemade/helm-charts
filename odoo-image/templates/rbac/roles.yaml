@@ -36,4 +36,21 @@ rules:
   resources: ["secrets"]
   verbs: ["get", "create", "patch", "update", "delete"]
   # No resourceNames restriction to allow creating the secret
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["pods/portforward"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["pods/attach"]
+  verbs: ["create"]
+{{- if .Values.odoo.database.pgpool.enabled }}
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get"]
+{{- end }}
 {{- end }}

@@ -16,7 +16,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: init-pgpool-user
-          image: bitnami/postgresql-repmgr:latest
+          image: bitnami/kubectl:latest
           command: ["/bin/bash", "-c"]
           args:
             - |
@@ -25,9 +25,55 @@ spec:
               
               echo "Using pgpool host: $PGPOOL_HOST"
               
-              # Add the user to pool_passwd
+              # Find a pgpool pod to execute commands on
+              PGPOOL_POD=$(kubectl get pods -l app.kubernetes.io/name=postgresql-ha,app.kubernetes.io/component=pgpool -o jsonpath='{.items[0].metadata.name}' -n {{ .Values.odoo.database.adminSecretNamespace | default .Release.Namespace }})
+              
+              if [ -z "$PGPOOL_POD" ]; then
+                echo "Error: No pgpool pods found"
+                exit 1
+              fi
+              
+              echo "Found pgpool pod: $PGPOOL_POD"
+              
+              # Create a temporary file with a random name for security
+              TEMP_FILE=$(mktemp)
+              
+              # Create the user entry in plain text format
+              echo "{{ .NEW_USER }}:$NEW_PASSWORD" > $TEMP_FILE
+              
+              # Create a temporary file on the pgpool pod
+              POD_TEMP_FILE=$(kubectl exec $PGPOOL_POD -n {{ .Values.odoo.database.adminSecretNamespace | default .Release.Namespace }} -- mktemp)
+              if [ $? -ne 0 ]; then
+                echo "Error: Failed to create temporary file on pgpool pod"
+                rm $TEMP_FILE
+                exit 1
+              fi
+              
+              # Copy the file to the pgpool pod
+              kubectl cp $TEMP_FILE $PGPOOL_POD:$POD_TEMP_FILE -n {{ .Values.odoo.database.adminSecretNamespace | default .Release.Namespace }}
+              if [ $? -ne 0 ]; then
+                echo "Error: Failed to copy file to pgpool pod"
+                rm $TEMP_FILE
+                exit 1
+              fi
+              
+              # Add the user to pool_passwd using cat
               echo "Adding user {{ .NEW_USER }} to pool_passwd"
-              pg_md5 --md5auth --username={{ .NEW_USER }} "$NEW_PASSWORD" --host=$PGPOOL_HOST --port={{ .Values.odoo.database.port | default "5432" }}
+              kubectl exec $PGPOOL_POD -n {{ .Values.odoo.database.adminSecretNamespace | default .Release.Namespace }} -- bash -c "cat $POD_TEMP_FILE >> /opt/bitnami/pgpool/etc/pool_passwd"
+              if [ $? -ne 0 ]; then
+                echo "Error: Failed to update pool_passwd file"
+                rm $TEMP_FILE
+                kubectl exec $PGPOOL_POD -n {{ .Values.odoo.database.adminSecretNamespace | default .Release.Namespace }} -- rm $POD_TEMP_FILE
+                exit 1
+              fi
+              
+              # Remove the temporary files
+              kubectl exec $PGPOOL_POD -n {{ .Values.odoo.database.adminSecretNamespace | default .Release.Namespace }} -- rm $POD_TEMP_FILE
+              rm $TEMP_FILE
+              
+              # Reload pgpool configuration
+              echo "Reloading pgpool configuration"
+              kubectl exec $PGPOOL_POD -n {{ .Values.odoo.database.adminSecretNamespace | default .Release.Namespace }} -- pgpool -f /opt/bitnami/pgpool/conf/pgpool.conf reload
               
               echo "Pgpool user setup completed successfully"
           env:
@@ -38,16 +84,6 @@ spec:
                 secretKeyRef:
                   name: credentials
                   key: password
-            - name: PGPASSWORD
-              value: {{ .Values.odoo.database.pgpool.adminPassword | quote }}
-          {{- if .Values.odoo.database.adminSecretNamespace }}
-          volumeMounts:
-            - name: kubeconfig
-              mountPath: /root/.kube
-      volumes:
-        - name: kubeconfig
-          secret:
-            secretName: {{ .Release.Name }}-kubeconfig
-          {{- end }}
+          # No volume mounts needed - using service account for authentication
   backoffLimit: 4
 {{- end }}

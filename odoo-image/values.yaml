@@ -28,7 +28,6 @@ odoo:
     adminPasswordKey: "postgres-password"
     pgpool:
       enabled: true
-      adminPassword: ""
   ingress:
     enabled: true
     tlsSecretName: "odoo-tls-secret"
