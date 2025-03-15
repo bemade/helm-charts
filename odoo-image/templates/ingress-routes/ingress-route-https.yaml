@@ -9,10 +9,10 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`{{ .Values.odoo.production.hostname  }}.{{ .Values.odoo.domain }}`)
+      match: Host(`{{ .Values.odoo.hostname  }}.{{ .Values.odoo.domain }}`)
       services:
         - kind: Service
-          name: odoo-{{ .Values.odoo.production.hostname }}
+          name: odoo-{{ .Values.odoo.hostname }}
           namespace: {{ .Release.Namespace }}
           passHostHeader: true
           port: 8069

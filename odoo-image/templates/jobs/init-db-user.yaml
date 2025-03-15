@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: init-db-user-{{ .Release.Name }}-{{ .Values.odoo.production.hostname }}
+  name: init-db-user-{{ .Release.Name }}-{{ .Values.odoo.hostname }}
   namespace: {{ .Release.Namespace }}
 spec:
   template:

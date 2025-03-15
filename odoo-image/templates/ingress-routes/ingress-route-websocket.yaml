@@ -9,13 +9,13 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`{{ .Values.odoo.production.hostname  }}.{{ .Values.odoo.domain }}`) && PathPrefix(`/websocket`)
+      match: Host(`{{ .Values.odoo.hostname  }}.{{ .Values.odoo.domain }}`) && PathPrefix(`/websocket`)
       middlewares:
         - name: remove-prefix
           namespace: {{ .Release.Namespace }}
       services:
         - kind: Service
-          name: odoo-{{ .Values.odoo.production.hostname }}
+          name: odoo-{{ .Values.odoo.hostname }}
           namespace: {{ .Release.Namespace }}
           passHostHeader: true
           port: 8072
