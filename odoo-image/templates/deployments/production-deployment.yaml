@@ -58,7 +58,7 @@ spec:
             - name: PORT
               value: "5432"
             - name: USER
-              value: odoo
+              value: "odoo"
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -75,11 +75,11 @@ spec:
             httpGet:
               path: /web/health
               port: 8069
-            initialDelaySeconds: 30
-            periodSeconds: 10
-            timeoutSeconds: 5
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
             successThreshold: 1
-            failureThreshold: 3
+            failureThreshold: 30
           livenessProbe:
             httpGet:
               path: /web/health
