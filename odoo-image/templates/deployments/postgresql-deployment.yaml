@@ -22,9 +22,9 @@ spec:
         - name: postgresql-data
           persistentVolumeClaim:
             claimName: {{ .Release.Name }}-postgresql-pvc
-        # - name: postgresql-config
-        #   configMap:
-        #     name: {{ .Release.Name }}-postgresql-config
+        - name: init-db-user
+          configMap:
+            name: init-db-user
       containers:
         - name: postgresql
           image: {{ .Values.odoo.database.postgresql.image }}
@@ -43,9 +43,9 @@ spec:
           volumeMounts:
             - name: postgresql-data
               mountPath: /var/lib/postgresql/data
-            # - name: postgresql-config
-            #   mountPath: /etc/postgresql/postgresql.conf
-            #   subPath: postgresql.conf
+            - name: init-db-user
+              mountPath: /docker-entrypoint-initdb.d
+              subPath: init-db-user.sh
           resources:
             {{- toYaml .Values.odoo.database.postgresql.resources | nindent 12 }}
           readinessProbe:
