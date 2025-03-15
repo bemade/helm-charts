@@ -6,28 +6,31 @@ odoo:
     password: ""
     email: ""
   domain: "odoo.bemade.org"
-  production:
-    hostname: "demo"
+  hostname: "demo"
   filestore:
     size: ""
     storageClassName: "longhorn"
-  # Database connection configuration
+  # Database configuration
   database:
-    host: ""
-    port: 5432
-    adminUser: "postgres"
-    # Secret containing admin password
-    # This secret will be copied from the adminSecretNamespace to the release namespace
-    # as a secret named <release-name>-postgres-secret
-    adminSecretName: "postgres-postgresql"
-    # Namespace where the admin secret is located
-    # If specified, RBAC resources will be created to allow reading the secret from this namespace
-    # If not specified, the chart will look for the secret in the release namespace
-    adminSecretNamespace: "postgres"
-    # Key in the secret that contains the admin password
-    adminPasswordKey: "postgres-password"
-    pgpool:
-      enabled: true
+    # PostgreSQL configuration
+    postgresql:
+      image: "postgres:16.1-alpine"
+      persistence:
+        enabled: true
+        size: "10Gi"
+        storageClassName: "longhorn"
+      resources:
+        requests:
+          cpu: "100m"
+          memory: "256Mi"
+        limits:
+          cpu: "1000m"
+          memory: "1Gi"
+      # PostgreSQL configuration
+      config:
+        max_connections: 100
+        shared_buffers: "256MB"
+      # Admin user configuration
   ingress:
     enabled: true
     tlsSecretName: "odoo-tls-secret"
@@ -41,21 +44,4 @@ odoo:
     limit_time_real: 600
     limit_time_cpu: 600
     workers: 2
-  addonRepos:
-    - name: "bemade-addons"
-      url: "git@git.bemade.org:bemade/bemade-addons.git"
-      branch: "18.0"
-      commit: null
-      sshAuth:
-        secretName: "bemade-gitlab-ssh"
-      passwordAuth:
-        username: ""
-        password: ""
-      activeAddons:
-        - name: caldav_sync
-  repoStorage:
-    size: ""
-    storageClassName: "longhorn"
-  # Affinity is set directly in the deployment template to target worker nodes by default.
-  # To override this behavior, set useCustomAffinity to true and define your custom affinity below.
   affinity: {}

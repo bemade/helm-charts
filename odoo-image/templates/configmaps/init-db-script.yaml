@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-db-script
+  namespace: {{ .Release.Namespace }}
+data:
+  init-db-user.sh: |
+    #!/bin/bash
+    set -e
+    # Wait for the PostgreSQL server to be ready
+    retry_count=0
+    while ! pg_isready -q -h "$HOST" && [ ${retry_count} -lt 60 ]; do
+      echo "Waiting for PostgreSQL server to be ready at $HOST. Retry ${retry_count}/60 in 3 seconds..."
+      sleep 3
+      retry_count=$((retry_count+1))
+    done
+
+    # Environment variables passed to the container
+    echo "Connecting to PostgreSQL at $HOST:$PORT as $ADMIN_USER"
+    psql -v ON_ERROR_STOP=1 --host="$HOST" --port="$PORT" --username="$ADMIN_USER" --dbname="postgres" <<-EOSQL
+    DO \$\$
+    BEGIN
+      IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = '$NEW_USER') THEN
+        CREATE USER "$NEW_USER" WITH PASSWORD '$NEW_PASSWORD' CREATEDB;
+      END IF;
+    END
+    \$\$;
+    EOSQL

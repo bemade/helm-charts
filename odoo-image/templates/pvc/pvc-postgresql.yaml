@@ -1,0 +1,17 @@
+{{- if .Values.odoo.database.postgresql.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-postgresql-pvc
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-1"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.odoo.database.postgresql.persistence.size }}
+  storageClassName: {{ .Values.odoo.database.postgresql.persistence.storageClassName }}
+{{- end }}

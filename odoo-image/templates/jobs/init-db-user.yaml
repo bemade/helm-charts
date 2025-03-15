@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-db-user-{{ .Release.Name }}-{{ .Values.odoo.production.hostname }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  template:
+    spec:
+      {{- if .Values.odoo.database.adminSecretNamespace }}
+      serviceAccountName: {{ .Release.Name }}-db-jobs
+      {{- end }}
+      restartPolicy: OnFailure
+      containers:
+        - name: init-db-user
+          image: {{ .Values.odoo.database.postgresql.image }}
+          command: ["/bin/bash", "/scripts/init-db-user.sh"]
+          env:
+            - name: HOST
+              value: {{ .Release.Name }}-postgresql
+            - name: PORT
+              value: "5432"
+            - name: ADMIN_USER
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgres-secret
+                  key: password
+            - name: NEW_USER
+              value: odoo
+            - name: NEW_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgres-secret
+                  key: odooPassword
+          volumeMounts:
+            - name: init-db-script
+              mountPath: /scripts
+            - name: postgresql-data
+              mountPath: /var/lib/postgresql/data
+            - name: postgresql-config
+              mountPath: /etc/postgresql/postgresql.conf
+              subPath: postgresql.conf
+      volumes:
+        - name: init-db-script
+          configMap:
+            name: init-db-script
+        - name: postgresql-data
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-postgresql-pvc
+        - name: postgresql-config
+          configMap:
+            name: {{ .Release.Name }}-postgresql-config

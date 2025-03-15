@@ -5,49 +5,30 @@ metadata:
   name: odoo
   namespace: {{ .Release.Namespace }}
   labels:
-    app: odoo-{{ .Values.odoo.production.hostname }}
+    app: odoo-{{ .Values.odoo.hostname }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: odoo-{{ .Values.odoo.production.hostname }}
+      app: odoo-{{ .Values.odoo.hostname }}
   strategy:
     type: "Recreate"
   template:
     metadata:
       labels:
-        app: odoo-{{ .Values.odoo.production.hostname }}
+        app: odoo-{{ .Values.odoo.hostname }}
     spec:
       {{- if .Values.odoo.imageRegistry.url }}
       imagePullSecrets:
         - name: registry-secret
       {{- end }}
       volumes:
-        - name: {{ .Values.odoo.production.hostname }}-filestore
+        - name: {{ .Values.odoo.hostname }}-filestore
           persistentVolumeClaim:
-            claimName: {{ .Values.odoo.production.hostname }}-filestore-pvc
-        - name: init-db-script
-          configMap:
-            name: init-db-script
+            claimName: {{ .Values.odoo.hostname }}-filestore-pvc
         - name: odoo-conf
           configMap:
             name: odoo-conf
-        - name: {{ .Values.odoo.production.hostname }}-repos
-          persistentVolumeClaim:
-            claimName: {{ .Values.odoo.production.hostname }}-repos-pvc
-        - name: repo-config
-          configMap:
-            name: addon-repos-json
-        - name: pull-git-repos
-          configMap:
-            name: pull-git-repos
-        {{- range .Values.odoo.addonRepos }}
-        {{- if .sshAuth.secretName }}
-        - name: pull-secret-{{ .name }}
-          secret:
-            secretName: {{ .sshAuth.secretName }}
-        {{- end }}
-        {{- end }}
       initContainers:
         - name: init-permissions
           image: {{ .Values.odoo.image }}
@@ -56,58 +37,33 @@ spec:
             runAsGroup: 0
           command: ["sh", "-c", "chown -R odoo:odoo /var/lib/odoo"]
           volumeMounts:
-            - name: {{ .Values.odoo.production.hostname }}-filestore
+            - name: {{ .Values.odoo.hostname }}-filestore
               mountPath: /var/lib/odoo
             - name: odoo-conf
               mountPath: /etc/odoo
-        {{- if .Values.odoo.addonRepos }}
-        - name: pull-git-repos
-          image: alpine/git
-          command:
-            - "sh"
-            - "-c"
-            - |
-              apk add bash jq openssh
-              /bin/bash /scripts/pull-git-repos.sh
-          volumeMounts:
-            - name: {{ .Values.odoo.production.hostname }}-repos
-              mountPath: /mnt/repos
-            - name: repo-config
-              mountPath: /mnt/config/addon-repos
-            - name: pull-git-repos
-              mountPath: /scripts
-            {{- range .Values.odoo.addonRepos }}
-            {{- if .sshAuth.secretName }}
-            - name: pull-secret-{{ .name }}
-              mountPath: /mnt/secrets/{{ .sshAuth.secretName }}
-            {{- end }}
-            {{- end }}
-        {{- end }}
       containers:
-        - name: odoo-{{ .Values.odoo.production.hostname }}
+        - name: odoo-{{ .Values.odoo.hostname }}
           image: {{ .Values.odoo.image }}
           ports:
             - containerPort: 8069  # Odoo HTTP
             - containerPort: 8072  # WebSocket port
           volumeMounts:
-            - name: {{ .Values.odoo.production.hostname }}-filestore
+            - name: {{ .Values.odoo.hostname }}-filestore
               mountPath: /var/lib/odoo  # Mounting the filestore
             - name: odoo-conf
               mountPath: /etc/odoo
-            - name: {{ .Values.odoo.production.hostname }}-repos
-              mountPath: /mnt/repos
           env:
             - name: HOST
-              value: {{ .Values.odoo.database.host | quote }}
+              value: {{ .Release.Name }}-postgresql
             - name: PORT
-              value: {{ .Values.odoo.database.port | quote }}
+              value: "5432"
             - name: USER
-              value: {{ printf "%s-%s-%s" .Release.Namespace .Release.Name .Values.odoo.production.hostname | lower | replace "_" "-" | quote }}
+              value: odoo
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: credentials
-                  key: password
+                  name: {{ .Release.Name }}-postgres-secret
+                  key: odooPassword
           resources:
             requests:
               cpu: "500m"

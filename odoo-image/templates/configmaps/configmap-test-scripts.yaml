@@ -5,9 +5,4 @@ metadata:
   namespace: {{ .Release.Namespace }}
 data:
   test-chart-installed.sh: {{ .Files.Get "files/tests/test-chart-installed.sh" | quote }}
-  test-staging-db.sh: {{ .Files.Get "files/tests/test-staging-db.sh" | quote }}
-  test-staging-filestore.sh: {{ .Files.Get "files/tests/test-staging-filestore.sh" | quote }}
-  test-staging-connectivity.sh: {{ .Files.Get "files/tests/test-staging-connectivity.sh" | quote }}
   test-production-connectivity.sh: {{ .Files.Get "files/tests/test-production-connectivity.sh" | quote }}
-  test-production-db.sh: {{ .Files.Get "files/tests/test-production-db.sh" | quote }}
-  test-production-filestore.sh: {{ .Files.Get "files/tests/test-production-filestore.sh" | quote }}
