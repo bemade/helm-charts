@@ -25,24 +25,21 @@ spec:
             spec:
               type: object
               required:
-                - version
+                - image
+                - ingress
+                - replicas
               properties:
-                version:
-                  type: string
-                  description: "Odoo version to deploy (e.g. '17.0')"
-                adminSecret:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                      description: "Name of the secret containing the Odoo admin password"
-                    key:
-                      type: string
-                      description: "Key in the secret containing the Odoo admin password"
-                      default: "admin-password"
                 image:
                   type: string
-                  description: "Odoo image to use (defaults to odoo:version)"
+                  description: "Odoo Docker image to use."
+                  default: "odoo:18.0"
+                imagePullSecret:
+                  type: string
+                  description: "Image pull secret to use."
+                  default: "docker.bemade.org"
+                adminPassword:
+                  type: string
+                  description: "Odoo database administrator password to use."
                 replicas:
                   type: integer
                   minimum: 1
@@ -51,100 +48,54 @@ spec:
                 resources:
                   type: object
                   properties:
-                    limits:
-                      type: object
-                      properties:
-                        cpu:
-                          type: string
-                        memory:
-                          type: string
                     requests:
                       type: object
                       properties:
                         cpu:
                           type: string
+                          default: 200m
                         memory:
                           type: string
-
+                          default: 250Mi
+                    limits:
+                      type: object
+                      properties:
+                        cpu:
+                          type: string
+                          default: 2000m
+                        memory:
+                          type: string
+                          default: 2Gi
                 filestore:
                   type: object
                   properties:
                     storageSize:
                       type: string
-                      default: "10Gi"
+                      default: "2Gi"
                     storageClass:
                       type: string
-                    snapshotClass:
-                      type: string
-                    snapshotSchedule:
-                      type: string
-                      description: "Cron expression for automatic snapshots"
-                addons:
-                  type: array
-                  items:
-                    type: object
-                    required:
-                      - repo
-                    properties:
-                      repo:
-                        type: string
-                        description: "Git repository URL"
-                      branch:
-                        type: string
-                        default: "main"
-                      path:
-                        type: string
-                        description: "Path within the repository"
-                      credentials:
-                        type: string
-                        description: "Reference to a secret with Git credentials"
+                      default: standard
                 ingress:
                   type: object
+                  required:
+                    - host
+                    - issuer
                   properties:
-                    enabled:
-                      type: boolean
-                      default: true
-                    hostname:
+                    host:
                       type: string
-                    className:
+                      description: "The fully qualified domain name (FQDN) for this host."
+                    issuer:
                       type: string
-                    annotations:
-                      type: object
-                      additionalProperties:
-                        type: string
-                    tls:
-                      type: boolean
-                      default: true
-                    tlsSecret:
-                      type: string
-                env:
-                  type: array
-                  items:
-                    type: object
-                    required:
-                      - name
-                    properties:
-                      name:
-                        type: string
-                      value:
-                        type: string
-                      valueFrom:
-                        type: object
-                        properties:
-                          secretKeyRef:
-                            type: object
-                            properties:
-                              name:
-                                type: string
-                              key:
-                                type: string
-                          configMapKeyRef:
-                            type: object
-                            properties:
-                              name:
-                                type: string
-                              key:
-                                type: string
+                      description: "The name of the ClusterIssuer to user to issue the TLS certificate."
+                configOptions:
+                  type: object
+                  description: "Options for the odoo.conf file"
+                  additionalProperties:
+                    type: string
+                  example:
+                    workers: "2"
+                    limit_time_real: "0"
+                    limit_time_cpu: "0"
             status:
               type: object
               properties:

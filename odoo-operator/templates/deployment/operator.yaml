@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  affinity:
+    {{- toYaml .Values.operator.affinity | nindent 4 }}
+  tolerations:
+    {{- toYaml .Values.operator.tolerations | nindent 4}}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      imagePullSecrets:
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+      serviceAccountName: odoo-operator
+      containers:
+        - name: {{ .Release.Name }}
+          image: {{ .Values.operator.image }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: webhook
+              containerPort: 443
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.operator.resources | nindent 12 }}
+          env:
+            - name: WEBHOOK_CERT_PATH
+              value: "/tmp/k8s-webhook-server/serving-certs/tls.crt"
+            - name: WEBHOOK_KEY_PATH
+              value: "/tmp/k8s-webhook-server/serving-certs/tls.key"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: {{ .Release.Name }}
+            - name: OPERATOR_NAMESPACE
+              value: {{ .Release.Namespace }}
+            - name: DEFAULT_ODOO_IMAGE
+              value: {{ .Values.defaults.odooImage }}
+            - name: DEFAULT_STORAGE_CLASS
+              value: {{ .Values.defaults.storageClass }}
+            # Database configuration
+            - name: DB_HOST
+              value: {{ .Values.database.host | quote }}
+            - name: DB_PORT
+              value: {{ .Values.database.port | quote }}
+            - name: DB_ADMIN_USER
+              value: {{ .Values.database.adminUser | quote }}
+            - name: DB_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.database.adminPasswordSecret.name }}
+                  key: {{ .Values.database.adminPasswordSecret.key }}
+            - name: WEBHOOK_PORT
+              value: "443"
+            - name: WEBHOOK_ENABLED
+              value: "true"
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /tmp/k8s-webhook-server/serving-certs
+              readOnly: true
+            - name: instance-defaults
+              mountPath: /etc/odoo
+              readOnly: true
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: kopf-webhook-tls
+        - name: instance-defaults
+          configMap:
+            name: instance-defaults
