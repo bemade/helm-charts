@@ -1,0 +1,85 @@
+# Default values for odoo-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Operator deployment configuration
+operator:
+  # Operator container image
+  image: docker.bemade.org/bemade/odoo-operator
+  
+  # Resource limits and requests for the operator
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+  # Node placement
+  affinity: 
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/worker
+            operator: Exists
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+          - key: node-role.kubernetes.io/worker
+            operator: Exists
+  tolerations: []
+  annotations: {}
+  
+# Image pull secrets for private registries
+imagePullSecrets:
+  - domain: docker.bemade.org
+    username: username
+    password: password
+
+
+# Default configuration for Odoo instances
+defaults:
+  # Default Odoo image to use
+  odooImage: odoo:18.0
+  # Default storage class for PVCs
+  storageClass: "standard"
+  # Default resource requests/limits for Odoo pods
+  resources:
+    requests:
+      cpu: 400m
+      memory: 256Mi
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+  # Node placement
+  affinity: 
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/worker
+            operator: Exists
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        preference:
+          matchExpressions:
+          - key: node-role.kubernetes.io/worker
+            operator: Exists
+  tolerations: []
+
+# Database configuration
+database:
+  # PostgreSQL host to connect to
+  host: "postgres"
+  # PostgreSQL port
+  port: 5432
+  # Admin user with privileges to create databases and users
+  adminUser: "postgres"
+  # Admin password secret configuration
+  adminPasswordSecret:
+    # Name of the secret containing the admin password
+    name: "postgres-admin"
+    # Key in the secret containing the admin password
+    key: "password"
