@@ -20,7 +20,9 @@ spec:
         app: {{ .Release.Name }}
     spec:
       imagePullSecrets:
-        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
+        {{- range .Values.imagePullSecrets }}
+        - name: {{ .domain }}
+        {{- end }}
       serviceAccountName: odoo-operator
       containers:
         - name: {{ .Release.Name }}
@@ -33,14 +35,6 @@ spec:
           resources:
             {{- toYaml .Values.operator.resources | nindent 12 }}
           env:
-            - name: WEBHOOK_CERT_PATH
-              value: "/tmp/k8s-webhook-server/serving-certs/tls.crt"
-            - name: WEBHOOK_KEY_PATH
-              value: "/tmp/k8s-webhook-server/serving-certs/tls.key"
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
             - name: OPERATOR_NAME
               value: {{ .Release.Name }}
             - name: OPERATOR_NAMESPACE
@@ -66,16 +60,10 @@ spec:
             - name: WEBHOOK_ENABLED
               value: "true"
           volumeMounts:
-            - name: webhook-certs
-              mountPath: /tmp/k8s-webhook-server/serving-certs
-              readOnly: true
             - name: instance-defaults
               mountPath: /etc/odoo
               readOnly: true
       volumes:
-        - name: webhook-certs
-          secret:
-            secretName: kopf-webhook-tls
         - name: instance-defaults
           configMap:
             name: instance-defaults
