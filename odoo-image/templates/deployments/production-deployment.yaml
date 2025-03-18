@@ -88,7 +88,7 @@ spec:
             periodSeconds: 20
             timeoutSeconds: 10
             successThreshold: 1
-            failureThreshold: 2
+            failureThreshold: 6
       # Apply custom affinity if defined, otherwise use default worker node affinity
       affinity:
       {{- if .Values.odoo.affinity }}
