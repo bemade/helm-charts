@@ -5,12 +5,12 @@ metadata:
   namespace: {{ .Release.Namespace }}
 rules:
   # Permissions for managing Odoo custom resources
-  - apiGroups: ["odoo.bemade.org"]
+  - apiGroups: ["bemade.org"]
     resources: ["odooinstances"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
   
   # Permissions for managing status subresources
-  - apiGroups: ["odoo.bemade.org"]
+  - apiGroups: ["bemade.org"]
     resources: ["odooinstances/status"]
     verbs: ["get", "update", "patch"]
   
