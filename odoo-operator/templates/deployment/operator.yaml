@@ -10,15 +10,15 @@ spec:
   selector:
     matchLabels:
       app: {{ .Release.Name }}
-  affinity:
-    {{- toYaml .Values.operator.affinity | nindent 4 }}
-  tolerations:
-    {{- toYaml .Values.operator.tolerations | nindent 4}}
   template:
     metadata:
       labels:
         app: {{ .Release.Name }}
     spec:
+      affinity:
+        {{- toYaml .Values.operator.affinity | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.operator.tolerations | nindent 8}}
       imagePullSecrets:
         {{- range .Values.imagePullSecrets }}
         - name: {{ .domain }}
