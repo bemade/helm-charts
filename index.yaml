@@ -1,0 +1,44 @@
+apiVersion: v1
+entries:
+  internal-ca:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-03-18T20:17:50.903129104-04:00"
+    description: A Helm chart for creating an internal Certificate Authority for Kubernetes
+    digest: 0e7e23a55e1f886e3b92987d0a38dc51109f83e8039d4bfd5da36e49a827e3ce
+    name: internal-ca
+    type: application
+    urls:
+    - internal-ca/internal-ca-0.1.0.tgz
+    version: 0.1.0
+  odoo-instance:
+  - apiVersion: v2
+    created: "2025-03-18T20:17:50.903309495-04:00"
+    description: A Helm chart for creating Odoo instances with the Odoo Operator
+    digest: 51f7b286769abaccabcd87f09d6e65c860c2d3269dbb8a19b0f035fd87f9bf33
+    home: https://github.com/bemadecode/odoo-operator
+    maintainers:
+    - email: it@bemade.org
+      name: Bemade Inc.
+      url: https://bemade.org
+    name: odoo-instance
+    sources:
+    - https://github.com/bemadecode/odoo-operator
+    type: application
+    urls:
+    - odoo-instance/odoo-instance-0.1.0.tgz
+    version: 0.1.0
+  onlyoffice:
+  - apiVersion: v2
+    created: "2025-03-18T20:17:50.903485768-04:00"
+    description: A Helm chart for deploying OnlyOffice CE instances
+    digest: 4cbaf2ba76af7a6894eb79d41c698350c30f8b8071e6ca68da0ec72930977ba7
+    maintainers:
+    - email: marc@bemade.org
+      name: Marc Durepos
+    name: onlyoffice
+    type: application
+    urls:
+    - onlyoffice/onlyoffice-1.0.0.tgz
+    version: 1.0.0
+generated: "2025-03-18T20:17:50.902770807-04:00"
