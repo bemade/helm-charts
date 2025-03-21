@@ -19,7 +19,8 @@ spec:
     storageSize: {{ .Values.filestore.storageSize | default "2Gi" }}
     storageClass: {{ .Values.filestore.storageClass | default "standard" }}
   ingress:
-    host: {{ .Values.ingress.host | required "Field ingress.host is required. This is the FQDN for the Odoo instance." }}
+    hosts: 
+      {{- toYaml .Values.ingress.hosts | required "Field ingress.hosts is required. This is the FQDN for the Odoo instance." }}
     issuer: {{ .Values.ingress.issuer | required "Field ingress.issuer is required. This is generally a ClusterIssuer name." }}
   configOptions:
     {{- toYaml .Values.configOptions | nindent 4 }}
