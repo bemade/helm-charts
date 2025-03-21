@@ -27,7 +27,7 @@ spec:
       containers:
         - name: {{ .Release.Name }}
           image: {{ .Values.operator.image }}
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - name: webhook
               containerPort: 443
