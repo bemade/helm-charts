@@ -6,7 +6,7 @@
 operator:
   # Operator container image
   image: docker.bemade.org/bemade/odoo-operator
-  
+
   # Resource limits and requests for the operator
   resources:
     requests:
@@ -16,7 +16,7 @@ operator:
       cpu: 250m
       memory: 256Mi
   # Node placement
-  affinity: 
+  affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
@@ -31,7 +31,7 @@ operator:
             operator: Exists
   tolerations: []
   annotations: {}
-  
+
 # Image pull secrets for private registries
 imagePullSecrets:
   - domain: docker.bemade.org
@@ -54,7 +54,7 @@ defaults:
       cpu: 2000m
       memory: 4Gi
   # Node placement
-  affinity: 
+  affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:

@@ -79,12 +79,14 @@ spec:
                 ingress:
                   type: object
                   required:
-                    - host
+                    - hosts
                     - issuer
                   properties:
-                    host:
-                      type: string
-                      description: "The fully qualified domain name (FQDN) for this host."
+                    hosts:
+                      type: array
+                      items:
+                        type: string
+                      description: "The fully qualified domain names (FQDN) for this host."
                     issuer:
                       type: string
                       description: "The name of the ClusterIssuer to user to issue the TLS certificate."
