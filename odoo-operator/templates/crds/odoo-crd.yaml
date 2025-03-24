@@ -99,6 +99,18 @@ spec:
                     workers: "2"
                     limit_time_real: "0"
                     limit_time_cpu: "0"
+                upgrade:
+                  type: object
+                  required:
+                    - database
+                    - modules
+                  properties:
+                    database:
+                      type: string
+                    modules:
+                      type: array
+                      items:
+                        type: string
             status:
               type: object
               properties:
