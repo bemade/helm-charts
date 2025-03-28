@@ -55,15 +55,17 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.database.adminPasswordSecret.name }}
                   key: {{ .Values.database.adminPasswordSecret.key }}
-            - name: WEBHOOK_PORT
-              value: "443"
-            - name: WEBHOOK_ENABLED
-              value: "true"
           volumeMounts:
             - name: instance-defaults
               mountPath: /etc/odoo
+              readOnly: true
+            - name: webhook-cert
+              mountPath: /etc/webhook
               readOnly: true
       volumes:
         - name: instance-defaults
           configMap:
             name: instance-defaults
+        - name: webhook-cert
+          secret:
+            secretName: {{ .Release.Name }}-webhook-cert
