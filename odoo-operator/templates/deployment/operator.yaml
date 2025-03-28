@@ -64,9 +64,6 @@ spec:
             - name: webhook-cert
               mountPath: /etc/webhook
               readOnly: true
-            - name: webhook-ca
-              mountPath: /etc/webhook-ca
-              readOnly: true
       volumes:
         - name: instance-defaults
           configMap:
@@ -74,6 +71,3 @@ spec:
         - name: webhook-cert
           secret:
             secretName: {{ .Release.Name }}-webhook-cert
-        - name: webhook-ca
-          secret:
-            secretName: {{ .Release.Name }}-webhook-ca
