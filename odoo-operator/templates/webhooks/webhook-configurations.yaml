@@ -16,7 +16,7 @@ webhooks:
       service:
         name: {{ .Release.Name }}-webhook
         namespace: {{ .Release.Namespace }}
-        path: /validate_fn
+        path: /validate
         port: 443
     rules:
       - apiGroups:
