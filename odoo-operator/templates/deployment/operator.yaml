@@ -55,6 +55,8 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.database.adminPasswordSecret.name }}
                   key: {{ .Values.database.adminPasswordSecret.key }}
+            - name: WEBHOOK_HOST
+              value: {{ .Release.Name }}-webhook.{{ .Release.Namespace }}.svc.cluster.local
           volumeMounts:
             - name: instance-defaults
               mountPath: /etc/odoo
