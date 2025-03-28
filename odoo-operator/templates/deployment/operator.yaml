@@ -55,8 +55,10 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.database.adminPasswordSecret.name }}
                   key: {{ .Values.database.adminPasswordSecret.key }}
-            - name: WEBHOOK_HOST
-              value: {{ .Release.Name }}-webhook.{{ .Release.Namespace }}.svc
+            - name: SERVICE_NAME
+              value: {{ .Release.Name }}-webhook
+            - name: SERVICE_NAMESPACE
+              value: {{ .Release.Namespace }}
           volumeMounts:
             - name: instance-defaults
               mountPath: /etc/odoo
