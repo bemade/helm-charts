@@ -83,12 +83,3 @@ database:
     name: "postgres-admin"
     # Key in the secret containing the admin password
     key: "password"
-
-upgrade:
-  # Database name to upgrade
-  database: "odoo"
-  # List of modules to upgrade
-  modules:
-    - "base"
-    - "web"
-
