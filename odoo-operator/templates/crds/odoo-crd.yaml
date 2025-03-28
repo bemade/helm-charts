@@ -111,6 +111,11 @@ spec:
                       type: array
                       items:
                         type: string
+                    time:
+                      type: string
+                      description: "The date and time the upgrade should be performed. This must be in the format YYYY-MM-DDTHH:MM:SSZ."
+                      format: date-time
+
             status:
               type: object
               properties:
