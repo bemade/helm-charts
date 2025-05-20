@@ -1,0 +1,29 @@
+# Image configuration
+image:
+  repository: docker.bemade.org/bemade/odoo-openapi  # Container image repository
+  tag: latest                # Container image tag
+  pullPolicy: IfNotPresent   # Image pull policy
+  pullSecret: "docker.bemade.org"             # Name of the secret for pulling the image
+
+# Ingress configuration
+ingress:
+  enabled: true # Set to true to enable ingress
+  className: "nginx"         # Ingress class name
+  hosts:
+    - host: odoo-openapi.bemade.org  # Your domain name
+      paths:
+        - path: /                # Base path
+          pathType: Prefix
+  tls: []                    # Add your TLS configuration here if needed
+
+# Odoo API Configuration
+odoo:
+  url: ""    # Odoo server URL
+  db: ""                 # Odoo database name
+  user: ""              # Odoo username
+  password: ""               # Odoo password (will be stored in a secret)
+
+# API Configuration
+api:
+  key: ""                   # API key for authentication (will be stored in a secret)
+  port: 8000                # Port to expose the API on
