@@ -29,6 +29,6 @@ spec:
     {{- end }}
   tls:
     - hosts:
-        {{- .Values.ingress.hostnames | toYaml }}
+        {{ .Values.ingress.hostnames | toYaml }}
       secretName: {{ $.Release.Name }}-cert
 {{- end }}
