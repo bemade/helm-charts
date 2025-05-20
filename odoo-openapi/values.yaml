@@ -10,12 +10,12 @@ imagePullSecrets:
 ingress:
   enabled: true # Set to true to enable ingress
   className: "nginx"         # Ingress class name
-  hosts:
-    - host: odoo-openapi.bemade.org  # Your domain name
-      paths:
-        - path: /                # Base path
-          pathType: Prefix
-  tls: []                    # Add your TLS configuration here if needed
+  hostnames:
+    - openapi.odoo.bemade.org
+
+certManager:
+  enabled: true
+  clusterIssuer: letsencrypt-dns
 
 # Odoo API Configuration
 odoo:
