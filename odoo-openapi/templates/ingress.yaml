@@ -19,18 +19,16 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            pathType: {{ .pathType | default "Prefix" }}
+          - path: /
+            pathType: Prefix
             backend:
               service:
                 name: {{ include "odoo-openapi.fullname" $ }}
                 port:
                   number: 80
-          {{- end }}
     {{- end }}
   tls:
     - hosts:
-      {{ .Values.ingress.hostnames | toYaml }}
+        {{- .Values.ingress.hostnames | toYaml }}
       secretName: {{ $.Release.Name }}-cert
 {{- end }}

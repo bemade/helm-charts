@@ -3,3 +3,4 @@
 test-values.yaml
 .scratch
 .vscode
+minikube-values.yaml
