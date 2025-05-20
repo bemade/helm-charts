@@ -15,9 +15,9 @@ spec:
       labels:
         {{- include "odoo-openapi.selectorLabels" . | nindent 8 }}
     spec:
-      {{- if .Values.image.pullSecret }}
+      {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.image.pullSecret }}
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -28,6 +28,8 @@ spec:
             allowPrivilegeEscalation: false
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["uvicorn"]
+          args: ["main:app", "--host", "0.0.0.0", "--port", "8000", "--no-server-header", "--log-level", "warning"]
           ports:
             - name: http
               containerPort: {{ .Values.api.port }}
@@ -36,14 +38,22 @@ spec:
             httpGet:
               path: /health
               port: http
-            initialDelaySeconds: 10
+              scheme: HTTP
+            initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
           readinessProbe:
             httpGet:
               path: /health
               port: http
+              scheme: HTTP
             initialDelaySeconds: 5
-            periodSeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+            successThreshold: 1
           resources:
             limits:
               cpu: 1000m

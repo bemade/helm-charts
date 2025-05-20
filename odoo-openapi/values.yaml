@@ -3,7 +3,8 @@ image:
   repository: docker.bemade.org/bemade/odoo-openapi  # Container image repository
   tag: latest                # Container image tag
   pullPolicy: IfNotPresent   # Image pull policy
-  pullSecret: "docker.bemade.org"             # Name of the secret for pulling the image
+imagePullSecrets:
+  - name: docker.bemade.org
 
 # Ingress configuration
 ingress:

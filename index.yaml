@@ -3,7 +3,7 @@ entries:
   internal-ca:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-05-20T17:15:25.976852-04:00"
+    created: "2025-05-20T19:19:52.65717-04:00"
     description: A Helm chart for creating an internal Certificate Authority for Kubernetes
     digest: 0e7e23a55e1f886e3b92987d0a38dc51109f83e8039d4bfd5da36e49a827e3ce
     name: internal-ca
@@ -13,7 +13,7 @@ entries:
     version: 0.1.0
   odoo-instance:
   - apiVersion: v2
-    created: "2025-05-20T17:15:25.977169-04:00"
+    created: "2025-05-20T19:19:52.657897-04:00"
     description: A Helm chart for creating Odoo instances with the Odoo Operator
     digest: f89faaf05fcd8bb326b7900fe39a2b55b6b3b95f28e994488a64e3c851517e6a
     home: https://github.com/bemadecode/odoo-operator
@@ -29,7 +29,7 @@ entries:
     - odoo-instance/odoo-instance-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v2
-    created: "2025-05-20T17:15:25.976987-04:00"
+    created: "2025-05-20T19:19:52.657437-04:00"
     description: A Helm chart for creating Odoo instances with the Odoo Operator
     digest: 51f7b286769abaccabcd87f09d6e65c860c2d3269dbb8a19b0f035fd87f9bf33
     home: https://github.com/bemadecode/odoo-operator
@@ -47,7 +47,17 @@ entries:
   odoo-openapi:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-05-20T17:15:25.977342-04:00"
+    created: "2025-05-20T19:19:52.658836-04:00"
+    description: A Helm chart for Odoo OpenAPI Tool Server
+    digest: dfd2077b2c921ac4a692b7c4f2c9d5f6925315b740bb2ab4cbad985d85d10b02
+    name: odoo-openapi
+    type: application
+    urls:
+    - odoo-openapi/odoo-openapi-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-05-20T19:19:52.658071-04:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
     digest: 64bbf66f30b6f600c9a7b45768d298d922289e0030391b54449865b105a5b6c2
     name: odoo-openapi
@@ -58,7 +68,7 @@ entries:
   odoo-operator:
   - apiVersion: v2
     appVersion: 0.3.3
-    created: "2025-05-20T17:15:25.976435-04:00"
+    created: "2025-05-20T19:19:52.656765-04:00"
     description: A Kubernetes operator for managing Odoo instances
     digest: 93fce5068087065203f76c2d76d8aef827af8c3420e22d76b4e18f1bd87ea383
     home: https://github.com/bemade/helm-charts
@@ -80,7 +90,7 @@ entries:
     version: 0.3.4
   onlyoffice:
   - apiVersion: v2
-    created: "2025-05-20T17:15:25.977661-04:00"
+    created: "2025-05-20T19:19:52.659117-04:00"
     description: A Helm chart for deploying OnlyOffice CE instances
     digest: 4cbaf2ba76af7a6894eb79d41c698350c30f8b8071e6ca68da0ec72930977ba7
     maintainers:
@@ -91,4 +101,4 @@ entries:
     urls:
     - onlyoffice/onlyoffice-1.0.0.tgz
     version: 1.0.0
-generated: "2025-05-20T17:15:25.975772-04:00"
+generated: "2025-05-20T19:19:52.655928-04:00"
