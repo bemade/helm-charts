@@ -1,6 +1,6 @@
 apiVersion: v2
 name: odoo-openapi
 description: A Helm chart for Odoo OpenAPI Tool Server
-version: 0.1.2
+version: 0.1.3
 appVersion: "1.0.0"
 type: application

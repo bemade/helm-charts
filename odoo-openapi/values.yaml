@@ -28,3 +28,4 @@ odoo:
 api:
   key: ""                   # API key for authentication (will be stored in a secret)
   port: 8000                # Port to expose the API on
+  logLevel: "DEBUG"          # Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
