@@ -17,7 +17,7 @@ spec:
       memory: {{ .Values.resources.limits.memory | default "2Gi" }}
   filestore:
     storageSize: {{ .Values.filestore.storageSize | default "2Gi" }}
-    storageClass: {{ .Values.filestore.storageClass | default "standard" }}
+    storageClass: {{ .Values.filestore.storageClass | default "longhorn" }}
   ingress:
     hosts:
       {{- range .Values.ingress.hosts | required "Field ingress.hosts is required. This is the FQDN for the Odoo instance." }}
