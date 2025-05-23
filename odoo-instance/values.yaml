@@ -11,7 +11,7 @@ resources:
     memory: 2Gi
 filestore:
   storageSize: 2Gi
-  storageClass: standard
+  storageClass: longhorn
 ingress:
   hosts:
     - odoo.bemade.org
