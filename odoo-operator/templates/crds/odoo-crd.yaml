@@ -38,6 +38,30 @@ spec:
                   type: string
                   description: "Image pull secret to use."
                   default: "docker.bemade.org"
+                gitProject:
+                  type: object
+                  description: "Git project to clone into the container"
+                  required:
+                    - repository
+                  properties:
+                      repository:
+                        type: string
+                        description: "Git repository URL"
+                      branch:
+                        type: string
+                        description: "Git branch to track"
+                        default: "main"
+                      sshSecret:
+                        type: string
+                        description: "Name of the secret containing SSH key for private repositories"
+                      size:
+                        type: string
+                        description: "Storage to reserve for the Git project"
+                        default: "1Gi"
+                      storageClass:
+                        type: string
+                        description: "Storage class to use for the Git project"
+                        default: ""
                 adminPassword:
                   type: string
                   description: "Odoo database administrator password to use."

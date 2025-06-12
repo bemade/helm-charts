@@ -6,34 +6,39 @@ metadata:
 rules:
   # Permissions for managing Odoo custom resources
   - apiGroups: ["bemade.org"]
-    resources: ["odooinstances"]
+    resources: ["odooinstances", "gitsyncs"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-  
+
   # Permissions for managing status subresources
   - apiGroups: ["bemade.org"]
-    resources: ["odooinstances/status"]
+    resources: ["odooinstances/status", "gitsyncs/status"]
     verbs: ["get", "update", "patch"]
-  
+
   # Permissions for managing core Kubernetes resources
   - apiGroups: [""]
     resources: ["pods", "services", "configmaps", "secrets", "persistentvolumeclaims", "events"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-  
+
   # Permissions for managing apps resources
   - apiGroups: ["apps"]
     resources: ["deployments", "statefulsets"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-  
+
   # Permissions for managing batch resources
   - apiGroups: ["batch"]
     resources: ["jobs", "cronjobs"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-  
+
+  # Permissions for managing batch status subresources
+  - apiGroups: ["batch"]
+    resources: ["jobs/status", "cronjobs/status"]
+    verbs: ["get", "update", "patch"]
+
   # Permissions for managing networking resources
   - apiGroups: ["traefik.io"]
     resources: ["ingressroutes"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-  
+
   # Permissions for managing namespaces
   - apiGroups: [""]
     resources: ["namespaces"]
@@ -48,7 +53,7 @@ rules:
   - apiGroups: ["cert-manager.io"]
     resources: ["certificates"]
     verbs: ["get", "list", "create", "update", "patch", "delete"]
-  
+
   # Validation and mutation webhook management
   - apiGroups: ["admissionregistration.k8s.io"]
     resources: ["validatingwebhookconfigurations", "mutatingwebhookconfigurations"]
