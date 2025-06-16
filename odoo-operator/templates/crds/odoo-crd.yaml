@@ -139,6 +139,18 @@ spec:
                       type: string
                       description: "The date and time the upgrade should be performed. This must be in the format YYYY-MM-DDTHH:MM:SSZ."
                       format: date-time
+                sync:
+                  type: object
+                  description: "Configuration for Git repository synchronization (uses gitProject for repository details)"
+                  properties:
+                    enabled:
+                      type: boolean
+                      description: "When set to true, triggers a sync operation. Resets to false after sync completes."
+                      default: false
+                    time:
+                      type: string
+                      description: "The scheduled time for sync. Format: YYYY-MM-DDTHH:MM:SSZ."
+                      format: date-time
 
             status:
               type: object
@@ -146,10 +158,10 @@ spec:
                 phase:
                   type: string
                   enum:
-                    - Pending
-                    - Deploying
                     - Running
-                    - Failed
+                    - Syncing
+                    - Upgrading
+                  default: Running
                 message:
                   type: string
                 ready:
@@ -159,6 +171,10 @@ spec:
                 lastBackup:
                   type: string
                   format: date-time
+                syncJob:
+                  type: string
+                upgradeJob:
+                  type: string
                 conditions:
                   type: array
                   items:
