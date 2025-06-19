@@ -26,5 +26,3 @@ spec:
     issuer: {{ .Values.ingress.issuer | required "Field ingress.issuer is required. This is generally a ClusterIssuer name." }}
   configOptions:
     {{- toYaml .Values.configOptions | nindent 4 }}
-  gitProject:
-    {{- toYaml .Values.gitProject | nindent 4 }}
