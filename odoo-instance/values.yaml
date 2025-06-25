@@ -1,8 +1,4 @@
 image: odoo:18.0
-gitProject:
-  repository: # Optional
-  branch: # Optional
-  sshSecret: # Optional secret name containing the SSH key
 imagePullSecret: docker.bemade.org
 adminPassword:
 replicas: 1
