@@ -1,6 +1,6 @@
 image: odoo:18.0
-imagePullSecret: 
-adminPassword:
+imagePullSecret: null
+adminPassword: abc123
 replicas: 1
 resources:
   requests:
@@ -14,8 +14,8 @@ filestore:
   storageClass: longhorn
 ingress:
   hosts:
-    - odoo.bemade.org
-  issuer: letsencrypt
+    - test.odoo.local
+  issuer: selfsigned-cluster-issuer
 configOptions:
   workers: "2"
   limit_time_real: "600"

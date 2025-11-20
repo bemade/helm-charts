@@ -41,7 +41,7 @@ rules:
 
   # Permissions for managing namespaces
   - apiGroups: [""]
-    resources: ["namespaces"]
+    resources: ["namespaces","status"]
     verbs: ["get", "list", "watch"]
 
   # Permissions for customresourcedefinitions

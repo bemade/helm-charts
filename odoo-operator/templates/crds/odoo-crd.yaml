@@ -37,7 +37,6 @@ spec:
                 imagePullSecret:
                   type: string
                   description: "Image pull secret to use."
-                  default: "docker.bemade.org"
                 adminPassword:
                   type: string
                   description: "Odoo database administrator password to use."

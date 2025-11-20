@@ -21,11 +21,7 @@ operator:
   annotations: {}
 
 # Image pull secrets for private registries
-imagePullSecrets:
-  - domain: registry.bemade.org
-    username: username
-    password: password
-
+imagePullSecrets: []
 
 # Default configuration for Odoo instances
 defaults:
@@ -48,7 +44,7 @@ defaults:
 # Database configuration
 database:
   # PostgreSQL host to connect to
-  host: "postgres"
+  host: "postgres.postgres.svc.cluster.local"
   # PostgreSQL port
   port: 5432
   # Admin user with privileges to create databases and users
