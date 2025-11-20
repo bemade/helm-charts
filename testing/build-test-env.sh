@@ -134,7 +134,8 @@ install_traefik() {
   helm upgrade --install "${TRAEFIK_RELEASE}" traefik/traefik \
     --namespace "${TRAEFIK_NAMESPACE}" \
     --set deployment.kind=Deployment \
-    --set service.type=LoadBalancer
+    --set service.type=LoadBalancer \
+    --set providers.kubernetesCRD.allowCrossNamespace=true
 
   log "Traefik installed."
 }
