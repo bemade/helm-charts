@@ -5,7 +5,6 @@ set -euo pipefail
 # Configuration
 #########################
 
-MINIKUBE_PROFILE="${MINIKUBE_PROFILE:-k8s-dev}"
 MINIKUBE_DRIVER="${MINIKUBE_DRIVER:-docker}"   # Change to kvm2 if you prefer
 
 TRAEFIK_NAMESPACE="${TRAEFIK_NAMESPACE:-traefik}"
@@ -100,21 +99,20 @@ install_minikube() {
 }
 
 #########################
-# Start / ensure Minikube
+# Start / ensure Minikube (default profile)
 #########################
 
 ensure_minikube_running() {
-  log "Ensuring minikube profile '${MINIKUBE_PROFILE}' is running..."
+  log "Ensuring default minikube profile is running..."
 
-  if minikube status -p "${MINIKUBE_PROFILE}" >/dev/null 2>&1; then
-    log "Minikube profile '${MINIKUBE_PROFILE}' already running."
+  if minikube status >/dev/null 2>&1; then
+    log "Default minikube profile already running."
   else
-    log "Starting minikube profile '${MINIKUBE_PROFILE}' with driver='${MINIKUBE_DRIVER}'..."
-    minikube start -p "${MINIKUBE_PROFILE}" \
-      --driver="${MINIKUBE_DRIVER}"
+    log "Starting default minikube profile with driver='${MINIKUBE_DRIVER}'..."
+    minikube start --driver="${MINIKUBE_DRIVER}"
   fi
 
-  log "Setting kubectl context to minikube profile '${MINIKUBE_PROFILE}'..."
+  log "Setting kubectl context to 'minikube'..."
   kubectl config use-context "minikube"
 }
 

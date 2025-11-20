@@ -11,7 +11,7 @@ resources:
     memory: 2Gi
 filestore:
   storageSize: 2Gi
-  storageClass: longhorn
+  storageClass: standard
 ingress:
   hosts:
     - test.odoo.local
@@ -20,4 +20,4 @@ configOptions:
   workers: "2"
   limit_time_real: "600"
   limit_time_cpu: "600"
-  addons_path: "/mnt/extra-addons,/mnt/enterprise-addons"
+  addons_path: "/mnt/extra-addons"
