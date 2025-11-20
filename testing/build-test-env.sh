@@ -17,6 +17,8 @@ CERT_MANAGER_RELEASE="${CERT_MANAGER_RELEASE:-cert-manager}"
 POSTGRES_OPERATOR_NAMESPACE="${POSTGRES_OPERATOR_NAMESPACE:-postgres-operator}"
 POSTGRES_OPERATOR_RELEASE="${POSTGRES_OPERATOR_RELEASE:-postgres-operator}"
 
+POSTGRES_YAML="${POSTGRES_YAML:-postgres.yaml}"
+
 SELF_SIGNED_CLUSTERISSUER_NAME="${SELF_SIGNED_CLUSTERISSUER_NAME:-selfsigned-cluster-issuer}"
 
 #########################
@@ -207,6 +209,18 @@ install_postgres_operator() {
 }
 
 #########################
+# Install simple Postgres
+#########################
+
+install_simple_postgres() {
+  log "Installing simple Postgres from '${POSTGRES_YAML}'..."
+
+  kubectl apply -f "${POSTGRES_YAML}"
+
+  log "Simple Postgres installed."
+}
+
+#########################
 # Main
 #########################
 
@@ -220,6 +234,7 @@ main() {
   install_cert_manager
   create_selfsigned_clusterissuer
   install_postgres_operator
+  install_simple_postgres
 
   log "Setup complete. Summary:"
   kubectl get nodes
