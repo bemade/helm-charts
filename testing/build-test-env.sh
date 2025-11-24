@@ -136,6 +136,7 @@ install_traefik() {
     --set deployment.kind=Deployment \
     --set service.type=LoadBalancer \
     --set providers.kubernetesCRD.allowCrossNamespace=true
+    --set service.spec.loadBalancerIp=
 
   log "Traefik installed."
 }

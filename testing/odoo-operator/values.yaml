@@ -5,7 +5,8 @@
 # Operator deployment configuration
 operator:
   # Operator container image
-  image: registry.bemade.org/bemade/odoo-operator
+  image: registry.bemade.org/bemade/odoo-operator:local-dev
+  imagePullPolicy: IfNotPresent
 
   # Resource limits and requests for the operator
   resources:
