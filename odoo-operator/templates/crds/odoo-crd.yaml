@@ -98,14 +98,44 @@ spec:
                     workers: "2"
                     limit_time_real: "0"
                     limit_time_cpu: "0"
+                initialization:
+                  type: object
+                  description: "Database initialization configuration. Only processed on first creation."
+                  properties:
+                    mode:
+                      type: string
+                      enum: ["fresh", "restore"]
+                      default: "fresh"
+                      description: "Initialization mode: 'fresh' for empty database, 'restore' to copy from another Odoo instance"
+                    restore:
+                      type: object
+                      description: "Restore configuration when mode is 'restore'"
+                      properties:
+                        url:
+                          type: string
+                          description: "URL of the source Odoo instance (e.g., https://production.odoo.com)"
+                        sourceDatabase:
+                          type: string
+                          description: "Name of the database to restore from the source instance"
+                        masterPassword:
+                          type: string
+                          description: "Master password of the source Odoo instance"
+                        withFilestore:
+                          type: boolean
+                          default: true
+                          description: "Whether to include filestore in the restore"
+                        neutralize:
+                          type: boolean
+                          default: true
+                          description: "Whether to neutralize the database (reset UUIDs, secrets, etc.)"
                 upgrade:
                   type: object
                   required:
-                    - database
                     - modules
                   properties:
                     database:
                       type: string
+                      description: "DEPRECATED: Database name is now auto-generated from instance UID. This field is ignored."
                     modules:
                       type: array
                       items:
