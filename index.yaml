@@ -3,9 +3,9 @@ entries:
   internal-ca:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-24T13:37:04.803479113-05:00"
+    created: "2025-11-25T11:07:05.569108155-05:00"
     description: A Helm chart for creating an internal Certificate Authority for Kubernetes
-    digest: 0e7e23a55e1f886e3b92987d0a38dc51109f83e8039d4bfd5da36e49a827e3ce
+    digest: c6177148460a8b2fd19e5445d798455106bb54f627d1482b110be87dc679e730
     name: internal-ca
     type: application
     urls:
@@ -13,9 +13,9 @@ entries:
     version: 0.1.0
   odoo-instance:
   - apiVersion: v2
-    created: "2025-11-24T13:37:04.804568497-05:00"
+    created: "2025-11-25T11:07:05.570187361-05:00"
     description: A Helm chart for creating Odoo instances with the Odoo Operator
-    digest: fbf9767b7ba0162d1aedb32aa157c899a4788a0069b8f55f9308ffc3475212cd
+    digest: c6dcdf551d2e2444924de61cc153208e6e62fce87fa3e14c4b455d9dae238f44
     home: https://github.com/bemadecode/odoo-operator
     maintainers:
     - email: it@bemade.org
@@ -29,9 +29,9 @@ entries:
     - odoo-instance/odoo-instance-0.4.0.tgz
     version: 0.4.0
   - apiVersion: v2
-    created: "2025-11-24T13:37:04.804139462-05:00"
+    created: "2025-11-25T11:07:05.570063238-05:00"
     description: A Helm chart for creating Odoo instances with the Odoo Operator
-    digest: 3eb64da9313d5a1625ce8ada3c7bf42de935d8372e0bc407b2570fd3e97b039d
+    digest: 1afaf329a5844a3215650e646681049120e8938b5b736adf98d996d3fba1d13a
     home: https://github.com/bemadecode/odoo-operator
     maintainers:
     - email: it@bemade.org
@@ -45,9 +45,9 @@ entries:
     - odoo-instance/odoo-instance-0.3.0.tgz
     version: 0.3.0
   - apiVersion: v2
-    created: "2025-11-24T13:37:04.803932313-05:00"
+    created: "2025-11-25T11:07:05.569885374-05:00"
     description: A Helm chart for creating Odoo instances with the Odoo Operator
-    digest: 713f58a7ebb8f9c841802e8d4a60b4963922f716c3b3420d30b592aa4d92998b
+    digest: 49aa651278ab71c8f8f24c83ad91a7f2a9de11f0658d18003e3831eaca35c477
     home: https://github.com/bemadecode/odoo-operator
     maintainers:
     - email: it@bemade.org
@@ -61,9 +61,9 @@ entries:
     - odoo-instance/odoo-instance-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v2
-    created: "2025-11-24T13:37:04.803752255-05:00"
+    created: "2025-11-25T11:07:05.569439577-05:00"
     description: A Helm chart for creating Odoo instances with the Odoo Operator
-    digest: f89faaf05fcd8bb326b7900fe39a2b55b6b3b95f28e994488a64e3c851517e6a
+    digest: e8f5c5f7d78dccf1385f7f0d5b4447283b6afad77a554f46c9d09b4e5b9a6215
     home: https://github.com/bemadecode/odoo-operator
     maintainers:
     - email: it@bemade.org
@@ -77,9 +77,9 @@ entries:
     - odoo-instance/odoo-instance-0.1.1.tgz
     version: 0.1.1
   - apiVersion: v2
-    created: "2025-11-24T13:37:04.803610429-05:00"
+    created: "2025-11-25T11:07:05.56922243-05:00"
     description: A Helm chart for creating Odoo instances with the Odoo Operator
-    digest: 51f7b286769abaccabcd87f09d6e65c860c2d3269dbb8a19b0f035fd87f9bf33
+    digest: 1021055f45d9418ae275628ed63240144b266a08a886409962d1141f374961da
     home: https://github.com/bemadecode/odoo-operator
     maintainers:
     - email: it@bemade.org
@@ -95,9 +95,9 @@ entries:
   odoo-openapi:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-24T13:37:04.806666725-05:00"
+    created: "2025-11-25T11:07:05.570598282-05:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
-    digest: cfaa588f9372bbef36a808d5e30b9f875a155b100f4177d381301a03e0a4a53b
+    digest: 84c60cc932efc5c45dfe7fee22805c1f393821bea7681a41879f26be3c8b9fb8
     name: odoo-openapi
     type: application
     urls:
@@ -105,9 +105,9 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-24T13:37:04.805181408-05:00"
+    created: "2025-11-25T11:07:05.570463649-05:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
-    digest: 0abf63b7e56ef82a3a9fcf29e408296dfce04f9b9aede96c5efc46fcef1e6209
+    digest: 6f5c6ba50eccc69b460a4a3f7d37c8e17653a3d6f2f296921b9ee09925af5766
     name: odoo-openapi
     type: application
     urls:
@@ -115,9 +115,9 @@ entries:
     version: 0.1.2
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-11-24T13:37:04.804770887-05:00"
+    created: "2025-11-25T11:07:05.570327273-05:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
-    digest: 64bbf66f30b6f600c9a7b45768d298d922289e0030391b54449865b105a5b6c2
+    digest: 0fc02498f0e1a76822db7bc7b6bf7321da8befb8d3eaa875e11a563469e74214
     name: odoo-openapi
     type: application
     urls:
@@ -125,10 +125,32 @@ entries:
     version: 0.1.0
   odoo-operator:
   - apiVersion: v2
-    appVersion: 0.6.2
-    created: "2025-11-24T13:37:04.812131792-05:00"
+    appVersion: 0.6.3
+    created: "2025-11-25T11:07:05.572150033-05:00"
     description: A Kubernetes operator for managing Odoo instances
-    digest: e2280fb539c0af7943af7d9d5bb06d745b32e18131e1ca0e6fb8bd42d427fe16
+    digest: 8aea11ffdf486808d417e3e0f1a18fd6c7f152aa550a4a3a1d058976c33e6c83
+    home: https://github.com/bemade/helm-charts
+    keywords:
+    - odoo
+    - operator
+    - kubernetes
+    - bemade
+    maintainers:
+    - email: info@bemade.org
+      name: BeMade
+      url: https://bemade.org
+    name: odoo-operator
+    sources:
+    - https://github.com/bemade/helm-charts
+    type: application
+    urls:
+    - odoo-operator/odoo-operator-0.6.3.tgz
+    version: 0.6.3
+  - apiVersion: v2
+    appVersion: 0.6.2
+    created: "2025-11-25T11:07:05.571959846-05:00"
+    description: A Kubernetes operator for managing Odoo instances
+    digest: 265a27f6d087864702532b30fbe5481d873374adf1307766ef20a877ac64ef07
     home: https://github.com/bemade/helm-charts
     keywords:
     - odoo
@@ -148,9 +170,9 @@ entries:
     version: 0.6.2
   - apiVersion: v2
     appVersion: 0.6.1
-    created: "2025-11-24T13:37:04.809860039-05:00"
+    created: "2025-11-25T11:07:05.571783235-05:00"
     description: A Kubernetes operator for managing Odoo instances
-    digest: c982f460c9a800b5d4d22f15304023e1976e0920c821fa5ef5a281050bfdd96c
+    digest: 048cee865cbe6d538c752a3039eaed67c71f5e7232ae0ab05452915eabf9a64d
     home: https://github.com/bemade/helm-charts
     keywords:
     - odoo
@@ -170,9 +192,9 @@ entries:
     version: 0.6.1
   - apiVersion: v2
     appVersion: 0.6.0
-    created: "2025-11-24T13:37:04.808762469-05:00"
+    created: "2025-11-25T11:07:05.571573592-05:00"
     description: A Kubernetes operator for managing Odoo instances
-    digest: 06596f60ac5cba8fcfa0ddb76a67d00038f05963530d334d20fb88c6c97fbbbf
+    digest: 365ad98e87a73f3d80717989bc1eb5dd4f4ee977ae2671a7f310fcb3befabb14
     home: https://github.com/bemade/helm-charts
     keywords:
     - odoo
@@ -192,9 +214,9 @@ entries:
     version: 0.6.0
   - apiVersion: v2
     appVersion: 0.5.0
-    created: "2025-11-24T13:37:04.808069598-05:00"
+    created: "2025-11-25T11:07:05.57132779-05:00"
     description: A Kubernetes operator for managing Odoo instances
-    digest: 124ba4024bc40a84f7a1c523eb77d88c6f503b3f4ae2dc9631b32a32c7063636
+    digest: 08db3f37b4ac932e9c9e8a79fa32c45a7a39f395a836be7627b40bbea86b50fb
     home: https://github.com/bemade/helm-charts
     keywords:
     - odoo
@@ -214,9 +236,9 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: 0.4.0
-    created: "2025-11-24T13:37:04.807574058-05:00"
+    created: "2025-11-25T11:07:05.57107721-05:00"
     description: A Kubernetes operator for managing Odoo instances
-    digest: b1d28b4c509337c55f0b0848778b16e9b21d98ee6959cbf5b1ea9b7eeee4cfdc
+    digest: facbf2677178c7641a781b9b5df6722b9b6320e91e525f6318e5058b1f24727e
     home: https://github.com/bemade/helm-charts
     keywords:
     - odoo
@@ -236,9 +258,9 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: 0.3.3
-    created: "2025-11-24T13:37:04.807067588-05:00"
+    created: "2025-11-25T11:07:05.570856045-05:00"
     description: A Kubernetes operator for managing Odoo instances
-    digest: 93fce5068087065203f76c2d76d8aef827af8c3420e22d76b4e18f1bd87ea383
+    digest: 3e77845a88b711e62e98c44f885af857549b597506683d4c78cd6017127d1a50
     home: https://github.com/bemade/helm-charts
     keywords:
     - odoo
@@ -258,9 +280,9 @@ entries:
     version: 0.3.4
   onlyoffice:
   - apiVersion: v2
-    created: "2025-11-24T13:37:04.812443668-05:00"
+    created: "2025-11-25T11:07:05.572230614-05:00"
     description: A Helm chart for deploying OnlyOffice CE instances
-    digest: 4cbaf2ba76af7a6894eb79d41c698350c30f8b8071e6ca68da0ec72930977ba7
+    digest: 077b7940b7b9d6f07dcd361cfc485c96f381dcfbe5b284dc3922a2deefa1d392
     maintainers:
     - email: marc@bemade.org
       name: Marc Durepos
@@ -269,4 +291,4 @@ entries:
     urls:
     - onlyoffice/onlyoffice-1.0.0.tgz
     version: 1.0.0
-generated: "2025-11-24T13:37:04.801505999-05:00"
+generated: "2025-11-25T11:07:05.568853337-05:00"
