@@ -101,8 +101,13 @@ spec:
                   properties:
                     url:
                       type: string
+                      description: URL to POST backup status updates to.
+                    token:
+                      type: string
+                      description: Bearer token to include in Authorization header.
                     secretTokenSecretRef:
                       type: object
+                      description: Alternative to token - reference to a Secret containing the token.
                       properties:
                         name:
                           type: string
