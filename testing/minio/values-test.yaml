@@ -1,0 +1,33 @@
+replicaCount: 1
+
+rootCredentials:
+  create: true
+  secretName: minio-root-creds
+  userKey: root-user
+  passwordKey: root-password
+  user: testadmin
+  password: testpass123
+
+ingress:
+  enabled: true
+  className: "traefik"
+  annotations:
+    cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
+  api:
+    host: minio-api.local
+    tlsSecretName: minio-api-local-tls
+  console:
+    host: console.minio.local
+    tlsSecretName: minio-console-local-tls
+
+persistence:
+  enabled: true
+  size: 2Gi
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi

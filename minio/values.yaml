@@ -1,0 +1,52 @@
+replicaCount: 1
+
+image: minio/minio:latest
+imagePullPolicy: IfNotPresent
+imagePullSecrets: []
+
+rootCredentials:
+  create: true
+  secretName: minio-root-creds
+  userKey: root-user
+  passwordKey: root-password
+  user: admin
+  password: change-me
+
+service:
+  type: ClusterIP
+  apiPort: 9000
+  consolePort: 9001
+
+dataPath: /data
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-dns
+  api:
+    host: minio-api.bemade.org
+    tlsSecretName: minio-api-tls
+  console:
+    host: console.minio.bemade.org
+    tlsSecretName: minio-console-tls
+
+persistence:
+  enabled: true
+  size: 150Gi
+  storageClass: ceph-rbd-sc
+  accessModes:
+    - ReadWriteOnce
+  existingClaim: ""
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 2000m
+    memory: 4Gi
+
+nodeSelector: {}
+affinity: {}
+tolerations: []

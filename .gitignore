@@ -4,3 +4,4 @@ test-values.yaml
 .scratch
 .vscode
 minikube-values.yaml
+testing/odoo-instance/values-bemade.yaml

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: minio
+version: 0.1.0
+description: Minimal Helm chart for a single MinIO deployment with ingress
+appVersion: "RELEASE.2024-05-28T17-19-04Z"
+type: application

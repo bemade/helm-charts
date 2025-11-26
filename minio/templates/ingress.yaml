@@ -1,0 +1,56 @@
+{{- if and .Values.ingress.enabled .Values.ingress.api.host }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "minio.fullname" . }}-api
+  labels:
+    {{- include "minio.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+spec:
+  ingressClassName: {{ .Values.ingress.className | quote }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.api.host }}
+      secretName: {{ .Values.ingress.api.tlsSecretName }}
+  rules:
+    - host: {{ .Values.ingress.api.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "minio.fullname" . }}
+                port:
+                  number: {{ .Values.service.apiPort }}
+{{- end }}
+
+{{- if and .Values.ingress.enabled .Values.ingress.console.host }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "minio.fullname" . }}-console
+  labels:
+    {{- include "minio.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+spec:
+  ingressClassName: {{ .Values.ingress.className | quote }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.console.host }}
+      secretName: {{ .Values.ingress.console.tlsSecretName }}
+  rules:
+    - host: {{ .Values.ingress.console.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "minio.fullname" . }}
+                port:
+                  number: {{ .Values.service.consolePort }}
+{{- end }}
