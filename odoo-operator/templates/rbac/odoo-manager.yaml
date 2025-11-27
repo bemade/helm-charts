@@ -1,0 +1,92 @@
+{{- if .Values.odooManager.enabled }}
+# ServiceAccount for external Odoo manager to access the cluster
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.odooManager.serviceAccountName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: odoo-manager
+    app.kubernetes.io/component: manager
+    {{- include "odoo-operator.labels" . | nindent 4 }}
+---
+# Secret with long-lived token for the ServiceAccount
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Values.odooManager.serviceAccountName }}-token
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    kubernetes.io/service-account.name: {{ .Values.odooManager.serviceAccountName }}
+  labels:
+    app.kubernetes.io/name: odoo-manager
+    app.kubernetes.io/component: manager
+    {{- include "odoo-operator.labels" . | nindent 4 }}
+type: kubernetes.io/service-account-token
+---
+# ClusterRole with permissions to manage OdooInstances and view related resources
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.odooManager.serviceAccountName }}
+  labels:
+    app.kubernetes.io/name: odoo-manager
+    app.kubernetes.io/component: manager
+    {{- include "odoo-operator.labels" . | nindent 4 }}
+rules:
+  # Full access to Odoo CRDs
+  - apiGroups: ["bemade.org"]
+    resources:
+      - odooinstances
+      - odooinstances/status
+      - odoobackupjobs
+      - odoobackupjobs/status
+      - odoorestorejobs
+      - odoorestorejobs/status
+      - odooupgradejobs
+      - odooupgradejobs/status
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  # Read access to Deployments for replica status
+  - apiGroups: ["apps"]
+    resources:
+      - deployments
+      - deployments/status
+    verbs: ["get", "list", "watch"]
+  # Read access to core resources
+  - apiGroups: [""]
+    resources:
+      - secrets
+      - configmaps
+      - services
+      - persistentvolumeclaims
+      - pods
+    verbs: ["get", "list", "watch"]
+  # Read access to ingresses
+  - apiGroups: ["networking.k8s.io"]
+    resources:
+      - ingresses
+    verbs: ["get", "list", "watch"]
+  # Read access to Traefik IngressRoutes if used
+  - apiGroups: ["traefik.io", "traefik.containo.us"]
+    resources:
+      - ingressroutes
+    verbs: ["get", "list", "watch"]
+---
+# Bind the ClusterRole to the ServiceAccount
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ .Values.odooManager.serviceAccountName }}
+  labels:
+    app.kubernetes.io/name: odoo-manager
+    app.kubernetes.io/component: manager
+    {{- include "odoo-operator.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.odooManager.serviceAccountName }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ .Values.odooManager.serviceAccountName }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}

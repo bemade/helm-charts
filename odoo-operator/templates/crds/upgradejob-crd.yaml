@@ -90,6 +90,9 @@ spec:
                 jobName:
                   type: string
                   description: Kubernetes Job name handling this upgrade.
+                originalReplicas:
+                  type: integer
+                  description: Original replica count before scaling down for upgrade.
       subresources:
         status: {}
       additionalPrinterColumns:

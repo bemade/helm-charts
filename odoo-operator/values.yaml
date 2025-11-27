@@ -45,6 +45,13 @@ defaults:
   affinity: {}
   tolerations: []
 
+# Odoo Manager ServiceAccount (for external Odoo instances to manage the cluster)
+odooManager:
+  # Enable creation of ServiceAccount and RBAC for Odoo manager
+  enabled: false
+  # ServiceAccount name
+  serviceAccountName: "odoo-manager"
+
 # Database configuration
 database:
   # PostgreSQL host to connect to
