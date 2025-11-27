@@ -6,12 +6,12 @@ metadata:
 rules:
   # Permissions for managing Odoo custom resources
   - apiGroups: ["bemade.org"]
-    resources: ["odooinstances", "gitsyncs", "odoobackupjobs", "odoorestorejobs"]
+    resources: ["odooinstances", "gitsyncs", "odoobackupjobs", "odoorestorejobs", "odooupgradejobs"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
   # Permissions for managing status subresources
   - apiGroups: ["bemade.org"]
-    resources: ["odooinstances/status", "gitsyncs/status", "odoobackupjobs/status", "odoorestorejobs/status"]
+    resources: ["odooinstances/status", "gitsyncs/status", "odoobackupjobs/status", "odoorestorejobs/status", "odooupgradejobs/status"]
     verbs: ["get", "update", "patch"]
 
   # Permissions for managing core Kubernetes resources
