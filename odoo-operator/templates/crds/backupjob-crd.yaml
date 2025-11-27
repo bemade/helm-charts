@@ -42,7 +42,8 @@ spec:
                   enum:
                     - zip
                     - sql
-                  description: Backup format. "zip" includes filestore, "sql" is database only.
+                    - dump
+                  description: "Backup format: 'zip' includes filestore (Odoo format), 'sql' is plain text SQL, 'dump' is PostgreSQL custom format."
                   default: zip
                 withFilestore:
                   type: boolean

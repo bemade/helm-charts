@@ -156,40 +156,8 @@ spec:
                       type: string
                       description: "The scheduled time for sync. Format: YYYY-MM-DDTHH:MM:SSZ."
                       format: date-time
-                restore:
-                  type: object
-                  description: "Configuration for database restore"
-                  required:
-                   - enabled
-                   - url
-                   - sourceDatabase
-                   - targetDatabase
-                   - masterPassword
-                  properties:
-                    enabled:
-                      type: boolean
-                      description: "When set to true, triggers a restore operation. Resets to false after restore completes."
-                      default: false
-                    url:
-                      type: string
-                      description: "URL of the Odoo server to download backup from."
-                    sourceDatabase:
-                      type: string
-                      description: "Name of the database to restore from."
-                    targetDatabase:
-                      type: string
-                      description: "Name of the database to restore to."
-                    masterPassword:
-                      type: string
-                      description: "Master password for the Odoo server."
-                    neutralize:
-                      type: boolean
-                      description: "When set to true, neutralizes the database before restoring."
-                      default: true
-                    withFilestore:
-                      type: boolean
-                      description: "When set to true, includes the filestore in the backup."
-                      default: false
+                # NOTE: spec.restore has been moved to OdooRestoreJob CRD
+                # Use OdooRestoreJob CR to trigger restore operations
 
             status:
               type: object
@@ -210,8 +178,6 @@ spec:
                 lastBackup:
                   type: string
                   format: date-time
-                restoreJob:
-                  type: string
                 upgradeJob:
                   type: string
                 conditions:
