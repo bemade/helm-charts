@@ -55,8 +55,7 @@ spec:
                     - bucket
                     - objectKey
                     - endpoint
-                    - accessKeySecretRef
-                    - secretKeySecretRef
+                    - s3CredentialsSecretRef
                   properties:
                     bucket:
                       type: string
@@ -74,28 +73,18 @@ spec:
                       type: boolean
                       description: Disable TLS verification when uploading to S3 endpoint.
                       default: false
-                    accessKeySecretRef:
+                    s3CredentialsSecretRef:
                       type: object
-                      description: Secret reference containing access key credentials.
+                      description: Reference to a Secret containing S3 credentials (accessKey and secretKey keys).
+                      required:
+                        - name
                       properties:
                         name:
                           type: string
-                        key:
+                          description: Name of the Secret containing S3 credentials.
+                        namespace:
                           type: string
-                      required:
-                        - name
-                        - key
-                    secretKeySecretRef:
-                      type: object
-                      description: Secret reference containing secret key credentials.
-                      properties:
-                        name:
-                          type: string
-                        key:
-                          type: string
-                      required:
-                        - name
-                        - key
+                          description: Namespace of the Secret (defaults to odoo-operator namespace).
                 webhook:
                   type: object
                   description: Optional webhook callback when backup completes.

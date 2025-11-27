@@ -158,6 +158,13 @@ spec:
                       format: date-time
                 # NOTE: spec.restore has been moved to OdooRestoreJob CRD
                 # Use OdooRestoreJob CR to trigger restore operations
+                webhook:
+                  type: object
+                  description: "Webhook configuration for status update notifications"
+                  properties:
+                    url:
+                      type: string
+                      description: "URL to POST status updates to when instance phase changes"
 
             status:
               type: object

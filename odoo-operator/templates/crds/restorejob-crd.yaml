@@ -72,24 +72,18 @@ spec:
                           type: boolean
                           default: false
                           description: "Allow insecure TLS connections"
-                        accessKeySecretRef:
+                        s3CredentialsSecretRef:
                           type: object
-                          description: "Reference to secret containing S3 access key"
+                          description: "Reference to a Secret containing S3 credentials (accessKey and secretKey keys)"
+                          required:
+                            - name
                           properties:
                             name:
                               type: string
-                            key:
+                              description: "Name of the Secret containing S3 credentials"
+                            namespace:
                               type: string
-                              default: "accessKey"
-                        secretKeySecretRef:
-                          type: object
-                          description: "Reference to secret containing S3 secret key"
-                          properties:
-                            name:
-                              type: string
-                            key:
-                              type: string
-                              default: "secretKey"
+                              description: "Namespace of the Secret (defaults to odoo-operator namespace)"
                     odoo:
                       type: object
                       description: "Odoo instance source configuration (required when type is 'odoo')"
