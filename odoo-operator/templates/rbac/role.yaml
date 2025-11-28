@@ -24,6 +24,11 @@ rules:
     resources: ["deployments", "statefulsets"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
+  # Permissions for scaling deployments
+  - apiGroups: ["apps"]
+    resources: ["deployments/scale"]
+    verbs: ["get", "update", "patch"]
+
   # Permissions for managing batch resources
   - apiGroups: ["batch"]
     resources: ["jobs", "cronjobs"]
