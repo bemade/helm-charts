@@ -69,6 +69,12 @@ rules:
       - persistentvolumeclaims
       - pods
     verbs: ["get", "list", "watch"]
+  # Read access to namespaces (same as odoo-operator)
+  - apiGroups: [""]
+    resources:
+      - namespaces
+      - namespaces/status
+    verbs: ["get", "list", "watch", "create"]
   # Read access to ingresses
   - apiGroups: ["networking.k8s.io"]
     resources:
