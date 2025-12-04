@@ -34,18 +34,26 @@ metadata:
     app.kubernetes.io/component: manager
     app.kubernetes.io/instance: {{ .Release.Name }}
 rules:
-  # Full access to Odoo CRDs
+  # Full access to Odoo CRDs (same as odoo-operator)
   - apiGroups: ["bemade.org"]
     resources:
       - odooinstances
-      - odooinstances/status
+      - gitsyncs
       - odoobackupjobs
-      - odoobackupjobs/status
       - odoorestorejobs
-      - odoorestorejobs/status
       - odooupgradejobs
-      - odooupgradejobs/status
+      - odooinitjobs
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  # Status subresources for Odoo CRDs (same as odoo-operator)
+  - apiGroups: ["bemade.org"]
+    resources:
+      - odooinstances/status
+      - gitsyncs/status
+      - odoobackupjobs/status
+      - odoorestorejobs/status
+      - odooupgradejobs/status
+      - odooinitjobs/status
+    verbs: ["get", "update", "patch"]
   # Read access to Deployments for replica status
   - apiGroups: ["apps"]
     resources:
