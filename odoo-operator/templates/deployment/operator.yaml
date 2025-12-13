@@ -14,6 +14,8 @@ spec:
     metadata:
       labels:
         app: {{ .Release.Name }}
+      annotations:
+        odoo-operator.bemade.org/release: "{{ .Release.Revision }}"
     spec:
       affinity:
         {{- toYaml .Values.operator.affinity | nindent 8 }}
