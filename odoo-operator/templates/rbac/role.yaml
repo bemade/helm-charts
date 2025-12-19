@@ -40,8 +40,8 @@ rules:
     verbs: ["get", "update", "patch"]
 
   # Permissions for managing networking resources
-  - apiGroups: ["traefik.io"]
-    resources: ["ingressroutes"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
   # Permissions for managing namespaces

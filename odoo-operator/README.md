@@ -9,6 +9,7 @@ This chart deploys:
 - Custom Resource Definitions (CRDs) for OdooInstance, OdooBackupJob, and OdooRestoreJob
 - RBAC resources (ServiceAccount, ClusterRole, ClusterRoleBinding)
 - ConfigMaps for operator configuration
+- Standard Kubernetes Ingress support (no Traefik CRDs required)
 
 ## Prerequisites
 
@@ -90,6 +91,7 @@ These defaults apply to new OdooInstance resources:
 | `defaults.resources.limits.memory` | Default memory limit | `4Gi` |
 | `defaults.affinity` | Default pod affinity | `{}` |
 | `defaults.tolerations` | Default pod tolerations | `[]` |
+| `defaults.ingressClass` | Default ingress class for created Ingresses (optional) | *(unset; cluster default)* |
 
 ## Example values.yaml
 

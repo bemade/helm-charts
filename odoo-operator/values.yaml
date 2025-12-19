@@ -44,6 +44,7 @@ defaults:
   # Node placement
   affinity: {}
   tolerations: []
+  ingressClass: ""
 
 # Odoo Manager ServiceAccount (for external Odoo instances to manage the cluster)
 odooManager:
