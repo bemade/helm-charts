@@ -9,7 +9,7 @@ This chart deploys:
 - Custom Resource Definitions (CRDs) for OdooInstance, OdooBackupJob, and OdooRestoreJob
 - RBAC resources (ServiceAccount, ClusterRole, ClusterRoleBinding)
 - ConfigMaps for operator configuration
-- Standard Kubernetes Ingress support (no Traefik CRDs required)
+- Standard Kubernetes Ingress support
 
 ## Prerequisites
 
