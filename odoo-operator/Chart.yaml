@@ -23,8 +23,8 @@ home: https://github.com/bemade/helm-charts
 
 # Maintainers of this chart
 maintainers:
-  - name: BeMade
-    email: info@bemade.org
+  - name: Bemade Inc.
+    email: marc@bemade.org
     url: https://bemade.org
 
 # Sources for this chart

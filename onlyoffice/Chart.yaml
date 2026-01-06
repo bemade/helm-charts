@@ -3,7 +3,10 @@ name: onlyoffice
 description: A Helm chart for deploying OnlyOffice CE instances
 type: application
 version: 1.0.0
-
+home: https://github.com/bemade/helm-charts
+sources:
+  - https://github.com/bemade/helm-charts
 maintainers:
-  - name: Marc Durepos
+  - name: Bemade Inc.
+    url: https://bemade.org
     email: marc@bemade.org

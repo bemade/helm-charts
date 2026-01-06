@@ -4,3 +4,10 @@ version: 0.1.0
 description: Minimal Helm chart for a single MinIO deployment with ingress
 appVersion: "RELEASE.2024-05-28T17-19-04Z"
 type: application
+home: https://github.com/bemade/helm-charts
+sources:
+  - https://github.com/bemade/helm-charts
+maintainers:
+  - name: Bemade Inc.
+    url: https://bemade.org
+    email: marc@bemade.org
