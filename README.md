@@ -75,4 +75,4 @@ helm repo index . --url https://bemade.github.io/helm-charts
 
 ## License
 
-Proprietary - Bemade Inc.
+LGPL-v3: https://www.gnu.org/licenses/lgpl-3.0.en.html 
