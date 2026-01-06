@@ -75,4 +75,4 @@ helm repo index . --url https://bemade.github.io/helm-charts
 
 ## License
 
-LGPL-v3: https://www.gnu.org/licenses/lgpl-3.0.en.html 
+This project is licensed under the GNU Lesser General Public License v3.0 - see the [LICENSE](LICENSE) file for details. 
