@@ -24,7 +24,6 @@ spec:
               type: object
               required:
                 - odooInstanceRef
-                - modules
               properties:
                 odooInstanceRef:
                   type: object
