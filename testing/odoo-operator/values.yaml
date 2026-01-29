@@ -42,17 +42,10 @@ defaults:
   affinity: {}
   tolerations: []
 
-# Database configuration
-database:
-  # PostgreSQL host to connect to
-  host: "postgres.postgres.svc.cluster.local"
-  # PostgreSQL port
-  port: 5432
-  # Admin user with privileges to create databases and users
-  adminUser: "postgres"
-  # Admin password secret configuration
-  adminPasswordSecret:
-    # Name of the secret containing the admin password
-    name: "postgres-admin"
-    # Key in the secret containing the admin password
-    key: "password"
+postgresClusters:
+  default:
+    host: "postgres.postgres.svc.cluster.local"
+    port: 5432
+    adminUser: "postgres"
+    adminPassword: "testpassword"
+

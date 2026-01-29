@@ -54,16 +54,23 @@ odooManager:
   serviceAccountName: "odoo-manager"
 
 # Database configuration
-database:
-  # PostgreSQL host to connect to
-  host: "postgres"
-  # PostgreSQL port
-  port: 5432
-  # Admin user with privileges to create databases and users
-  adminUser: "postgres"
-  # Admin password secret configuration
-  adminPasswordSecret:
-    # Name of the secret containing the admin password
-    name: "postgres-admin"
-    # Key in the secret containing the admin password
-    key: "password"
+# PostgreSQL clusters available for OdooInstances to use.
+# Each cluster entry contains host, port, adminUser, and adminPassword.
+# The "default" cluster is used when an OdooInstance doesn't specify a cluster.
+postgresClusters:
+  default:
+    host: "postgres"
+    port: 5432
+    adminUser: "postgres"
+    adminPassword: ""  # Set via --set or values override
+
+# Legacy database configuration (deprecated, use postgresClusters instead)
+# These values are kept for backwards compatibility with existing deployments.
+# New deployments should use postgresClusters above instead.
+# database:
+#   host: "postgres"
+#   port: 5432
+#   adminUser: "postgres"
+#   adminPasswordSecret:
+#     name: "postgres-admin"
+#     key: "password"
