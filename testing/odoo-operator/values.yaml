@@ -42,10 +42,5 @@ defaults:
   affinity: {}
   tolerations: []
 
-postgresClusters:
-  default:
-    host: "postgres.postgres.svc.cluster.local"
-    port: 5432
-    adminUser: "postgres"
-    adminPassword: "testpassword"
-
+postgresClustersSecretRef:
+  name: pg-clusters

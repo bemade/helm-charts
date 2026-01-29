@@ -1,9 +1,6 @@
 Odoo Operator has been installed.
 
-PostgreSQL Clusters configured:
-{{- range $name, $config := .Values.postgresClusters }}
-  - {{ $name }}: {{ $config.host }}:{{ $config.port }}{{ if $config.default }} (default){{ end }}
-{{- end }}
+PostgreSQL clusters secret: {{ .Values.postgresClustersSecretRef.name }}
 
 To check the operator status:
   kubectl get pods -n {{ .Release.Namespace }} -l app={{ .Release.Name }}
@@ -13,3 +10,6 @@ To view operator logs:
 
 To list OdooInstances:
   kubectl get odooinstances --all-namespaces
+
+To view configured PostgreSQL clusters:
+  kubectl get secret {{ .Values.postgresClustersSecretRef.name }} -n {{ .Release.Namespace }} -o jsonpath='{.data.clusters\.yaml}' | base64 -d

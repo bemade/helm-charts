@@ -1,3 +1,6 @@
+{{- if not .Values.postgresClustersSecretRef.name -}}
+  {{- fail "postgresClustersSecretRef.name is required. Create a secret with clusters.yaml and reference it here." -}}
+{{- end -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -71,8 +74,4 @@ spec:
             secretName: {{ .Release.Name }}-webhook-cert
         - name: postgres-clusters
           secret:
-            {{- if and .Values.postgresClustersSecretRef .Values.postgresClustersSecretRef.name }}
             secretName: {{ .Values.postgresClustersSecretRef.name }}
-            {{- else }}
-            secretName: postgres-clusters
-            {{- end }}

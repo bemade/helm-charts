@@ -54,17 +54,9 @@ odooManager:
   serviceAccountName: "odoo-manager"
 
 # PostgreSQL cluster configuration
-# Option 1: Reference an existing secret (recommended for production)
-# The secret must contain a clusters.yaml key with the cluster configuration.
-# postgresClustersSecretRef:
-#   name: "my-postgres-clusters-secret"
+# Reference an existing secret containing the cluster configuration.
+# The secret must contain a clusters.yaml key with YAML content like:
 #
-# Option 2: Define clusters inline (a secret will be created for you)
-# Exactly one cluster must have 'default: true' - this is used for instances
-# that don't specify a cluster, and for migrating existing instances.
-#
-# Example configuration:
-# postgresClusters:
 #   main:
 #     host: "postgres.postgres.svc.cluster.local"
 #     port: 5432
@@ -77,5 +69,10 @@ odooManager:
 #     adminUser: "postgres"
 #     adminPassword: "secret"
 #     default: false
-postgresClusters: {}
-postgresClustersSecretRef: {}
+#
+# Exactly one cluster must have 'default: true'.
+# Create the secret before installing the chart:
+#   kubectl create secret generic postgres-clusters -n odoo-operator \
+#     --from-file=clusters.yaml=my-clusters.yaml
+postgresClustersSecretRef:
+  name: ""  # Required: name of the secret containing clusters.yaml

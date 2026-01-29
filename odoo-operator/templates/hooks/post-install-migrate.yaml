@@ -1,8 +1,3 @@
-{{- /* Determine the secret name */ -}}
-{{- $secretName := "postgres-clusters" -}}
-{{- if and .Values.postgresClustersSecretRef .Values.postgresClustersSecretRef.name -}}
-  {{- $secretName = .Values.postgresClustersSecretRef.name -}}
-{{- end -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -26,21 +21,27 @@ spec:
       containers:
         - name: migrate
           image: bitnami/kubectl:latest
+          env:
+            - name: RELEASE_NAMESPACE
+              value: {{ .Release.Namespace }}
+            - name: SECRET_NAME
+              value: {{ .Values.postgresClustersSecretRef.name }}
           command:
             - /bin/sh
             - -c
             - |
               set -e
               
-              echo "=== Odoo Operator Instance Migration ==="
+              echo "=== Odoo Operator Post-Install Migration ==="
               
               # Read the default cluster name from the secret
               echo "Reading default cluster from secret..."
-              SECRET_DATA=$(kubectl get secret {{ $secretName }} -n {{ .Release.Namespace }} -o jsonpath='{.data.clusters\.yaml}' | base64 -d)
-              DEFAULT_CLUSTER=$(echo "$SECRET_DATA" | grep -B1 "default: true" | head -1 | tr -d ' :')
+              SECRET_DATA=$(kubectl get secret "$SECRET_NAME" -n "$RELEASE_NAMESPACE" -o jsonpath='{.data.clusters\.yaml}' | base64 -d)
+              # Find the cluster name that has default: true (cluster names start at column 0, not indented)
+              DEFAULT_CLUSTER=$(echo "$SECRET_DATA" | awk '/^[a-zA-Z_-]+:/{name=substr($0,1,length($0)-1)} /default: true/{print name}' | head -1)
               
               if [ -z "$DEFAULT_CLUSTER" ]; then
-                echo "ERROR: No default cluster found in secret"
+                echo "ERROR: No default cluster found in secret. Ensure one cluster has 'default: true'."
                 exit 1
               fi
               echo "Default cluster: $DEFAULT_CLUSTER"
