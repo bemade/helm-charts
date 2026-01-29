@@ -65,17 +65,48 @@ the registry domain.
 | `imagePullSecrets[].username` | Registry username | `username` |
 | `imagePullSecrets[].password` | Registry password | `password` |
 
-### Database Configuration
+### PostgreSQL Cluster Configuration
 
-One central database cluster is used for all Odoo instances.
+The operator requires a Kubernetes secret containing PostgreSQL cluster configurations. **Exactly one cluster must have `default: true`** - this cluster is used for instances that don't specify a cluster and for migrating existing instances during upgrades.
+
+#### 1. Create the secret
+
+Create a file `clusters.yaml` with your cluster configurations:
+
+```yaml
+main:
+  host: "postgres.postgres.svc.cluster.local"
+  port: 5432
+  adminUser: "postgres"
+  adminPassword: "your-secure-password"
+  default: true
+analytics:
+  host: "analytics-db.database.svc.cluster.local"
+  port: 5432
+  adminUser: "postgres"
+  adminPassword: "another-secure-password"
+  default: false
+```
+
+Then create the secret:
+
+```bash
+kubectl create secret generic postgres-clusters -n odoo-operator \
+  --from-file=clusters.yaml=clusters.yaml
+```
+
+#### 2. Reference the secret in values
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `database.host` | PostgreSQL host | `postgres` |
-| `database.port` | PostgreSQL port | `5432` |
-| `database.adminUser` | Admin user for creating databases | `postgres` |
-| `database.adminPasswordSecret.name` | Secret name for admin password | `postgres-admin` |
-| `database.adminPasswordSecret.key` | Key in secret for password | `password` |
+| `postgresClustersSecretRef.name` | Name of the secret containing clusters.yaml | *(required)* |
+
+```yaml
+postgresClustersSecretRef:
+  name: "postgres-clusters"
+```
+
+OdooInstances can specify which cluster to use via `spec.database.cluster`. If not specified, the default cluster is used.
 
 ### Default Instance Settings
 
@@ -111,13 +142,8 @@ imagePullSecrets:
     username: myuser
     password: mypassword
 
-database:
-  host: "postgres.database.svc.cluster.local"
-  port: 5432
-  adminUser: "postgres"
-  adminPasswordSecret:
-    name: "postgres-credentials"
-    key: "password"
+postgresClustersSecretRef:
+  name: "postgres-clusters"
 
 defaults:
   odooImage: registry.bemade.org/bemade/odoo:18.0
@@ -152,6 +178,8 @@ spec:
     hosts:
       - my-odoo.example.com
     issuer: letsencrypt-prod
+  database:
+    cluster: main  # Optional: specify which PostgreSQL cluster to use
 ```
 
 ### OdooBackupJob
@@ -204,6 +232,36 @@ spec:
 helm upgrade odoo-operator ./odoo-operator \
   --namespace odoo-operator \
   -f my-values.yaml
+```
+
+### Upgrading to v0.10.0+ (Multi-Cluster PostgreSQL)
+
+Version 0.10.0 introduces multi-cluster PostgreSQL support. When upgrading from earlier versions:
+
+1. **Required**: Create a secret containing your PostgreSQL cluster configuration (see above)
+2. **Required**: Add `postgresClustersSecretRef.name` to your values file
+3. The upgrade will automatically migrate existing OdooInstances to use the default cluster
+4. You can then optionally update individual instances to use different clusters via `spec.database.cluster`
+
+Example migration:
+```bash
+# 1. Create clusters.yaml file
+cat > clusters.yaml << EOF
+main:
+  host: "postgres.database.svc.cluster.local"
+  port: 5432
+  adminUser: "postgres"
+  adminPassword: "your-password"
+  default: true
+EOF
+
+# 2. Create the secret
+kubectl create secret generic postgres-clusters -n odoo-operator \
+  --from-file=clusters.yaml=clusters.yaml
+
+# 3. Upgrade with the secret reference
+helm upgrade odoo-operator ./odoo-operator -n odoo-operator \
+  --set postgresClustersSecretRef.name=postgres-clusters
 ```
 
 **Note**: CRDs have `helm.sh/resource-policy: keep` annotation, so they won't be deleted on uninstall.

@@ -53,17 +53,26 @@ odooManager:
   # ServiceAccount name
   serviceAccountName: "odoo-manager"
 
-# Database configuration
-database:
-  # PostgreSQL host to connect to
-  host: "postgres"
-  # PostgreSQL port
-  port: 5432
-  # Admin user with privileges to create databases and users
-  adminUser: "postgres"
-  # Admin password secret configuration
-  adminPasswordSecret:
-    # Name of the secret containing the admin password
-    name: "postgres-admin"
-    # Key in the secret containing the admin password
-    key: "password"
+# PostgreSQL cluster configuration
+# Reference an existing secret containing the cluster configuration.
+# The secret must contain a clusters.yaml key with YAML content like:
+#
+#   main:
+#     host: "postgres.postgres.svc.cluster.local"
+#     port: 5432
+#     adminUser: "postgres"
+#     adminPassword: "secret"
+#     default: true
+#   analytics:
+#     host: "analytics-db.database.svc.cluster.local"
+#     port: 5432
+#     adminUser: "postgres"
+#     adminPassword: "secret"
+#     default: false
+#
+# Exactly one cluster must have 'default: true'.
+# Create the secret before installing the chart:
+#   kubectl create secret generic postgres-clusters -n odoo-operator \
+#     --from-file=clusters.yaml=my-clusters.yaml
+postgresClustersSecretRef:
+  name: ""  # Required: name of the secret containing clusters.yaml

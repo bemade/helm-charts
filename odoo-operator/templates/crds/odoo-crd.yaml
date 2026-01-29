@@ -102,6 +102,13 @@ spec:
                     workers: "2"
                     limit_time_real: "0"
                     limit_time_cpu: "0"
+                database:
+                  type: object
+                  description: "Database configuration for this instance"
+                  properties:
+                    cluster:
+                      type: string
+                      description: "Name of the PostgreSQL cluster from the postgres-clusters secret. If not specified, uses the cluster marked as default."
                 # NOTE: Database initialization/restore handled via OdooRestoreJob CRD
                 # NOTE: Upgrades handled via OdooUpgradeJob CRD
                 sync:
