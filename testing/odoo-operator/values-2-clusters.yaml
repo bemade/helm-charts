@@ -43,11 +43,12 @@ defaults:
   tolerations: []
 
 postgresClusters:
-  default:
+  postgres:
     host: "postgres.postgres.svc.cluster.local"
     port: 5432
     adminUser: "postgres"
     adminPassword: "testpassword"
+    default: true
   cnpg:
     host: "database-cluster-rw.database.svc.cluster.local"
     port: 5432

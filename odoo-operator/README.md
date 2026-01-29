@@ -65,17 +65,48 @@ the registry domain.
 | `imagePullSecrets[].username` | Registry username | `username` |
 | `imagePullSecrets[].password` | Registry password | `password` |
 
-### Database Configuration
+### PostgreSQL Cluster Configuration
 
-One central database cluster is used for all Odoo instances.
+Configure one or more PostgreSQL clusters that OdooInstances can use. **Exactly one cluster must have `default: true`** - this cluster is used for instances that don't specify a cluster and for migrating existing instances during upgrades.
+
+#### Option 1: Reference an existing secret (recommended for production)
+
+```yaml
+postgresClustersSecretRef:
+  name: "my-postgres-clusters-secret"
+```
+
+The secret must contain a `clusters.yaml` key with the cluster configuration in YAML format.
+
+#### Option 2: Define clusters inline
 
 | Parameter | Description | Default |
 |-----------|-------------|---------|
-| `database.host` | PostgreSQL host | `postgres` |
-| `database.port` | PostgreSQL port | `5432` |
-| `database.adminUser` | Admin user for creating databases | `postgres` |
-| `database.adminPasswordSecret.name` | Secret name for admin password | `postgres-admin` |
-| `database.adminPasswordSecret.key` | Key in secret for password | `password` |
+| `postgresClusters.<name>.host` | PostgreSQL host | *(required)* |
+| `postgresClusters.<name>.port` | PostgreSQL port | `5432` |
+| `postgresClusters.<name>.adminUser` | Admin user for creating databases | `postgres` |
+| `postgresClusters.<name>.adminPassword` | Admin password | *(required)* |
+| `postgresClusters.<name>.default` | Whether this is the default cluster | `false` |
+
+Example with multiple clusters:
+
+```yaml
+postgresClusters:
+  main:
+    host: "postgres.postgres.svc.cluster.local"
+    port: 5432
+    adminUser: "postgres"
+    adminPassword: "secret"
+    default: true
+  analytics:
+    host: "analytics-db.database.svc.cluster.local"
+    port: 5432
+    adminUser: "postgres"
+    adminPassword: "secret"
+    default: false
+```
+
+OdooInstances can specify which cluster to use via `spec.database.cluster`. If not specified, the default cluster is used.
 
 ### Default Instance Settings
 
@@ -111,13 +142,13 @@ imagePullSecrets:
     username: myuser
     password: mypassword
 
-database:
-  host: "postgres.database.svc.cluster.local"
-  port: 5432
-  adminUser: "postgres"
-  adminPasswordSecret:
-    name: "postgres-credentials"
-    key: "password"
+postgresClusters:
+  main:
+    host: "postgres.database.svc.cluster.local"
+    port: 5432
+    adminUser: "postgres"
+    adminPassword: "your-admin-password"
+    default: true
 
 defaults:
   odooImage: registry.bemade.org/bemade/odoo:18.0
@@ -152,6 +183,8 @@ spec:
     hosts:
       - my-odoo.example.com
     issuer: letsencrypt-prod
+  database:
+    cluster: main  # Optional: specify which PostgreSQL cluster to use
 ```
 
 ### OdooBackupJob
@@ -204,6 +237,33 @@ spec:
 helm upgrade odoo-operator ./odoo-operator \
   --namespace odoo-operator \
   -f my-values.yaml
+```
+
+### Upgrading to v0.10.0+ (Multi-Cluster PostgreSQL)
+
+Version 0.10.0 introduces multi-cluster PostgreSQL support. When upgrading from earlier versions:
+
+1. **Required**: Add `postgresClusters` configuration to your values file with at least one cluster marked as `default: true`
+2. The upgrade will automatically migrate existing OdooInstances to use the default cluster
+3. You can then optionally update individual instances to use different clusters via `spec.database.cluster`
+
+Example migration:
+```yaml
+# Before (old format - no longer supported)
+database:
+  host: "postgres.database.svc.cluster.local"
+  adminPasswordSecret:
+    name: "postgres-credentials"
+    key: "password"
+
+# After (new format)
+postgresClusters:
+  main:
+    host: "postgres.database.svc.cluster.local"
+    port: 5432
+    adminUser: "postgres"
+    adminPassword: "your-password"  # Note: now inline, not from secret
+    default: true
 ```
 
 **Note**: CRDs have `helm.sh/resource-policy: keep` annotation, so they won't be deleted on uninstall.

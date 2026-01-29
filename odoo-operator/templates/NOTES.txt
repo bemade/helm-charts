@@ -1,21 +1,8 @@
 Odoo Operator has been installed.
 
-{{- if .Values.database }}
-{{- if or .Values.database.host .Values.database.adminPasswordSecret }}
-
-⚠️  DEPRECATION WARNING:
-You are using the deprecated 'database' configuration.
-Please migrate to 'postgresClusters' for multi-cluster support:
-
-  postgresClusters:
-    default:
-      host: "{{ .Values.database.host | default "postgres" }}"
-      port: {{ .Values.database.port | default 5432 }}
-      adminUser: "{{ .Values.database.adminUser | default "postgres" }}"
-      adminPassword: "<your-password>"
-
-The legacy 'database' configuration will be removed in a future release.
-{{- end }}
+PostgreSQL Clusters configured:
+{{- range $name, $config := .Values.postgresClusters }}
+  - {{ $name }}: {{ $config.host }}:{{ $config.port }}{{ if $config.default }} (default){{ end }}
 {{- end }}
 
 To check the operator status:
@@ -23,3 +10,6 @@ To check the operator status:
 
 To view operator logs:
   kubectl logs -n {{ .Release.Namespace }} -l app={{ .Release.Name }} -f
+
+To list OdooInstances:
+  kubectl get odooinstances --all-namespaces

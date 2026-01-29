@@ -108,8 +108,7 @@ spec:
                   properties:
                     cluster:
                       type: string
-                      description: "Name of the PostgreSQL cluster from the postgres-clusters secret. Defaults to 'default' if not specified."
-                      default: "default"
+                      description: "Name of the PostgreSQL cluster from the postgres-clusters secret. If not specified, uses the cluster marked as default."
                 # NOTE: Database initialization/restore handled via OdooRestoreJob CRD
                 # NOTE: Upgrades handled via OdooUpgradeJob CRD
                 sync:

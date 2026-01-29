@@ -49,31 +49,9 @@ spec:
               value: {{ .Release.Name }}-webhook
             - name: SERVICE_NAMESPACE
               value: {{ .Release.Namespace }}
-            # PostgreSQL clusters config path (new multi-cluster support)
+            # PostgreSQL clusters config file path
             - name: POSTGRES_CLUSTERS_FILE
               value: /etc/postgres/clusters.yaml
-            {{- if .Values.database }}
-            # Legacy database configuration (fallback if postgres-clusters not configured)
-            {{- if .Values.database.host }}
-            - name: DB_HOST
-              value: {{ .Values.database.host | quote }}
-            {{- end }}
-            {{- if .Values.database.port }}
-            - name: DB_PORT
-              value: {{ .Values.database.port | quote }}
-            {{- end }}
-            {{- if .Values.database.adminUser }}
-            - name: DB_ADMIN_USER
-              value: {{ .Values.database.adminUser | quote }}
-            {{- end }}
-            {{- if .Values.database.adminPasswordSecret }}
-            - name: DB_ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.database.adminPasswordSecret.name }}
-                  key: {{ .Values.database.adminPasswordSecret.key }}
-            {{- end }}
-            {{- end }}
           volumeMounts:
             - name: instance-defaults
               mountPath: /etc/odoo
@@ -93,4 +71,8 @@ spec:
             secretName: {{ .Release.Name }}-webhook-cert
         - name: postgres-clusters
           secret:
+            {{- if and .Values.postgresClustersSecretRef .Values.postgresClustersSecretRef.name }}
+            secretName: {{ .Values.postgresClustersSecretRef.name }}
+            {{- else }}
             secretName: postgres-clusters
+            {{- end }}

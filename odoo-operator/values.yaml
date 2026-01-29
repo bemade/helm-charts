@@ -53,24 +53,29 @@ odooManager:
   # ServiceAccount name
   serviceAccountName: "odoo-manager"
 
-# Database configuration
-# PostgreSQL clusters available for OdooInstances to use.
-# Each cluster entry contains host, port, adminUser, and adminPassword.
-# The "default" cluster is used when an OdooInstance doesn't specify a cluster.
-postgresClusters:
-  default:
-    host: "postgres"
-    port: 5432
-    adminUser: "postgres"
-    adminPassword: ""  # Set via --set or values override
-
-# Legacy database configuration (deprecated, use postgresClusters instead)
-# These values are kept for backwards compatibility with existing deployments.
-# New deployments should use postgresClusters above instead.
-# database:
-#   host: "postgres"
-#   port: 5432
-#   adminUser: "postgres"
-#   adminPasswordSecret:
-#     name: "postgres-admin"
-#     key: "password"
+# PostgreSQL cluster configuration
+# Option 1: Reference an existing secret (recommended for production)
+# The secret must contain a clusters.yaml key with the cluster configuration.
+# postgresClustersSecretRef:
+#   name: "my-postgres-clusters-secret"
+#
+# Option 2: Define clusters inline (a secret will be created for you)
+# Exactly one cluster must have 'default: true' - this is used for instances
+# that don't specify a cluster, and for migrating existing instances.
+#
+# Example configuration:
+# postgresClusters:
+#   main:
+#     host: "postgres.postgres.svc.cluster.local"
+#     port: 5432
+#     adminUser: "postgres"
+#     adminPassword: "secret"
+#     default: true
+#   analytics:
+#     host: "analytics-db.database.svc.cluster.local"
+#     port: 5432
+#     adminUser: "postgres"
+#     adminPassword: "secret"
+#     default: false
+postgresClusters: {}
+postgresClustersSecretRef: {}
