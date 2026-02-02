@@ -111,6 +111,27 @@ spec:
                       description: "Name of the PostgreSQL cluster from the postgres-clusters secret. If not specified, uses the cluster marked as default."
                 # NOTE: Database initialization/restore handled via OdooRestoreJob CRD
                 # NOTE: Upgrades handled via OdooUpgradeJob CRD
+                strategy:
+                  type: object
+                  description: "Deployment strategy configuration"
+                  properties:
+                    type:
+                      type: string
+                      enum: ["Recreate", "RollingUpdate"]
+                      default: "Recreate"
+                      description: "Deployment strategy type"
+                    rollingUpdate:
+                      type: object
+                      description: "RollingUpdate configuration parameters"
+                      properties:
+                        maxUnavailable:
+                          type: string
+                          default: "25%"
+                          description: "Maximum number of unavailable pods during update"
+                        maxSurge:
+                          type: string
+                          default: "25%"
+                          description: "Maximum number of additional pods that can be created during update"
                 sync:
                   type: object
                   description: "Configuration for Git repository synchronization (uses gitProject for repository details)"

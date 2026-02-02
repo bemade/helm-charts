@@ -45,6 +45,12 @@ defaults:
   affinity: {}
   tolerations: []
   ingressClass: ""
+  # Default deployment strategy for Odoo instances
+  deploymentStrategy:
+    type: "Recreate"
+    rollingUpdate: # NOTE: This is ignored if type is not "RollingUpdate"
+      maxUnavailable: "25%"
+      maxSurge: "25%"
 
 # Odoo Manager ServiceAccount (for external Odoo instances to manage the cluster)
 odooManager:
