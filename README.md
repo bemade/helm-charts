@@ -17,7 +17,7 @@ Helm charts for deploying Bemade infrastructure on Kubernetes.
 ### Add the Repository
 
 ```bash
-helm repo add bemade https://bemade.github.io/helm-charts
+helm repo add bemade https://git.bemade.org/bemade/helm-charts/-/raw/main/
 helm repo update
 ```
 
@@ -65,7 +65,7 @@ helm install my-release ./odoo-operator --debug --dry-run
 
 ```bash
 helm package ./odoo-operator
-helm repo index . --url https://bemade.github.io/helm-charts
+helm repo index . --url https://git.bemade.org/bemade/helm-charts/-/raw/main/
 ```
 
 ## Documentation
