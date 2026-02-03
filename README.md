@@ -6,10 +6,12 @@ Helm charts for deploying Bemade infrastructure on Kubernetes.
 
 | Chart | Description | Version |
 |-------|-------------|---------|
-| [odoo-operator](./odoo-operator/) | Kubernetes operator for managing Odoo instances | 0.8.0 |
-| [odoo-instance](./odoo-instance/) | Deploy a single OdooInstance CR | 0.1.0 |
-| [internal-ca](./internal-ca/) | Internal Certificate Authority with cert-manager | - |
-| [odoo-openapi](./odoo-openapi/) | OpenAPI proxy for Odoo | - |
+| [odoo-operator](./odoo-operator/) | Kubernetes operator for managing Odoo instances | 0.11.0 |
+| [odoo-instance](./odoo-instance/) | Deploy a single OdooInstance CR | 0.4.0 |
+| [postgres-pgvector](./postgres-pgvector/) | Single-instance PostgreSQL with pgvector extension | 0.1.0 |
+| [minio](./minio/) | Minimal MinIO deployment with ingress | 0.1.0 |
+| [internal-ca](./internal-ca/) | Internal Certificate Authority with cert-manager | 0.1.0 |
+| [odoo-openapi](./odoo-openapi/) | OpenAPI proxy for Odoo | 0.1.3 |
 | [onlyoffice](./onlyoffice/) | OnlyOffice document server | 1.0.0 |
 
 ## Quick Start
@@ -23,11 +25,29 @@ helm repo update
 
 ### Install the Odoo Operator
 
+First, create a secret containing your PostgreSQL cluster configuration:
+
+```bash
+cat > clusters.yaml << EOF
+main:
+  host: "postgres.database.svc.cluster.local"
+  port: 5432
+  adminUser: "postgres"
+  adminPassword: "your-secure-password"
+  default: true
+EOF
+
+kubectl create namespace odoo-operator
+kubectl create secret generic postgres-clusters -n odoo-operator \
+  --from-file=clusters.yaml=clusters.yaml
+```
+
+Then install the operator:
+
 ```bash
 helm install odoo-operator bemade/odoo-operator \
   --namespace odoo-operator \
-  --create-namespace \
-  --set database.host=postgres.default.svc
+  --set postgresClustersSecretRef.name=postgres-clusters
 ```
 
 ### Create an Odoo Instance
