@@ -37,9 +37,10 @@ openclaw:
   # OpenClaw configuration (openclaw.json)
   # Reference: https://docs.openclaw.ai/gateway/configuration
   config:
-    agent:
-      # Model to use (e.g., anthropic/claude-opus-4-6, openai/gpt-4o)
-      model: "anthropic/claude-sonnet-4-20250514"
+    agents:
+      defaults:
+        model:
+          primary: "anthropic/claude-sonnet-4-20250514"
 
   # API keys and secrets (stored in Kubernetes Secret)
   # Set these via --set or external secret management
