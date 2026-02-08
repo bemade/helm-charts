@@ -37,6 +37,8 @@ openclaw:
   # OpenClaw configuration (openclaw.json)
   # Reference: https://docs.openclaw.ai/gateway/configuration
   config:
+    gateway:
+      mode: local
     agents:
       defaults:
         model:
