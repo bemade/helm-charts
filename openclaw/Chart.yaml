@@ -1,0 +1,14 @@
+apiVersion: v2
+name: openclaw
+description: A Helm chart for deploying OpenClaw - Personal AI Assistant
+type: application
+version: 0.1.0
+appVersion: "latest"
+home: https://git.bemade.org/bemade/helm-charts
+sources:
+  - https://git.bemade.org/bemade/helm-charts
+  - https://github.com/openclaw/openclaw
+maintainers:
+  - name: Bemade Inc.
+    url: https://git.bemade.org
+    email: it@bemade.org

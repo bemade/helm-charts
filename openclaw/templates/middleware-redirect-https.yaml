@@ -1,0 +1,13 @@
+{{- if .Values.openclaw.ingress.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: openclaw-redirect-https
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: openclaw
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+{{- end }}

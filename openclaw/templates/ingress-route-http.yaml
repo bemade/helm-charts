@@ -1,0 +1,24 @@
+{{- if .Values.openclaw.ingress.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: openclaw-http
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: openclaw
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`{{ .Values.openclaw.hostname }}`)
+      priority: 10
+      services:
+        - kind: Service
+          name: openclaw
+          namespace: {{ .Release.Namespace }}
+          port: {{ .Values.openclaw.port }}
+      middlewares:
+        - name: openclaw-redirect-https
+          namespace: {{ .Release.Namespace }}
+{{- end }}

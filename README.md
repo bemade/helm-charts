@@ -13,6 +13,7 @@ Helm charts for deploying Bemade infrastructure on Kubernetes.
 | [internal-ca](./internal-ca/) | Internal Certificate Authority with cert-manager | 0.1.0 |
 | [odoo-openapi](./odoo-openapi/) | OpenAPI proxy for Odoo | 0.1.3 |
 | [onlyoffice](./onlyoffice/) | OnlyOffice document server | 1.0.0 |
+| [openclaw](./openclaw/) | OpenClaw personal AI assistant | 0.1.0 |
 
 ## Quick Start
 
