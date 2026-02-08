@@ -20,7 +20,7 @@ spec:
           image: "{{ .Values.openclaw.image.repository }}:{{ .Values.openclaw.image.tag }}"
           imagePullPolicy: {{ .Values.openclaw.image.pullPolicy }}
           command: ["node", "/app/openclaw.mjs"]
-          args: ["gateway", "--port", "{{ .Values.openclaw.port }}"]
+          args: ["gateway", "--port", "{{ .Values.openclaw.port }}", "--host", "0.0.0.0"]
           resources:
             requests:
               cpu: {{ .Values.openclaw.resources.requests.cpu }}
