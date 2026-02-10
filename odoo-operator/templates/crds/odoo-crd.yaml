@@ -153,6 +153,22 @@ spec:
                     url:
                       type: string
                       description: "URL to POST status updates to when instance phase changes"
+                probes:
+                  type: object
+                  description: "Health check probe configuration for Kubernetes"
+                  properties:
+                    startupPath:
+                      type: string
+                      default: "/web/health"
+                      description: "HTTP path for startup probe. Used during container initialization."
+                    livenessPath:
+                      type: string
+                      default: "/web/health"
+                      description: "HTTP path for liveness probe. Checks if the process is alive."
+                    readinessPath:
+                      type: string
+                      default: "/web/health"
+                      description: "HTTP path for readiness probe. Use /health/ready if health_check_k8s module is installed for deep checks (DB + filestore)."
 
             status:
               type: object
