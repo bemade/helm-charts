@@ -136,6 +136,28 @@ entries:
     version: 0.1.0
   odoo-operator:
   - apiVersion: v2
+    appVersion: 0.11.6
+    created: "2026-02-10T20:14:45.625645716Z"
+    description: A Kubernetes operator for managing Odoo instances
+    digest: 6f09cd1851a50f0dc4da25819f96d77de6e2a995aaf4f947b1a08b825647960a
+    home: https://github.com/bemade/helm-charts
+    keywords:
+    - odoo
+    - operator
+    - kubernetes
+    - bemade
+    maintainers:
+    - email: marc@bemade.org
+      name: Bemade Inc.
+      url: https://bemade.org
+    name: odoo-operator
+    sources:
+    - https://github.com/bemade/helm-charts
+    type: application
+    urls:
+    - https://github.com/Bemade/helm-charts/releases/download/odoo-operator-0.11.6/odoo-operator-0.11.6.tgz
+    version: 0.11.6
+  - apiVersion: v2
     appVersion: 0.11.0
     created: "2026-02-02T13:29:31.191859968-05:00"
     description: A Kubernetes operator for managing Odoo instances
@@ -588,6 +610,25 @@ entries:
     urls:
     - onlyoffice/onlyoffice-1.0.0.tgz
     version: 1.0.0
+  openclaw:
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-02-10T20:14:46.079824172Z"
+    description: A Helm chart for deploying OpenClaw - Personal AI Assistant
+    digest: c6aff4e5220a7c5bcf9b50de90b33b67997e61ef50eb161517a11657e1cd3505
+    home: https://git.bemade.org/bemade/helm-charts
+    maintainers:
+    - email: it@bemade.org
+      name: Bemade Inc.
+      url: https://git.bemade.org
+    name: openclaw
+    sources:
+    - https://git.bemade.org/bemade/helm-charts
+    - https://github.com/openclaw/openclaw
+    type: application
+    urls:
+    - https://github.com/Bemade/helm-charts/releases/download/openclaw-0.1.6/openclaw-0.1.6.tgz
+    version: 0.1.6
   postgres-pgvector:
   - apiVersion: v2
     created: "2026-02-02T13:29:31.199983176-05:00"
@@ -606,4 +647,4 @@ entries:
     urls:
     - postgres-pgvector/postgres-pgvector-0.1.0.tgz
     version: 0.1.0
-generated: "2026-02-02T13:29:31.187498827-05:00"
+generated: "2026-02-10T20:14:46.348177767Z"
