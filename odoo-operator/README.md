@@ -1,4 +1,15 @@
-# Odoo Operator Helm Chart
+# odoo-operator chart — moved
+
+This chart has moved to the [odoo-operator repository](https://github.com/bemade/odoo-operator).
+
+```
+helm repo add odoo-operator https://bemade.github.io/odoo-operator
+helm install odoo-operator odoo-operator/odoo-operator
+```
+
+---
+
+# Odoo Operator Helm Chart (archived)
 
 A Helm chart for deploying the Odoo Operator on Kubernetes.
 
