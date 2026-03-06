@@ -1,0 +1,20 @@
+{{- if .Values.nextcloud.ingress.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "nextcloud.fullname" . }}-headers
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nextcloud.labels" . | nindent 4 }}
+spec:
+  headers:
+    stsSeconds: 31536000
+    stsIncludeSubdomains: true
+    stsPreload: true
+    forceSTSHeader: true
+    # Required for Nextcloud
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+    customResponseHeaders:
+      X-Robots-Tag: "noindex, nofollow"
+{{- end }}

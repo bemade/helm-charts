@@ -1,0 +1,14 @@
+apiVersion: v2
+name: nextcloud
+description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
+type: application
+version: 0.1.0
+appVersion: "30.0"
+home: https://git.bemade.org/bemade/helm-charts
+sources:
+  - https://git.bemade.org/bemade/helm-charts
+  - https://nextcloud.com/
+maintainers:
+  - name: Bemade Inc.
+    url: https://git.bemade.org
+    email: it@bemade.org

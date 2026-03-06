@@ -1,0 +1,192 @@
+# Nextcloud Helm Chart values
+# https://nextcloud.com/
+# This chart avoids dotted keys in YAML to prevent Rancher serialization issues
+
+nextcloud:
+  # Docker image configuration
+  image:
+    repository: docker.io/library/nextcloud
+    tag: "30.0-apache"
+    pullPolicy: IfNotPresent
+
+  # Number of replicas
+  replicas: 1
+
+  # Hostname for ingress
+  hostname: "nextcloud.example.com"
+
+  # Admin credentials
+  admin:
+    username: "admin"
+    # Use existingSecret for production
+    existingSecret: ""
+    existingSecretKeys:
+      username: "nextcloud-username"
+      password: "nextcloud-password"
+
+  # Trusted domains (auto-includes hostname)
+  trustedDomains: []
+
+  # Data directory inside container
+  datadir: "/var/www/html/data"
+
+  # Ingress configuration (Traefik IngressRoute)
+  ingress:
+    enabled: true
+    clusterIssuer: "letsencrypt-dns"
+
+  # Resource requests and limits
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 2
+      memory: 2Gi
+
+  # Persistence for Nextcloud data
+  persistence:
+    enabled: true
+    storageClass: ""
+    size: 10Gi
+    accessMode: ReadWriteOnce
+
+  # PHP/Apache configuration
+  # NOTE: No dotted keys here - configs are managed via ConfigMap
+  phpConfig:
+    # Memory limit for PHP
+    memoryLimit: "512M"
+    # Upload max filesize
+    uploadMaxFilesize: "16G"
+    # Post max size
+    postMaxSize: "16G"
+    # Max execution time
+    maxExecutionTime: "3600"
+    # Max input time
+    maxInputTime: "3600"
+
+  # Nextcloud configuration options
+  # These are passed as environment variables, not as dotted config keys
+  config:
+    # Enable pretty URLs (removes index.php from URLs)
+    prettyUrls: true
+    # Default phone region (ISO 3166-1 alpha-2)
+    defaultPhoneRegion: "CA"
+    # Overwrite protocol for reverse proxy
+    overwriteProtocol: "https"
+    # Log level (0=DEBUG, 1=INFO, 2=WARN, 3=ERROR, 4=FATAL)
+    logLevel: 2
+    # Maintenance window start hour (UTC, 0-23)
+    maintenanceWindowStart: 1
+
+  # SMTP configuration
+  mail:
+    enabled: false
+    fromAddress: "nextcloud"
+    domain: "example.com"
+    smtp:
+      host: ""
+      port: 587
+      secure: "tls"
+      authtype: "LOGIN"
+      # Use existingSecret for credentials
+      existingSecret: ""
+      existingSecretKeys:
+        username: "smtp-username"
+        password: "smtp-password"
+
+  # S3 Object Storage as primary storage (optional)
+  objectStore:
+    s3:
+      enabled: false
+      host: ""
+      port: "443"
+      ssl: true
+      region: "us-east-1"
+      bucket: ""
+      usePathStyle: true
+      autoCreate: false
+      # Use existingSecret for credentials
+      existingSecret: ""
+      existingSecretKeys:
+        accessKey: "s3-access-key"
+        secretKey: "s3-secret-key"
+
+  # Extra environment variables
+  extraEnv: []
+  # - name: SOME_VAR
+  #   value: "some-value"
+
+  # Extra volume mounts
+  extraVolumeMounts: []
+  # - name: extra-data
+  #   mountPath: /extra
+
+  # Extra volumes
+  extraVolumes: []
+  # - name: extra-data
+  #   persistentVolumeClaim:
+  #     claimName: extra-pvc
+
+  # Pod annotations
+  podAnnotations: {}
+
+  # Node selector
+  nodeSelector: {}
+
+  # Tolerations
+  tolerations: []
+
+  # Affinity rules
+  affinity: {}
+
+  # Service account
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+
+# Database configuration (external PostgreSQL)
+database:
+  type: "pgsql"
+  host: "postgres-pgnative"
+  port: 5432
+  name: "nextcloud"
+  username: "nextcloud"
+  # Use existingSecret for production
+  existingSecret: ""
+  existingSecretKeys:
+    username: "db-username"
+    password: "db-password"
+
+# Redis configuration (optional, for caching/locking)
+redis:
+  enabled: false
+  host: ""
+  port: 6379
+  # Use existingSecret for password
+  existingSecret: ""
+  existingSecretKey: "redis-password"
+
+# Cron job for background tasks
+cronjob:
+  enabled: true
+  schedule: "*/5 * * * *"
+  # Use wget to trigger cron.php
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
+
+# Secrets configuration
+# Set these via --set or external secret management
+secrets:
+  # Admin password (if not using existingSecret)
+  adminPassword: ""
+  # Database password (if not using existingSecret)
+  databasePassword: ""
+  # SMTP password (if not using existingSecret)
+  smtpPassword: ""
+  # S3 credentials (if not using existingSecret)
+  s3AccessKey: ""
+  s3SecretKey: ""
+  # Redis password (if not using existingSecret)
+  redisPassword: ""

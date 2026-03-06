@@ -1,0 +1,16 @@
+{{- if .Values.nextcloud.ingress.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ include "nextcloud.fullname" . }}-tls
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nextcloud.labels" . | nindent 4 }}
+spec:
+  secretName: {{ include "nextcloud.fullname" . }}-tls
+  issuerRef:
+    name: {{ .Values.nextcloud.ingress.clusterIssuer }}
+    kind: ClusterIssuer
+  dnsNames:
+    - {{ .Values.nextcloud.hostname }}
+{{- end }}

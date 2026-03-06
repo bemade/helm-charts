@@ -1,0 +1,220 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nextcloud.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nextcloud.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.nextcloud.replicas }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "nextcloud.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "nextcloud.selectorLabels" . | nindent 8 }}
+      {{- with .Values.nextcloud.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ include "nextcloud.serviceAccountName" . }}
+      containers:
+        - name: nextcloud
+          image: "{{ .Values.nextcloud.image.repository }}:{{ .Values.nextcloud.image.tag }}"
+          imagePullPolicy: {{ .Values.nextcloud.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            # Admin credentials
+            - name: NEXTCLOUD_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nextcloud.adminSecretName" . }}
+                  key: {{ .Values.nextcloud.admin.existingSecretKeys.username }}
+            - name: NEXTCLOUD_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nextcloud.adminSecretName" . }}
+                  key: {{ .Values.nextcloud.admin.existingSecretKeys.password }}
+            # Hostname and trusted domains
+            - name: NEXTCLOUD_TRUSTED_DOMAINS
+              value: {{ include "nextcloud.trustedDomains" . | quote }}
+            - name: OVERWRITEHOST
+              value: {{ .Values.nextcloud.hostname | quote }}
+            - name: OVERWRITEPROTOCOL
+              value: {{ .Values.nextcloud.config.overwriteProtocol | quote }}
+            - name: OVERWRITECLIURL
+              value: "https://{{ .Values.nextcloud.hostname }}"
+            # Data directory
+            - name: NEXTCLOUD_DATA_DIR
+              value: {{ .Values.nextcloud.datadir | quote }}
+            # Database configuration
+            - name: POSTGRES_HOST
+              value: "{{ .Values.database.host }}:{{ .Values.database.port }}"
+            - name: POSTGRES_DB
+              value: {{ .Values.database.name | quote }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nextcloud.databaseSecretName" . }}
+                  key: {{ .Values.database.existingSecretKeys.username }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nextcloud.databaseSecretName" . }}
+                  key: {{ .Values.database.existingSecretKeys.password }}
+            # Nextcloud config options
+            - name: NC_default_phone_region
+              value: {{ .Values.nextcloud.config.defaultPhoneRegion | quote }}
+            - name: NC_loglevel
+              value: {{ .Values.nextcloud.config.logLevel | quote }}
+            - name: NC_maintenance_window_start
+              value: {{ .Values.nextcloud.config.maintenanceWindowStart | quote }}
+            {{- if .Values.nextcloud.config.prettyUrls }}
+            # Pretty URLs - htaccess.RewriteBase will be set automatically
+            - name: NEXTCLOUD_UPDATE
+              value: "1"
+            {{- end }}
+            # Redis configuration
+            {{- if .Values.redis.enabled }}
+            - name: REDIS_HOST
+              value: {{ .Values.redis.host | quote }}
+            - name: REDIS_HOST_PORT
+              value: {{ .Values.redis.port | quote }}
+            {{- if or .Values.redis.existingSecret .Values.secrets.redisPassword }}
+            - name: REDIS_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nextcloud.redisSecretName" . }}
+                  key: {{ .Values.redis.existingSecretKey }}
+            {{- end }}
+            {{- end }}
+            # SMTP configuration
+            {{- if .Values.nextcloud.mail.enabled }}
+            - name: SMTP_HOST
+              value: {{ .Values.nextcloud.mail.smtp.host | quote }}
+            - name: SMTP_PORT
+              value: {{ .Values.nextcloud.mail.smtp.port | quote }}
+            - name: SMTP_SECURE
+              value: {{ .Values.nextcloud.mail.smtp.secure | quote }}
+            - name: SMTP_AUTHTYPE
+              value: {{ .Values.nextcloud.mail.smtp.authtype | quote }}
+            - name: MAIL_FROM_ADDRESS
+              value: {{ .Values.nextcloud.mail.fromAddress | quote }}
+            - name: MAIL_DOMAIN
+              value: {{ .Values.nextcloud.mail.domain | quote }}
+            {{- if or .Values.nextcloud.mail.smtp.existingSecret .Values.secrets.smtpPassword }}
+            - name: SMTP_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nextcloud.smtpSecretName" . }}
+                  key: {{ .Values.nextcloud.mail.smtp.existingSecretKeys.username }}
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nextcloud.smtpSecretName" . }}
+                  key: {{ .Values.nextcloud.mail.smtp.existingSecretKeys.password }}
+            {{- end }}
+            {{- end }}
+            # S3 Object Storage
+            {{- if .Values.nextcloud.objectStore.s3.enabled }}
+            - name: OBJECTSTORE_S3_HOST
+              value: {{ .Values.nextcloud.objectStore.s3.host | quote }}
+            - name: OBJECTSTORE_S3_PORT
+              value: {{ .Values.nextcloud.objectStore.s3.port | quote }}
+            - name: OBJECTSTORE_S3_SSL
+              value: {{ .Values.nextcloud.objectStore.s3.ssl | quote }}
+            - name: OBJECTSTORE_S3_REGION
+              value: {{ .Values.nextcloud.objectStore.s3.region | quote }}
+            - name: OBJECTSTORE_S3_BUCKET
+              value: {{ .Values.nextcloud.objectStore.s3.bucket | quote }}
+            - name: OBJECTSTORE_S3_USEPATH_STYLE
+              value: {{ .Values.nextcloud.objectStore.s3.usePathStyle | quote }}
+            - name: OBJECTSTORE_S3_AUTOCREATE
+              value: {{ .Values.nextcloud.objectStore.s3.autoCreate | quote }}
+            - name: OBJECTSTORE_S3_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nextcloud.s3SecretName" . }}
+                  key: {{ .Values.nextcloud.objectStore.s3.existingSecretKeys.accessKey }}
+            - name: OBJECTSTORE_S3_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "nextcloud.s3SecretName" . }}
+                  key: {{ .Values.nextcloud.objectStore.s3.existingSecretKeys.secretKey }}
+            {{- end }}
+            # Extra environment variables
+            {{- with .Values.nextcloud.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          volumeMounts:
+            - name: nextcloud-data
+              mountPath: /var/www/html
+            - name: php-config
+              mountPath: /usr/local/etc/php/conf.d/nextcloud-php.ini
+              subPath: nextcloud-php.ini
+            - name: apache-config
+              mountPath: /etc/apache2/conf-enabled/nextcloud-apache.conf
+              subPath: nextcloud-apache.conf
+            {{- with .Values.nextcloud.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /status.php
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.nextcloud.hostname | quote }}
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /status.php
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.nextcloud.hostname | quote }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.nextcloud.resources | nindent 12 }}
+      volumes:
+        - name: nextcloud-data
+          {{- if .Values.nextcloud.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ include "nextcloud.fullname" . }}-data
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: php-config
+          configMap:
+            name: {{ include "nextcloud.fullname" . }}-php
+        - name: apache-config
+          configMap:
+            name: {{ include "nextcloud.fullname" . }}-apache
+        {{- with .Values.nextcloud.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.nextcloud.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nextcloud.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nextcloud.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

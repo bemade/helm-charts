@@ -1,0 +1,49 @@
+{{- if .Values.cronjob.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "nextcloud.fullname" . }}-cron
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nextcloud.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cronjob.schedule | quote }}
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: {{ .Values.cronjob.failedJobsHistoryLimit }}
+  successfulJobsHistoryLimit: {{ .Values.cronjob.successfulJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "nextcloud.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/component: cron
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: cron
+              image: "{{ .Values.nextcloud.image.repository }}:{{ .Values.nextcloud.image.tag }}"
+              imagePullPolicy: {{ .Values.nextcloud.image.pullPolicy }}
+              command:
+                - /bin/sh
+                - -c
+                - php -f /var/www/html/cron.php
+              volumeMounts:
+                - name: nextcloud-data
+                  mountPath: /var/www/html
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 128Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+          volumes:
+            - name: nextcloud-data
+              {{- if .Values.nextcloud.persistence.enabled }}
+              persistentVolumeClaim:
+                claimName: {{ include "nextcloud.fullname" . }}-data
+              {{- else }}
+              emptyDir: {}
+              {{- end }}
+{{- end }}

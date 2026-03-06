@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "nextcloud.fullname" . }}-php
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nextcloud.labels" . | nindent 4 }}
+data:
+  # PHP configuration - uploaded to /usr/local/etc/php/conf.d/
+  nextcloud-php.ini: |
+    memory_limit={{ .Values.nextcloud.phpConfig.memoryLimit }}
+    upload_max_filesize={{ .Values.nextcloud.phpConfig.uploadMaxFilesize }}
+    post_max_size={{ .Values.nextcloud.phpConfig.postMaxSize }}
+    max_execution_time={{ .Values.nextcloud.phpConfig.maxExecutionTime }}
+    max_input_time={{ .Values.nextcloud.phpConfig.maxInputTime }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "nextcloud.fullname" . }}-apache
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nextcloud.labels" . | nindent 4 }}
+data:
+  # Apache configuration for large file uploads
+  nextcloud-apache.conf: |
+    <IfModule mod_reqtimeout.c>
+      RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500
+    </IfModule>
+    LimitRequestBody 0
