@@ -1,0 +1,15 @@
+{{- if .Values.keycloak.ingress.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "keycloak.fullname" . }}-headers
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "keycloak.labels" . | nindent 4 }}
+spec:
+  headers:
+    stsSeconds: 31536000
+    stsIncludeSubdomains: true
+    stsPreload: true
+    forceSTSHeader: true
+{{- end }}

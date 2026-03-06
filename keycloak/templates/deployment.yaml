@@ -1,0 +1,134 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "keycloak.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "keycloak.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.keycloak.replicas }}
+  selector:
+    matchLabels:
+      {{- include "keycloak.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "keycloak.selectorLabels" . | nindent 8 }}
+      {{- with .Values.keycloak.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ include "keycloak.serviceAccountName" . }}
+      containers:
+        - name: keycloak
+          image: "{{ .Values.keycloak.image.repository }}:{{ .Values.keycloak.image.tag }}"
+          imagePullPolicy: {{ .Values.keycloak.image.pullPolicy }}
+          args:
+            - {{ .Values.keycloak.command }}
+            {{- if .Values.keycloak.features.metrics }}
+            - --metrics-enabled=true
+            {{- end }}
+            {{- if .Values.keycloak.features.health }}
+            - --health-enabled=true
+            {{- end }}
+            - --proxy-headers=xforwarded
+            - --http-enabled=true
+            - --hostname-strict=false
+          env:
+            # Hostname configuration
+            - name: KC_HOSTNAME
+              value: {{ .Values.keycloak.hostname | quote }}
+            - name: KC_PROXY
+              value: {{ .Values.keycloak.proxy | quote }}
+            # Database configuration
+            - name: KC_DB
+              value: {{ .Values.keycloak.database.vendor | quote }}
+            - name: KC_DB_URL_HOST
+              value: {{ .Values.keycloak.database.host | quote }}
+            - name: KC_DB_URL_PORT
+              value: {{ .Values.keycloak.database.port | quote }}
+            - name: KC_DB_URL_DATABASE
+              value: {{ .Values.keycloak.database.database | quote }}
+            - name: KC_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "keycloak.databaseSecretName" . }}
+                  key: {{ .Values.keycloak.database.existingSecretKeys.username }}
+            - name: KC_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "keycloak.databaseSecretName" . }}
+                  key: {{ .Values.keycloak.database.existingSecretKeys.password }}
+            # Admin configuration
+            - name: KEYCLOAK_ADMIN
+              value: {{ .Values.keycloak.admin.username | quote }}
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "keycloak.adminSecretName" . }}
+                  key: {{ .Values.keycloak.admin.existingSecretKey }}
+            # Clustering configuration
+            {{- if .Values.keycloak.clustering.enabled }}
+            - name: KC_CACHE
+              value: "ispn"
+            - name: KC_CACHE_STACK
+              value: {{ .Values.keycloak.clustering.stack | quote }}
+            - name: JAVA_OPTS_KC_HEAP
+              value: {{ .Values.keycloak.javaOpts | quote }}
+            - name: jgroups.dns.query
+              value: {{ include "keycloak.fullname" . }}-headless.{{ .Release.Namespace }}.svc.cluster.local
+            {{- end }}
+            # Extra environment variables
+            {{- with .Values.keycloak.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.keycloak.httpPort }}
+              protocol: TCP
+            {{- if .Values.keycloak.features.health }}
+            - name: management
+              containerPort: {{ .Values.keycloak.managementPort }}
+              protocol: TCP
+            {{- end }}
+          {{- if .Values.keycloak.features.health }}
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: management
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: management
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: management
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 60
+          {{- end }}
+          resources:
+            {{- toYaml .Values.keycloak.resources | nindent 12 }}
+      {{- with .Values.keycloak.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.keycloak.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.keycloak.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

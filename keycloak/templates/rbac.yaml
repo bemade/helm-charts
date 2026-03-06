@@ -1,0 +1,30 @@
+{{- if and .Values.keycloak.clustering.enabled .Values.keycloak.serviceAccount.create }}
+# Role for KUBE_PING cluster discovery
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "keycloak.fullname" . }}-pod-reader
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "keycloak.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "keycloak.fullname" . }}-pod-reader
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "keycloak.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ include "keycloak.fullname" . }}-pod-reader
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "keycloak.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}

@@ -1,0 +1,120 @@
+# Keycloak Helm Chart values
+# https://www.keycloak.org/
+
+keycloak:
+  # Docker image configuration
+  image:
+    repository: quay.io/keycloak/keycloak
+    tag: "26.0"
+    pullPolicy: IfNotPresent
+
+  # Number of replicas for high availability
+  replicas: 2
+
+  # Hostname for ingress
+  hostname: "keycloak.example.com"
+
+  # Keycloak HTTP port
+  httpPort: 8080
+  # Keycloak HTTPS port (used internally)
+  httpsPort: 8443
+  # Management port for health/metrics
+  managementPort: 9000
+
+  # Ingress configuration (Traefik IngressRoute)
+  ingress:
+    enabled: true
+    clusterIssuer: "letsencrypt-dns"
+
+  # Resource requests and limits
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 2
+      memory: 2Gi
+
+  # Keycloak features to enable
+  features:
+    # Enable metrics endpoint for Prometheus
+    metrics: true
+    # Enable detailed health checks
+    health: true
+
+  # Keycloak startup mode
+  # "start" for production, "start-dev" for development
+  command: "start"
+
+  # Proxy configuration for running behind a reverse proxy
+  # Options: edge, reencrypt, passthrough
+  proxy: "edge"
+
+  # Database configuration (external PostgreSQL)
+  database:
+    vendor: postgres
+    host: "postgres-pgnative"
+    port: 5432
+    database: "keycloak"
+    # Username (can be overridden via secret)
+    username: "keycloak"
+    # Use existing secret for credentials
+    existingSecret: ""
+    # Keys in the existing secret
+    existingSecretKeys:
+      username: "username"
+      password: "password"
+
+  # Admin user configuration
+  admin:
+    # Admin username
+    username: "admin"
+    # Use existing secret for admin password
+    existingSecret: ""
+    existingSecretKey: "admin-password"
+
+  # Clustering configuration for high availability
+  clustering:
+    # Enable Infinispan clustering via JDBC_PING
+    enabled: true
+    # Cache stack: kubernetes, jdbc-ping, or default
+    stack: "kubernetes"
+
+  # JGroups configuration for cluster discovery
+  jgroups:
+    # Discovery protocol
+    discoveryProtocol: "kubernetes.KUBE_PING"
+
+  # Java options
+  javaOpts: "-Xms512m -Xmx1g"
+
+  # Extra environment variables
+  extraEnv: []
+  # - name: KC_LOG_LEVEL
+  #   value: "DEBUG"
+
+  # Pod annotations
+  podAnnotations: {}
+
+  # Node selector
+  nodeSelector: {}
+
+  # Tolerations
+  tolerations: []
+
+  # Affinity rules (anti-affinity recommended for HA)
+  affinity: {}
+
+  # Service account
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+
+# Secrets configuration
+# Set these via --set or external secret management
+secrets:
+  # Database password (if not using existingSecret)
+  databasePassword: ""
+  # Admin password (if not using existingSecret)
+  adminPassword: ""
