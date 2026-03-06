@@ -41,6 +41,25 @@ entries:
     urls:
     - minio/minio-0.1.0.tgz
     version: 0.1.0
+  nextcloud:
+  - apiVersion: v2
+    appVersion: "30.0"
+    created: "2026-03-06T16:35:12.761438514Z"
+    description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
+    digest: d5bd593d2a0557319b9a2ed195ed19b38ae97e2a1b88d8586b97a35fca9d7c23
+    home: https://git.bemade.org/bemade/helm-charts
+    maintainers:
+    - email: it@bemade.org
+      name: Bemade Inc.
+      url: https://git.bemade.org
+    name: nextcloud
+    sources:
+    - https://git.bemade.org/bemade/helm-charts
+    - https://nextcloud.com/
+    type: application
+    urls:
+    - https://github.com/bemade/helm-charts/releases/download/nextcloud-0.1.0/nextcloud-0.1.0.tgz
+    version: 0.1.0
   odoo-openapi:
   - apiVersion: v2
     appVersion: 1.0.0
@@ -122,4 +141,4 @@ entries:
     urls:
     - postgres-pgvector/postgres-pgvector-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-06T13:54:48.69085605Z"
+generated: "2026-03-06T16:35:12.761457279Z"
