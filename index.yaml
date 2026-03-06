@@ -11,6 +11,25 @@ entries:
     urls:
     - internal-ca/internal-ca-0.1.0.tgz
     version: 0.1.0
+  keycloak:
+  - apiVersion: v2
+    appVersion: "26.0"
+    created: "2026-03-06T13:54:48.278380524Z"
+    description: A Helm chart for deploying Keycloak - Identity and Access Management
+    digest: f14470cc912509a7cda7f8fdaa88ed6e9498f62aec3874572ee0e6e00d2c8a6d
+    home: https://git.bemade.org/bemade/helm-charts
+    maintainers:
+    - email: it@bemade.org
+      name: Bemade Inc.
+      url: https://git.bemade.org
+    name: keycloak
+    sources:
+    - https://git.bemade.org/bemade/helm-charts
+    - https://www.keycloak.org/
+    type: application
+    urls:
+    - https://github.com/bemade/helm-charts/releases/download/keycloak-0.1.0/keycloak-0.1.0.tgz
+    version: 0.1.0
   minio:
   - apiVersion: v2
     appVersion: RELEASE.2024-05-28T17-19-04Z
@@ -103,4 +122,4 @@ entries:
     urls:
     - postgres-pgvector/postgres-pgvector-0.1.0.tgz
     version: 0.1.0
-generated: "2026-02-10T20:14:46.348177767Z"
+generated: "2026-03-06T13:54:48.69085605Z"
