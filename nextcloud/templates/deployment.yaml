@@ -23,13 +23,49 @@ spec:
     spec:
       serviceAccountName: {{ include "nextcloud.serviceAccountName" . }}
       containers:
-        - name: nextcloud
-          image: "{{ .Values.nextcloud.image.repository }}:{{ .Values.nextcloud.image.tag }}"
-          imagePullPolicy: {{ .Values.nextcloud.image.pullPolicy }}
+        # Nginx sidecar - serves static files and proxies PHP to FPM
+        - name: nginx
+          image: "{{ .Values.nextcloud.nginx.image.repository }}:{{ .Values.nextcloud.nginx.image.tag }}"
+          imagePullPolicy: {{ .Values.nextcloud.nginx.image.pullPolicy }}
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
+          volumeMounts:
+            - name: nextcloud-data
+              mountPath: /var/www/html
+              readOnly: true
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+          livenessProbe:
+            httpGet:
+              path: /status.php
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.nextcloud.hostname | quote }}
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /status.php
+              port: http
+              httpHeaders:
+                - name: Host
+                  value: {{ .Values.nextcloud.hostname | quote }}
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+          resources:
+            {{- toYaml .Values.nextcloud.nginx.resources | nindent 12 }}
+        # Nextcloud FPM container
+        - name: nextcloud
+          image: "{{ .Values.nextcloud.image.repository }}:{{ .Values.nextcloud.image.tag }}"
+          imagePullPolicy: {{ .Values.nextcloud.image.pullPolicy }}
           env:
             # Admin credentials
             - name: NEXTCLOUD_ADMIN_USER
@@ -159,34 +195,9 @@ spec:
             - name: php-config
               mountPath: /usr/local/etc/php/conf.d/nextcloud-php.ini
               subPath: nextcloud-php.ini
-            - name: apache-config
-              mountPath: /etc/apache2/conf-enabled/nextcloud-apache.conf
-              subPath: nextcloud-apache.conf
             {{- with .Values.nextcloud.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
-          livenessProbe:
-            httpGet:
-              path: /status.php
-              port: http
-              httpHeaders:
-                - name: Host
-                  value: {{ .Values.nextcloud.hostname | quote }}
-            initialDelaySeconds: 60
-            periodSeconds: 30
-            timeoutSeconds: 10
-            failureThreshold: 6
-          readinessProbe:
-            httpGet:
-              path: /status.php
-              port: http
-              httpHeaders:
-                - name: Host
-                  value: {{ .Values.nextcloud.hostname | quote }}
-            initialDelaySeconds: 30
-            periodSeconds: 15
-            timeoutSeconds: 10
-            failureThreshold: 3
           resources:
             {{- toYaml .Values.nextcloud.resources | nindent 12 }}
       volumes:
@@ -200,9 +211,9 @@ spec:
         - name: php-config
           configMap:
             name: {{ include "nextcloud.fullname" . }}-php
-        - name: apache-config
+        - name: nginx-config
           configMap:
-            name: {{ include "nextcloud.fullname" . }}-apache
+            name: {{ include "nextcloud.fullname" . }}-nginx
         {{- with .Values.nextcloud.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

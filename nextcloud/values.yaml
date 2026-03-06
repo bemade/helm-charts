@@ -3,11 +3,25 @@
 # This chart avoids dotted keys in YAML to prevent Rancher serialization issues
 
 nextcloud:
-  # Docker image configuration
+  # Docker image configuration (FPM-Alpine for smaller footprint)
   image:
     repository: docker.io/library/nextcloud
-    tag: "30.0-apache"
+    tag: "30.0-fpm-alpine"
     pullPolicy: IfNotPresent
+
+  # Nginx sidecar for serving static files
+  nginx:
+    image:
+      repository: docker.io/library/nginx
+      tag: "alpine"
+      pullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
 
   # Number of replicas
   replicas: 1
@@ -51,7 +65,7 @@ nextcloud:
     size: 10Gi
     accessMode: ReadWriteOnce
 
-  # PHP/Apache configuration
+  # PHP-FPM configuration
   # NOTE: No dotted keys here - configs are managed via ConfigMap
   phpConfig:
     # Memory limit for PHP
