@@ -118,7 +118,12 @@ spec:
             - name: NEXTCLOUD_UPDATE
               value: "1"
             {{- end }}
-            # Redis configuration
+            # Trusted proxies
+            {{- range $i, $proxy := .Values.nextcloud.config.trustedProxies }}
+            - name: NC_trusted_proxies__{{ $i }}
+              value: {{ $proxy | quote }}
+            {{- end }}
+                        # Redis configuration
             {{- if .Values.redis.enabled }}
             - name: REDIS_HOST
               value: {{ .Values.redis.host | quote }}
