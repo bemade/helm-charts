@@ -122,11 +122,7 @@ spec:
             - name: NEXTCLOUD_UPDATE
               value: "1"
             {{- end }}
-            # Trusted proxies (space-separated list)
-            {{- if .Values.nextcloud.config.trustedProxies }}
-            - name: TRUSTED_PROXIES
-              value: {{ join " " .Values.nextcloud.config.trustedProxies | quote }}
-            {{- end }}
+            # Trusted proxies configured via custom.config.php file
             # Redis configuration
             {{- if .Values.redis.enabled }}
             - name: REDIS_HOST
@@ -211,6 +207,11 @@ spec:
             - name: php-config
               mountPath: /usr/local/etc/php/conf.d/nextcloud-php.ini
               subPath: nextcloud-php.ini
+            {{- if .Values.nextcloud.config.trustedProxies }}
+            - name: nextcloud-config
+              mountPath: /var/www/html/config/custom.config.php
+              subPath: custom.config.php
+            {{- end }}
             {{- with .Values.nextcloud.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -230,6 +231,11 @@ spec:
         - name: nginx-config
           configMap:
             name: {{ include "nextcloud.fullname" . }}-nginx
+        {{- if .Values.nextcloud.config.trustedProxies }}
+        - name: nextcloud-config
+          configMap:
+            name: {{ include "nextcloud.fullname" . }}-config
+        {{- end }}
         {{- with .Values.nextcloud.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

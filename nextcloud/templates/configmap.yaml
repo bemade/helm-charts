@@ -30,6 +30,27 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: {{ include "nextcloud.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nextcloud.labels" . | nindent 4 }}
+data:
+  # Custom Nextcloud configuration - mounted to /var/www/html/config/
+  custom.config.php: |
+    <?php
+    $CONFIG = array(
+      {{- if .Values.nextcloud.config.trustedProxies }}
+      'trusted_proxies' => array(
+        {{- range $i, $proxy := .Values.nextcloud.config.trustedProxies }}
+        {{ $i }} => '{{ $proxy }}',
+        {{- end }}
+      ),
+      {{- end }}
+    );
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: {{ include "nextcloud.fullname" . }}-nginx
   namespace: {{ .Release.Namespace }}
   labels:
