@@ -16,10 +16,11 @@ spec:
     metadata:
       labels:
         {{- include "nextcloud.selectorLabels" . | nindent 8 }}
-      {{- with .Values.nextcloud.podAnnotations }}
       annotations:
+        checksum/config-nginx: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.nextcloud.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
     spec:
       serviceAccountName: {{ include "nextcloud.serviceAccountName" . }}
       containers:
