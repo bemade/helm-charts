@@ -162,6 +162,19 @@ nextcloud:
   # Affinity rules
   affinity: {}
 
+  # Pod security context (applied to the pod)
+  # For FPM-Alpine, use UID 82 (www-data)
+  podSecurityContext:
+    runAsUser: 82
+    runAsGroup: 82
+    fsGroup: 82
+
+  # Container security context (applied to nextcloud container)
+  securityContext:
+    runAsUser: 82
+    runAsGroup: 82
+    runAsNonRoot: true
+
   # Service account
   serviceAccount:
     create: true
