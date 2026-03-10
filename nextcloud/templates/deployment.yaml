@@ -130,7 +130,7 @@ spec:
             # Redis configuration
             {{- if .Values.redis.enabled }}
             - name: REDIS_HOST
-              value: {{ .Values.redis.host | quote }}
+              value: {{ include "nextcloud.fullname" . }}-redis
             - name: REDIS_HOST_PORT
               value: {{ .Values.redis.port | quote }}
             - name: NC_memcache_locking
