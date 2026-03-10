@@ -3,7 +3,7 @@ entries:
   internal-ca:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-02-02T13:29:31.188541523-05:00"
+    created: "2026-03-10T11:40:25.752027-04:00"
     description: A Helm chart for creating an internal Certificate Authority for Kubernetes
     digest: c6177148460a8b2fd19e5445d798455106bb54f627d1482b110be87dc679e730
     name: internal-ca
@@ -33,7 +33,7 @@ entries:
   minio:
   - apiVersion: v2
     appVersion: RELEASE.2024-05-28T17-19-04Z
-    created: "2026-02-02T13:29:31.188879907-05:00"
+    created: "2026-03-10T11:40:25.752467-04:00"
     description: Minimal Helm chart for a single MinIO deployment with ingress
     digest: 1f5ab085decb9cb8d1b88480cd70c3eb455dd353bbab5e8e263985e9d97e936a
     name: minio
@@ -44,9 +44,9 @@ entries:
   nextcloud:
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-10T15:37:14.488257691Z"
+    created: "2026-03-10T11:40:25.750989-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
-    digest: f9807df9f933bc9430af6eddc16ffeba9917d9cb876e12e04253d34e9811a529
+    digest: ed184939ffd1deb803a446d630634fe0c239add955e45c187d9920337f0942da
     home: https://git.bemade.org/bemade/helm-charts
     maintainers:
     - email: it@bemade.org
@@ -58,7 +58,7 @@ entries:
     - https://nextcloud.com/
     type: application
     urls:
-    - https://github.com/bemade/helm-charts/releases/download/nextcloud-0.3.5/nextcloud-0.3.5.tgz
+    - nextcloud-0.3.5.tgz
     version: 0.3.5
   - apiVersion: v2
     appVersion: "30.0"
@@ -189,7 +189,7 @@ entries:
   odoo-openapi:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-02-02T13:29:31.19136579-05:00"
+    created: "2026-03-10T11:40:25.753577-04:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
     digest: 84c60cc932efc5c45dfe7fee22805c1f393821bea7681a41879f26be3c8b9fb8
     name: odoo-openapi
@@ -199,7 +199,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-02-02T13:29:31.191119468-05:00"
+    created: "2026-03-10T11:40:25.753316-04:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
     digest: 6f5c6ba50eccc69b460a4a3f7d37c8e17653a3d6f2f296921b9ee09925af5766
     name: odoo-openapi
@@ -209,7 +209,7 @@ entries:
     version: 0.1.2
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-02-02T13:29:31.190581299-05:00"
+    created: "2026-03-10T11:40:25.752886-04:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
     digest: 0fc02498f0e1a76822db7bc7b6bf7321da8befb8d3eaa875e11a563469e74214
     name: odoo-openapi
@@ -219,7 +219,7 @@ entries:
     version: 0.1.0
   onlyoffice:
   - apiVersion: v2
-    created: "2026-02-02T13:29:31.199634802-05:00"
+    created: "2026-03-10T11:40:25.753911-04:00"
     description: A Helm chart for deploying OnlyOffice CE instances
     digest: 077b7940b7b9d6f07dcd361cfc485c96f381dcfbe5b284dc3922a2deefa1d392
     maintainers:
@@ -251,7 +251,7 @@ entries:
     version: 0.1.6
   postgres-pgvector:
   - apiVersion: v2
-    created: "2026-02-02T13:29:31.199983176-05:00"
+    created: "2026-03-10T11:40:25.754276-04:00"
     description: Single-instance PostgreSQL with pgvector extension using vectordb/vectordb
       image
     digest: 428560241676bc29295ecadea21bd8b16fccb90785cf26d4e27ddcb4c7b450b3
@@ -267,4 +267,4 @@ entries:
     urls:
     - postgres-pgvector/postgres-pgvector-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-10T15:37:14.488296211Z"
+generated: "2026-03-10T11:40:25.749936-04:00"
