@@ -5,8 +5,7 @@ metadata:
   name: {{ include "nextcloud.fullname" . }}-redis
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "nextcloud.labels" . | nindent 4 }}
-    app.kubernetes.io/component: redis
+    {{- include "nextcloud.labels" (dict "component" "redis" "rootContext" $) | nindent 4 }}
 spec:
   accessModes:
     - ReadWriteOnce

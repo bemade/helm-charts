@@ -5,16 +5,14 @@ metadata:
   name: {{ include "nextcloud.fullname" . }}-redis
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "nextcloud.labels" . | nindent 4 }}
-    app.kubernetes.io/component: redis
+    {{- include "nextcloud.labels" (dict "component" "redis" "rootContext" $) | nindent 4 }}
 spec:
   type: ClusterIP
   ports:
     - name: redis
-      port: 6379
+      port: {{ .Values.redis.port | default 6379 }}
       targetPort: redis
       protocol: TCP
   selector:
-    {{- include "nextcloud.selectorLabels" . | nindent 4 }}
-    app.kubernetes.io/component: redis
+    {{- include "nextcloud.selectorLabels" (dict "component" "redis" "rootContext" $) | nindent 4 }}
 {{- end }}

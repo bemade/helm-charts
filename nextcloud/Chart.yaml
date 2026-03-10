@@ -1,14 +1,23 @@
 apiVersion: v2
 name: nextcloud
-description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
+description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
 type: application
-version: 0.4.6
-appVersion: "30.0"
-home: https://git.bemade.org/bemade/helm-charts
+version: 1.0.0
+appVersion: "33.0.0"
+home: https://nextcloud.com/
+icon: https://cdn.rawgit.com/docker-library/docs/defa5ffc7123177acd60ddef6e16bddf694cc35f/nextcloud/logo.svg
+keywords:
+  - nextcloud
+  - storage
+  - http
+  - web
+  - php
 sources:
-  - https://git.bemade.org/bemade/helm-charts
-  - https://nextcloud.com/
+  - https://github.com/bemade/helm-charts
+  - https://github.com/nextcloud/helm
+  - https://github.com/nextcloud/docker
 maintainers:
   - name: Bemade Inc.
-    url: https://git.bemade.org
+    url: https://bemade.org
     email: it@bemade.org
+# No Bitnami dependencies - uses internal Redis deployment and external PostgreSQL

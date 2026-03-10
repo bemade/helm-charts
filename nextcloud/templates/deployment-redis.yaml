@@ -5,21 +5,18 @@ metadata:
   name: {{ include "nextcloud.fullname" . }}-redis
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "nextcloud.labels" . | nindent 4 }}
-    app.kubernetes.io/component: redis
+    {{- include "nextcloud.labels" (dict "component" "redis" "rootContext" $) | nindent 4 }}
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      {{- include "nextcloud.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: redis
+      {{- include "nextcloud.selectorLabels" (dict "component" "redis" "rootContext" $) | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "nextcloud.selectorLabels" . | nindent 8 }}
-        app.kubernetes.io/component: redis
+        {{- include "nextcloud.selectorLabels" (dict "component" "redis" "rootContext" $) | nindent 8 }}
     spec:
       containers:
         - name: redis
