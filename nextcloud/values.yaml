@@ -92,6 +92,10 @@ nextcloud:
     logLevel: 2
     # Maintenance window start hour (UTC, 0-23)
     maintenanceWindowStart: 1
+    # Server identifier (recommended for multi-server setups)
+    serverId: ""
+    # Automatically add missing database indices after upgrade
+    dbAddMissingIndices: true
     # Trusted proxies (list of IPs/CIDRs behind reverse proxy)
     trustedProxies: []
     # - "10.42.0.0/16"
@@ -179,8 +183,8 @@ database:
 
 # Redis configuration (optional, for caching/locking)
 redis:
-  enabled: false
-  host: ""
+  enabled: true
+  host: "nextcloud-redis-master"
   port: 6379
   # Use existingSecret for password
   existingSecret: ""
