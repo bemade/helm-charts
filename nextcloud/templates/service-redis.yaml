@@ -17,4 +17,4 @@ spec:
   selector:
     {{- include "nextcloud.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: redis
-{{- end } 
+{{- end }}
