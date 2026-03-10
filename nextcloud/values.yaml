@@ -164,16 +164,13 @@ nextcloud:
   affinity: {}
 
   # Pod security context (applied to the pod)
-  # Only fsGroup for volume permissions - runAsUser is set per-container
-  podSecurityContext:
-    fsGroup: 82
+  # Empty by default - nextcloud entrypoint requires root for initial setup
+  podSecurityContext: {}
 
   # Container security context (applied to nextcloud container)
-  securityContext:
-    runAsUser: 82
-    runAsGroup: 82
-    readOnlyRootFilesystem: false
-    # runAsNonRoot: true  # Disabled - entrypoint needs root for initial setup
+  # Empty by default - nextcloud:fpm-alpine entrypoint needs root permissions
+  # The container internally switches to www-data (UID 82) after setup
+  securityContext: {}
 
   # Service account
   serviceAccount:
