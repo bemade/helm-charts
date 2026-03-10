@@ -20,6 +20,10 @@ spec:
             app.kubernetes.io/component: cron
         spec:
           restartPolicy: OnFailure
+          # Run as www-data user (UID 82 in alpine-based images)
+          securityContext:
+            runAsUser: 82
+            runAsGroup: 82
           containers:
             - name: cron
               image: "{{ .Values.nextcloud.image.repository }}:{{ .Values.nextcloud.image.tag }}"
