@@ -113,6 +113,10 @@ spec:
               value: {{ .Values.nextcloud.config.logLevel | quote }}
             - name: NC_maintenance_window_start
               value: {{ .Values.nextcloud.config.maintenanceWindowStart | quote }}
+            {{- if .Values.nextcloud.config.serverId }}
+            - name: NC_instanceid
+              value: {{ .Values.nextcloud.config.serverId | quote }}
+            {{- end }}
             {{- if .Values.nextcloud.config.prettyUrls }}
             # Pretty URLs - htaccess.RewriteBase will be set automatically
             - name: NEXTCLOUD_UPDATE
@@ -129,6 +133,12 @@ spec:
               value: {{ .Values.redis.host | quote }}
             - name: REDIS_HOST_PORT
               value: {{ .Values.redis.port | quote }}
+            - name: NC_memcache_locking
+              value: "\\OC\\Memcache\\Redis"
+            - name: NC_memcache_local
+              value: "\\OC\\Memcache\\Redis"
+            - name: NC_memcache_distributed
+              value: "\\OC\\Memcache\\Redis"
             {{- if or .Values.redis.existingSecret .Values.secrets.redisPassword }}
             - name: REDIS_HOST_PASSWORD
               valueFrom:
