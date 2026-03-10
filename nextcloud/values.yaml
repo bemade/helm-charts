@@ -10,9 +10,10 @@ nextcloud:
     pullPolicy: IfNotPresent
 
   # Nginx sidecar for serving static files
+  # Using nginx-unprivileged to run as non-root (UID 101)
   nginx:
     image:
-      repository: docker.io/library/nginx
+      repository: docker.io/nginxinc/nginx-unprivileged
       tag: "alpine"
       pullPolicy: IfNotPresent
     resources:
