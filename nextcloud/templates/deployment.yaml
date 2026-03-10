@@ -208,9 +208,9 @@ spec:
               mountPath: /usr/local/etc/php/conf.d/nextcloud-php.ini
               subPath: nextcloud-php.ini
             {{- if .Values.nextcloud.config.trustedProxies }}
-            - name: nextcloud-config
-              mountPath: /var/www/html/config/custom.config.php
-              subPath: custom.config.php
+            - name: nextcloud-hooks
+              mountPath: /docker-entrypoint-hooks.d/before-starting/configure-trusted-proxies.sh
+              subPath: configure-trusted-proxies.sh
             {{- end }}
             {{- with .Values.nextcloud.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
@@ -232,9 +232,10 @@ spec:
           configMap:
             name: {{ include "nextcloud.fullname" . }}-nginx
         {{- if .Values.nextcloud.config.trustedProxies }}
-        - name: nextcloud-config
+        - name: nextcloud-hooks
           configMap:
-            name: {{ include "nextcloud.fullname" . }}-config
+            name: {{ include "nextcloud.fullname" . }}-hooks
+            defaultMode: 0755
         {{- end }}
         {{- with .Values.nextcloud.extraVolumes }}
         {{- toYaml . | nindent 8 }}

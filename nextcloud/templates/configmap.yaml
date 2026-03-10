@@ -27,26 +27,25 @@ data:
     pm.max_requests = 500
     request_terminate_timeout = {{ .Values.nextcloud.phpConfig.maxExecutionTime }}
 ---
+{{- if .Values.nextcloud.config.trustedProxies }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "nextcloud.fullname" . }}-config
+  name: {{ include "nextcloud.fullname" . }}-hooks
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "nextcloud.labels" . | nindent 4 }}
 data:
-  # Custom Nextcloud configuration - mounted to /var/www/html/config/
-  custom.config.php: |
-    <?php
-    $CONFIG = array(
-      {{- if .Values.nextcloud.config.trustedProxies }}
-      'trusted_proxies' => array(
-        {{- range $i, $proxy := .Values.nextcloud.config.trustedProxies }}
-        {{ $i }} => '{{ $proxy }}',
-        {{- end }}
-      ),
-      {{- end }}
-    );
+  # Script to configure trusted_proxies via occ command
+  # Mounted to /docker-entrypoint-hooks.d/before-starting/
+  configure-trusted-proxies.sh: |
+    #!/bin/sh
+    echo "Configuring trusted_proxies..."
+    {{- range $i, $proxy := .Values.nextcloud.config.trustedProxies }}
+    php occ config:system:set trusted_proxies {{ $i }} --value="{{ $proxy }}"
+    {{- end }}
+    echo "Trusted proxies configured."
+{{- end }}
 ---
 apiVersion: v1
 kind: ConfigMap
