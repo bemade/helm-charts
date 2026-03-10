@@ -44,6 +44,24 @@ entries:
   nextcloud:
   - apiVersion: v2
     appVersion: "30.0"
+    created: "2026-03-10T13:12:14.324771281Z"
+    description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
+    digest: 5e44061435da8b2a051e17d275770ff8f78c20a5fa35839964066b57201f8338
+    home: https://git.bemade.org/bemade/helm-charts
+    maintainers:
+    - email: it@bemade.org
+      name: Bemade Inc.
+      url: https://git.bemade.org
+    name: nextcloud
+    sources:
+    - https://git.bemade.org/bemade/helm-charts
+    - https://nextcloud.com/
+    type: application
+    urls:
+    - https://github.com/bemade/helm-charts/releases/download/nextcloud-0.3.0/nextcloud-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v2
+    appVersion: "30.0"
     created: "2026-03-06T18:36:59.957627511Z"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 6a0d96625652daa13703a8d3f0f69952d80e63ff2a3aa3b24338b3aac48f701e
@@ -159,4 +177,4 @@ entries:
     urls:
     - postgres-pgvector/postgres-pgvector-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-06T18:36:59.957645425Z"
+generated: "2026-03-10T13:12:14.324786921Z"
