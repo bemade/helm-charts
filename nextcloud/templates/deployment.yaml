@@ -122,10 +122,10 @@ spec:
             - name: NEXTCLOUD_UPDATE
               value: "1"
             {{- end }}
-            # Trusted proxies
-            {{- range $i, $proxy := .Values.nextcloud.config.trustedProxies }}
-            - name: NC_trusted_proxies__{{ $i }}
-              value: {{ $proxy | quote }}
+            # Trusted proxies (space-separated list)
+            {{- if .Values.nextcloud.config.trustedProxies }}
+            - name: TRUSTED_PROXIES
+              value: {{ join " " .Values.nextcloud.config.trustedProxies | quote }}
             {{- end }}
             # Redis configuration
             {{- if .Values.redis.enabled }}
