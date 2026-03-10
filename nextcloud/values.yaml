@@ -184,8 +184,28 @@ database:
 # Redis configuration (optional, for caching/locking)
 redis:
   enabled: true
-  host: "nextcloud-redis-master"
+  # host is auto-set to the internal service name when using the built-in Redis
+  # Override this if using an external Redis instance
+  host: "nextcloud-redis"
   port: 6379
+  # Redis image (official image)
+  image:
+    repository: docker.io/library/redis
+    tag: "7-alpine"
+    pullPolicy: IfNotPresent
+  # Resource requests and limits
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  # Persistence for Redis data
+  persistence:
+    enabled: false
+    storageClass: ""
+    size: 1Gi
   # Use existingSecret for password
   existingSecret: ""
   existingSecretKey: "redis-password"
@@ -211,4 +231,4 @@ secrets:
   s3AccessKey: ""
   s3SecretKey: ""
   # Redis password (if not using existingSecret)
-  redisPassword: ""
+  redisPassword: "" 
