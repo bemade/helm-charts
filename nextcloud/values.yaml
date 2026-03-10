@@ -173,7 +173,7 @@ nextcloud:
   securityContext:
     runAsUser: 82
     runAsGroup: 82
-    runAsNonRoot: true
+    # runAsNonRoot: true  # Disabled - entrypoint needs root for initial setup
 
   # Service account
   serviceAccount:
