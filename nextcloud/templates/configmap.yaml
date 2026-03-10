@@ -27,7 +27,7 @@ data:
     pm.max_requests = 500
     request_terminate_timeout = {{ .Values.nextcloud.phpConfig.maxExecutionTime }}
 ---
-{{- if .Values.nextcloud.config.trustedProxies }}
+{{- if or .Values.nextcloud.config.trustedProxies .Values.nextcloud.config.dbAddMissingIndices }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -36,15 +36,22 @@ metadata:
   labels:
     {{- include "nextcloud.labels" . | nindent 4 }}
 data:
-  # Script to configure trusted_proxies via occ command
+  # Script to run maintenance tasks via occ command
   # Mounted to /docker-entrypoint-hooks.d/before-starting/
-  configure-trusted-proxies.sh: |
+  nextcloud-maintenance.sh: |
     #!/bin/sh
+    {{- if .Values.nextcloud.config.trustedProxies }}
     echo "Configuring trusted_proxies..."
     {{- range $i, $proxy := .Values.nextcloud.config.trustedProxies }}
     php occ config:system:set trusted_proxies {{ $i }} --value="{{ $proxy }}"
     {{- end }}
     echo "Trusted proxies configured."
+    {{- end }}
+    {{- if .Values.nextcloud.config.dbAddMissingIndices }}
+    echo "Adding missing database indices..."
+    php occ db:add-missing-indices
+    echo "Database indices updated."
+    {{- end }}
 {{- end }}
 ---
 apiVersion: v1

@@ -207,10 +207,10 @@ spec:
             - name: php-config
               mountPath: /usr/local/etc/php/conf.d/nextcloud-php.ini
               subPath: nextcloud-php.ini
-            {{- if .Values.nextcloud.config.trustedProxies }}
+            {{- if or .Values.nextcloud.config.trustedProxies .Values.nextcloud.config.dbAddMissingIndices }}
             - name: nextcloud-hooks
-              mountPath: /docker-entrypoint-hooks.d/before-starting/configure-trusted-proxies.sh
-              subPath: configure-trusted-proxies.sh
+              mountPath: /docker-entrypoint-hooks.d/before-starting/nextcloud-maintenance.sh
+              subPath: nextcloud-maintenance.sh
             {{- end }}
             {{- with .Values.nextcloud.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
@@ -231,7 +231,7 @@ spec:
         - name: nginx-config
           configMap:
             name: {{ include "nextcloud.fullname" . }}-nginx
-        {{- if .Values.nextcloud.config.trustedProxies }}
+        {{- if or .Values.nextcloud.config.trustedProxies .Values.nextcloud.config.dbAddMissingIndices }}
         - name: nextcloud-hooks
           configMap:
             name: {{ include "nextcloud.fullname" . }}-hooks
