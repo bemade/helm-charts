@@ -19,7 +19,7 @@ spec:
       kind: Rule
       services:
         - name: {{ include "nextcloud.fullname" . }}
-          port: 80
+          port: {{ .Values.service.port }}
   tls:
     secretName: {{ include "nextcloud.fullname" . }}-tls
 {{- end }}

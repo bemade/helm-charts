@@ -148,6 +148,7 @@ nextcloud:
     smtpHostKey: smtp-host
   update: 0
   # If web server is not binding default port, you can define it
+  # NOTE: When using nginx.enabled with nginx-unprivileged, set this to 8080
   containerPort: 80
   datadir: /var/www/html/data
   persistence:
