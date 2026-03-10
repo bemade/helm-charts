@@ -207,6 +207,9 @@ spec:
             - name: php-config
               mountPath: /usr/local/etc/php/conf.d/nextcloud-php.ini
               subPath: nextcloud-php.ini
+            - name: php-config
+              mountPath: /usr/local/etc/php-fpm.d/www.conf
+              subPath: www.conf
             {{- if or .Values.nextcloud.config.trustedProxies .Values.nextcloud.config.dbAddMissingIndices }}
             - name: nextcloud-hooks
               mountPath: /docker-entrypoint-hooks.d/before-starting/nextcloud-maintenance.sh
