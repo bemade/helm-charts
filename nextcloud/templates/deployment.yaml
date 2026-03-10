@@ -212,12 +212,18 @@ spec:
           volumeMounts:
             - name: nextcloud-data
               mountPath: /var/www/html
+            # Writable PHP conf.d directory for entrypoint-generated configs (redis-session.ini)
+            - name: php-confd
+              mountPath: /usr/local/etc/php/conf.d
             - name: php-config
               mountPath: /usr/local/etc/php/conf.d/nextcloud-php.ini
               subPath: nextcloud-php.ini
             - name: php-config
               mountPath: /usr/local/etc/php-fpm.d/www.conf
               subPath: www.conf
+            # Writable tmp directory
+            - name: tmp
+              mountPath: /tmp
             {{- if or .Values.nextcloud.config.trustedProxies .Values.nextcloud.config.dbAddMissingIndices }}
             - name: nextcloud-hooks
               mountPath: /docker-entrypoint-hooks.d/before-starting/nextcloud-maintenance.sh
@@ -236,6 +242,12 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+        # Writable PHP conf.d for entrypoint-generated configs
+        - name: php-confd
+          emptyDir: {}
+        # Writable tmp directory
+        - name: tmp
+          emptyDir: {}
         - name: php-config
           configMap:
             name: {{ include "nextcloud.fullname" . }}-php
