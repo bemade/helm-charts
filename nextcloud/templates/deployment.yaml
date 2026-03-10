@@ -123,7 +123,7 @@ spec:
             - name: NC_trusted_proxies__{{ $i }}
               value: {{ $proxy | quote }}
             {{- end }}
-                        # Redis configuration
+            # Redis configuration
             {{- if .Values.redis.enabled }}
             - name: REDIS_HOST
               value: {{ .Values.redis.host | quote }}
