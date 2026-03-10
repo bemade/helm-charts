@@ -3,7 +3,7 @@ entries:
   internal-ca:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-03-10T16:59:59.26899-04:00"
+    created: "2026-03-10T17:18:31.539385-04:00"
     description: A Helm chart for creating an internal Certificate Authority for Kubernetes
     digest: c6177148460a8b2fd19e5445d798455106bb54f627d1482b110be87dc679e730
     name: internal-ca
@@ -33,7 +33,7 @@ entries:
   minio:
   - apiVersion: v2
     appVersion: RELEASE.2024-05-28T17-19-04Z
-    created: "2026-03-10T16:59:59.270383-04:00"
+    created: "2026-03-10T17:18:31.539724-04:00"
     description: Minimal Helm chart for a single MinIO deployment with ingress
     digest: 1f5ab085decb9cb8d1b88480cd70c3eb455dd353bbab5e8e263985e9d97e936a
     name: minio
@@ -44,7 +44,25 @@ entries:
   nextcloud:
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-10T16:59:59.267621-04:00"
+    created: "2026-03-10T17:18:31.538965-04:00"
+    description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
+    digest: 148ffd9414f55801b4918a884965f9bc00cac3cdd73c36cdf8ca3440099ca8bd
+    home: https://git.bemade.org/bemade/helm-charts
+    maintainers:
+    - email: it@bemade.org
+      name: Bemade Inc.
+      url: https://git.bemade.org
+    name: nextcloud
+    sources:
+    - https://git.bemade.org/bemade/helm-charts
+    - https://nextcloud.com/
+    type: application
+    urls:
+    - nextcloud-0.4.6.tgz
+    version: 0.4.6
+  - apiVersion: v2
+    appVersion: "30.0"
+    created: "2026-03-10T17:18:31.537279-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 4cf00086d5329081b2977ee4fb3f69f69e1cc35e79dbb0b9dc205b69ead5d957
     home: https://git.bemade.org/bemade/helm-charts
@@ -62,7 +80,7 @@ entries:
     version: 0.4.5
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-10T16:59:59.266936-04:00"
+    created: "2026-03-10T17:18:31.536397-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 987d52c0b5e1b4d7fdf38cc04812d5c7e7c19fa67843aeba1a5b927128c22a34
     home: https://git.bemade.org/bemade/helm-charts
@@ -80,7 +98,7 @@ entries:
     version: 0.4.4
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-10T16:59:59.266006-04:00"
+    created: "2026-03-10T17:18:31.535217-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 6ab73a1c16d58ddc7ac648a16f67ca54a9b06a48dadd4bb5ccbf85bdccaccd1a
     home: https://git.bemade.org/bemade/helm-charts
@@ -98,7 +116,7 @@ entries:
     version: 0.4.3
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-10T16:59:59.265013-04:00"
+    created: "2026-03-10T17:18:31.534409-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: bef8e4a00bf2541d288c446104a9ca121a75dbef506ea520182a53ae406f1890
     home: https://git.bemade.org/bemade/helm-charts
@@ -116,7 +134,7 @@ entries:
     version: 0.4.2
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-10T16:59:59.264115-04:00"
+    created: "2026-03-10T17:18:31.53356-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 49831f015703bc45daf802b7495b1365bff896dd8b9db7e4cb40386c83f33422
     home: https://git.bemade.org/bemade/helm-charts
@@ -134,7 +152,7 @@ entries:
     version: 0.4.1
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-10T16:59:59.263157-04:00"
+    created: "2026-03-10T17:18:31.532608-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 5d75628e6febd00396537f12c3932fc1ecad679ed00ac9e3c43e876dfd18b30b
     home: https://git.bemade.org/bemade/helm-charts
@@ -152,7 +170,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-10T16:59:59.262286-04:00"
+    created: "2026-03-10T17:18:31.531817-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: eff4783c7188d28133152a4930060088f3f7f1f9124c01bbf96700aa3aebcfca
     home: https://git.bemade.org/bemade/helm-charts
@@ -170,7 +188,7 @@ entries:
     version: 0.3.9
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-10T16:59:59.261409-04:00"
+    created: "2026-03-10T17:18:31.530666-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 2f710ffc4127cba0c119261ac00284523155d8a1d8455bda7c1fee620b2d50c7
     home: https://git.bemade.org/bemade/helm-charts
@@ -188,7 +206,7 @@ entries:
     version: 0.3.8
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-10T16:59:59.260466-04:00"
+    created: "2026-03-10T17:18:31.529869-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 9f91fe8de1f6f46ac3b39691a60ab5c11f78859375fc4d25e2c06babd99e18a2
     home: https://git.bemade.org/bemade/helm-charts
@@ -206,7 +224,7 @@ entries:
     version: 0.3.7
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-10T16:59:59.259547-04:00"
+    created: "2026-03-10T17:18:31.52852-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 1e576f3658f7342d4ecbb80c55419673baadae6f205bf16a37db20022e70644f
     home: https://git.bemade.org/bemade/helm-charts
@@ -224,7 +242,7 @@ entries:
     version: 0.3.6
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-10T16:59:59.256801-04:00"
+    created: "2026-03-10T17:18:31.52371-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: ed184939ffd1deb803a446d630634fe0c239add955e45c187d9920337f0942da
     home: https://git.bemade.org/bemade/helm-charts
@@ -369,7 +387,7 @@ entries:
   odoo-openapi:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-03-10T16:59:59.271815-04:00"
+    created: "2026-03-10T17:18:31.540551-04:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
     digest: 84c60cc932efc5c45dfe7fee22805c1f393821bea7681a41879f26be3c8b9fb8
     name: odoo-openapi
@@ -379,7 +397,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-03-10T16:59:59.271344-04:00"
+    created: "2026-03-10T17:18:31.540327-04:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
     digest: 6f5c6ba50eccc69b460a4a3f7d37c8e17653a3d6f2f296921b9ee09925af5766
     name: odoo-openapi
@@ -389,7 +407,7 @@ entries:
     version: 0.1.2
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-03-10T16:59:59.270771-04:00"
+    created: "2026-03-10T17:18:31.540026-04:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
     digest: 0fc02498f0e1a76822db7bc7b6bf7321da8befb8d3eaa875e11a563469e74214
     name: odoo-openapi
@@ -399,7 +417,7 @@ entries:
     version: 0.1.0
   onlyoffice:
   - apiVersion: v2
-    created: "2026-03-10T16:59:59.272213-04:00"
+    created: "2026-03-10T17:18:31.540807-04:00"
     description: A Helm chart for deploying OnlyOffice CE instances
     digest: 077b7940b7b9d6f07dcd361cfc485c96f381dcfbe5b284dc3922a2deefa1d392
     maintainers:
@@ -431,7 +449,7 @@ entries:
     version: 0.1.6
   postgres-pgvector:
   - apiVersion: v2
-    created: "2026-03-10T16:59:59.272613-04:00"
+    created: "2026-03-10T17:18:31.541198-04:00"
     description: Single-instance PostgreSQL with pgvector extension using vectordb/vectordb
       image
     digest: 428560241676bc29295ecadea21bd8b16fccb90785cf26d4e27ddcb4c7b450b3
@@ -447,4 +465,4 @@ entries:
     urls:
     - postgres-pgvector/postgres-pgvector-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-10T16:59:59.253946-04:00"
+generated: "2026-03-10T17:18:31.522062-04:00"
