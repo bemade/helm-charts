@@ -78,7 +78,7 @@ oidc:
   groups:
     create: true
     admin:
-      - "nextcloud-admins"
+      - "admin"
 
 # Nextcloud configuration
 nextcloud:
