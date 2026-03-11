@@ -178,6 +178,13 @@ oidc:
   disableLostPassword: true
   # Allow requests to local/private IPs (needed if OIDC provider resolves to private IP)
   allowLocalRemoteServers: false
+  # Group management
+  groups:
+    # Create Nextcloud groups from OIDC groups claim
+    create: true
+    # Groups from OIDC that grant Nextcloud admin rights (list)
+    admin: []
+    # Example: admin: ["nextcloud-admins", "admins"]
 
 nextcloud:
   host: nextcloud.kube.home

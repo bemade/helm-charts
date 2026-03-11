@@ -27,6 +27,16 @@ data:
       'oidc_login_scope' => '{{ .Values.oidc.scope }}',
       'oidc_login_tls_verify' => {{ .Values.oidc.tlsVerify }},
       'oidc_login_disable_registration' => {{ .Values.oidc.disableRegistration }},
+      {{- if .Values.oidc.groups.create }}
+      'oidc_create_groups' => true,
+      {{- end }}
+      {{- if .Values.oidc.groups.admin }}
+      'oidc_login_admin_groups' => array(
+        {{- range $i, $group := .Values.oidc.groups.admin }}
+        {{ $i }} => '{{ $group }}',
+        {{- end }}
+      ),
+      {{- end }}
       {{- if .Values.oidc.allowLocalRemoteServers }}
       'allow_local_remote_servers' => true,
       {{- end }}
