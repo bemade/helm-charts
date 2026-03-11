@@ -1,4 +1,4 @@
-# Nextcloud v1.0.2 - Values for bemade/nextcloud chart with CloudNativePG
+# Nextcloud v1.0.8 - Values for bemade/nextcloud chart with CloudNativePG
 # Hostname: cloud.3387.vezina.biz
 
 # Image configuration - FPM Alpine
@@ -51,6 +51,30 @@ ingressRoute:
   entryPoints:
     - websecure
 
+# OIDC Login configuration for Keycloak SSO
+oidc:
+  enabled: true
+  providerUrl: "https://auth.3387.vezina.biz/realms/vezina"
+  clientId: "nextcloud"
+  # Use existing secret for client secret (created manually)
+  existingSecret: "nextcloud-oidc-secret"
+  buttonText: "Se connecter avec Keycloak"
+  autoRedirect: false
+  endSessionRedirect: true
+  hidePasswordForm: false
+  disableRegistration: false
+  tlsVerify: true
+  scope: "openid profile email"
+  attributes:
+    id: "preferred_username"
+    name: "name"
+    mail: "email"
+    groups: "groups"
+  disableChangeDisplayName: true
+  disableLostPassword: true
+  # Keycloak resolves to private IP inside cluster
+  allowLocalRemoteServers: true
+
 # Nextcloud configuration
 nextcloud:
   host: cloud.3387.vezina.biz
@@ -95,28 +119,6 @@ nextcloud:
   configs:
     # Required for reinstall/upgrade when database already exists
     CAN_INSTALL: ""
-    # OIDC Login configuration for Keycloak SSO
-    oidc.config.php: |-
-      <?php
-      $CONFIG = array (
-        'allow_user_to_change_display_name' => false,
-        'lost_password_link' => 'disabled',
-        'oidc_login_provider_url' => 'https://auth.3387.vezina.biz/realms/vezina',
-        'oidc_login_client_id' => 'nextcloud',
-        'oidc_login_auto_redirect' => false,
-        'oidc_login_end_session_redirect' => true,
-        'oidc_login_button_text' => 'Se connecter avec Keycloak',
-        'oidc_login_hide_password_form' => false,
-        'oidc_login_attributes' => array(
-          'id' => 'preferred_username',
-          'name' => 'name',
-          'mail' => 'email',
-          'groups' => 'groups',
-        ),
-        'oidc_login_scope' => 'openid profile email',
-        'oidc_login_tls_verify' => true,
-        'oidc_login_disable_registration' => false,
-      );
     custom.config.php: |-
       <?php
       $CONFIG = array (
@@ -138,8 +140,6 @@ nextcloud:
         'default_phone_region' => 'CA',
         // Maintenance window start at 5 AM UTC (1 AM EST/EDT)
         'maintenance_window_start' => 5,
-        // Allow requests to local/private IPs (needed for Keycloak inside cluster)
-        'allow_local_remote_servers' => true,
       );
   
   phpConfigs: {}
@@ -182,15 +182,8 @@ nextcloud:
   extraEnv: null
   extraInitContainers: []
   extraSidecarContainers: []
-  extraVolumes:
-    - name: oidc-secret
-      secret:
-        secretName: nextcloud-oidc-secret
-  extraVolumeMounts:
-    - name: oidc-secret
-      mountPath: /var/www/html/config/oidc-secret.config.php
-      subPath: oidc-secret.config.php
-      readOnly: true
+  extraVolumes: null
+  extraVolumeMounts: null
   priorityClassName: ""
 
 # Persistence at root level
