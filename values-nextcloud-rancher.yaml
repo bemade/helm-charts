@@ -74,6 +74,11 @@ oidc:
   disableLostPassword: true
   # Keycloak resolves to private IP inside cluster
   allowLocalRemoteServers: true
+  # Group management
+  groups:
+    create: true
+    admin:
+      - "nextcloud-admins"
 
 # Nextcloud configuration
 nextcloud:
