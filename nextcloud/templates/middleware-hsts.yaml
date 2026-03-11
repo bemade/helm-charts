@@ -1,0 +1,16 @@
+{{- if .Values.ingressRoute.enabled }}
+{{- if .Values.ingressRoute.hsts.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "nextcloud.fullname" . }}-hsts
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nextcloud.labels" (dict "component" "middleware" "rootContext" $) | nindent 4 }}
+spec:
+  headers:
+    stsSeconds: {{ .Values.ingressRoute.hsts.maxAge }}
+    stsIncludeSubdomains: {{ .Values.ingressRoute.hsts.includeSubdomains }}
+    stsPreload: {{ .Values.ingressRoute.hsts.preload }}
+{{- end }}
+{{- end }}

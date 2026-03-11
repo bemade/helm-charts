@@ -17,6 +17,10 @@ spec:
   routes:
     - match: Host(`{{ .Values.nextcloud.host }}`)
       kind: Rule
+      {{- if .Values.ingressRoute.hsts.enabled }}
+      middlewares:
+        - name: {{ include "nextcloud.fullname" . }}-hsts
+      {{- end }}
       services:
         - name: {{ include "nextcloud.fullname" . }}
           port: {{ .Values.service.port }}

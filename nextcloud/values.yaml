@@ -120,6 +120,13 @@ ingressRoute:
     - websecure
   # Additional annotations
   annotations: {}
+  # HSTS (HTTP Strict Transport Security) configuration
+  hsts:
+    enabled: true
+    # Max age in seconds (15552000 = 180 days, recommended minimum)
+    maxAge: 15552000
+    includeSubdomains: true
+    preload: false
 
 # Allow configuration of lifecycle hooks
 # ref: https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
