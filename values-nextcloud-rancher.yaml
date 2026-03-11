@@ -1,0 +1,354 @@
+# Nextcloud v1.0.2 - Values for bemade/nextcloud chart with CloudNativePG
+# Hostname: cloud.3387.vezina.biz
+
+# Image configuration - FPM Alpine
+image:
+  registry: docker.io
+  repository: library/nextcloud
+  flavor: fpm-alpine
+  tag: "33.0.0-fpm-alpine"
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+# Nginx - REQUIRED for fpm-alpine image
+nginx:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: nginxinc/nginx-unprivileged
+    tag: alpine
+    pullPolicy: IfNotPresent
+  containerPort: 8080
+  ipFamilies:
+    - IPv4
+  config:
+    default: true
+    headers:
+      Referrer-Policy: no-referrer
+      Strict-Transport-Security: ""
+      X-Content-Type-Options: nosniff
+      X-Frame-Options: SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies: none
+      X-Robots-Tag: "noindex, nofollow"
+      X-XSS-Protection: "1; mode=block"
+    serverBlockCustom: |
+      client_max_body_size 10G;
+      client_body_timeout 300s;
+      fastcgi_buffers 64 4K;
+      fastcgi_read_timeout 3600s;
+  resources: {}
+  securityContext: {}
+
+# Standard ingress disabled - using Traefik IngressRoute
+ingress:
+  enabled: false
+
+# Traefik IngressRoute
+ingressRoute:
+  enabled: true
+  clusterIssuer: letsencrypt-cloudflare-vezina
+  entryPoints:
+    - websecure
+
+# Nextcloud configuration
+nextcloud:
+  host: cloud.3387.vezina.biz
+  
+  # Admin credentials from existing secret
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-credentials
+    usernameKey: nextcloud-username
+    passwordKey: nextcloud-password
+    smtpUsernameKey: smtp-username
+    smtpPasswordKey: smtp-password
+    smtpHostKey: smtp-host
+    tokenKey: ""
+  
+  trustedDomains:
+    - cloud.3387.vezina.biz
+  
+  datadir: /var/www/html/data
+  
+  # IMPORTANT: Must match nginx.containerPort for fpm+nginx
+  containerPort: 8080
+  
+  # Set to 1 to skip install (use existing database)
+  update: 1
+  
+  defaultConfigs:
+    .htaccess: true
+    apache-pretty-urls.config.php: true
+    apcu.config.php: true
+    apps.config.php: true
+    autoconfig.php: true
+    redis.config.php: true
+    reverse-proxy.config.php: true
+    s3.config.php: true
+    smtp.config.php: true
+    swift.config.php: true
+    upgrade-disable-web.config.php: true
+    helm-metrics.config.php: true
+    imaginary.config.php: false
+  
+  configs:
+    # Required for reinstall/upgrade when database already exists
+    CAN_INSTALL: ""
+    custom.config.php: |-
+      <?php
+      $CONFIG = array (
+        'trusted_proxies' => array(
+          0 => '10.42.0.0/16',
+          1 => '10.43.0.0/16',
+          2 => '127.0.0.1',
+        ),
+        // Use X-Forwarded-For header to get real client IP
+        'forwarded_for_headers' => array(
+          0 => 'HTTP_X_FORWARDED_FOR',
+        ),
+        'overwriteprotocol' => 'https',
+        'default_phone_region' => 'CA',
+        // Maintenance window start at 5 AM UTC (1 AM EST/EDT)
+        'maintenance_window_start' => 5,
+      );
+  
+  phpConfigs: {}
+  mail:
+    enabled: false
+  objectStore:
+    s3:
+      enabled: false
+    swift:
+      enabled: false
+  
+  openmetrics:
+    allowedClients:
+      - "127.0.0.1"
+      - "10.42.0.0/16"
+      - "10.43.0.0/16"
+  
+  persistence:
+    subPath: null
+  
+  podSecurityContext: {}
+  securityContext: {}
+  mariaDbInitContainer:
+    resources: {}
+    securityContext: {}
+  postgreSqlInitContainer:
+    resources: {}
+    securityContext: {}
+  
+  strategy:
+    type: Recreate
+  
+  hooks:
+    pre-installation: null
+    post-installation: null
+    pre-upgrade: null
+    post-upgrade: null
+    before-starting: null
+  
+  extraEnv: null
+  extraInitContainers: []
+  extraSidecarContainers: []
+  extraVolumes: null
+  extraVolumeMounts: null
+  priorityClassName: ""
+
+# Persistence at root level
+persistence:
+  enabled: true
+  storageClass: longhorn
+  accessMode: ReadWriteMany
+  size: 20Gi
+  annotations: {}
+  labels: {}
+  hostPath: null
+  nextcloudData:
+    enabled: false
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+# Resources at root level
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+# Internal Database - DISABLED (using CloudNativePG)
+internalDatabase:
+  enabled: false
+  name: nextcloud
+
+# External Database - PostgreSQL via CloudNativePG (CNPG)
+externalDatabase:
+  enabled: true
+  type: postgresql
+  host: nextcloud-db-rw.nextcloud.svc.cluster.local
+  user: nextcloud
+  password: ""
+  database: nextcloud
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-db-app
+    usernameKey: user
+    passwordKey: password
+
+# Internal Redis
+redis:
+  enabled: true
+  image:
+    repository: docker.io/library/redis
+    tag: "7-alpine"
+    pullPolicy: IfNotPresent
+  port: 6379
+  auth:
+    enabled: false
+    password: ""
+    existingSecret: ""
+    existingSecretPasswordKey: redis-password
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  persistence:
+    enabled: false
+    size: 1Gi
+    storageClass: ""
+
+externalRedis:
+  enabled: false
+
+# CronJob for background tasks
+cronjob:
+  enabled: true
+  type: cronjob
+  cronjob:
+    schedule: "*/5 * * * *"
+    successfulJobsHistoryLimit: 3
+    failedJobsHistoryLimit: 5
+    activeDeadlineSeconds: null
+    backoffLimit: 1
+    annotations: {}
+    labels: {}
+    podLabels: {}
+    priorityClassName: ""
+    resources: {}
+    securityContext: {}
+    affinity: {}
+    command:
+      - php
+      - "-f"
+      - /var/www/html/cron.php
+      - "--"
+      - "--verbose"
+  sidecar:
+    command:
+      - /cron.sh
+    lifecycle: {}
+    resources: {}
+    securityContext: {}
+
+# Service
+service:
+  type: ClusterIP
+  port: 8080
+  loadBalancerIP: ""
+  nodePort: null
+  annotations: {}
+  sessionAffinity: ""
+  sessionAffinityConfig: {}
+
+# Probes
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+  successThreshold: 1
+
+startupProbe:
+  enabled: false
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 30
+  successThreshold: 1
+
+hpa:
+  enabled: false
+  cputhreshold: 60
+  minPods: 1
+  maxPods: 10
+
+rbac:
+  enabled: false
+  serviceaccount:
+    create: true
+    name: nextcloud-serviceaccount
+    annotations: {}
+
+metrics:
+  enabled: false
+
+prometheus:
+  rules:
+    enabled: false
+  serviceMonitor:
+    enabled: false
+
+imaginary:
+  enabled: false
+
+collabora:
+  enabled: false
+
+mariadb:
+  enabled: false
+
+postgresql:
+  enabled: false
+
+nameOverride: ""
+fullnameOverride: ""
+podAnnotations: {}
+podLabels: {}
+deploymentAnnotations: {}
+deploymentLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+topologySpreadConstraints: []
+dnsConfig: {}
+priorityClassName: ""
+lifecycle: {}
+securityContext: {}
+phpClientHttpsFix:
+  enabled: false
+  protocol: https
+httpRoute:
+  enabled: false
+extraManifests: []
+
+global:
+  image:
+    registry: null
+  security:
+    allowInsecureImages: true
