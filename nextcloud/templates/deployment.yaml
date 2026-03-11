@@ -284,8 +284,27 @@ spec:
       {{- with $.Values.nextcloud.priorityClassName | default $.Values.priorityClassName }}
       priorityClassName: {{ . }}
       {{- end }}
-      {{- if or .Values.nextcloud.extraInitContainers .Values.mariadb.enabled .Values.postgresql.enabled }}
       initContainers:
+        # Initialize Nextcloud files in PVC if html subPath is empty
+        - name: init-nextcloud-files
+          image: {{ include "nextcloud.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              if [ ! -f /var/www/html/version.php ]; then
+                echo "Initializing Nextcloud files in PVC..."
+                cp -r /usr/src/nextcloud/. /var/www/html/
+                chown -R www-data:www-data /var/www/html
+                echo "Initialization complete"
+              else
+                echo "Nextcloud files already present, skipping initialization"
+              fi
+          volumeMounts:
+            - name: nextcloud-main
+              mountPath: /var/www/html
+              subPath: {{ ternary "html" (printf "%s/html" .Values.nextcloud.persistence.subPath) (empty .Values.nextcloud.persistence.subPath) }}
         {{- with .Values.nextcloud.extraInitContainers }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -335,7 +354,6 @@ spec:
             - "-c"
             - "until pg_isready -h ${POSTGRES_HOST} -U ${POSTGRES_USER} ; do sleep 2 ; done"
         {{- end }}{{/* end-if any database-initContainer */}}
-      {{- end }}{{/* end-if any initContainer */}}
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
