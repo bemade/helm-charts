@@ -289,6 +289,8 @@ spec:
         - name: init-nextcloud-files
           image: {{ include "nextcloud.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- include "nextcloud.env" . | nindent 12 }}
           command:
             - /bin/sh
             - -c
@@ -299,12 +301,20 @@ spec:
                 chown -R www-data:www-data /var/www/html
                 echo "Initialization complete"
               else
-                echo "Nextcloud files already present, skipping initialization"
+                echo "Nextcloud files already present"
+                # If NEXTCLOUD_UPDATE is set, create CAN_INSTALL for reinstall/upgrade
+                if [ -n "$NEXTCLOUD_UPDATE" ] && [ "$NEXTCLOUD_UPDATE" = "1" ]; then
+                  echo "NEXTCLOUD_UPDATE=1 detected, creating CAN_INSTALL..."
+                  touch /var/www/html/config/CAN_INSTALL
+                fi
               fi
           volumeMounts:
             - name: nextcloud-main
               mountPath: /var/www/html
               subPath: {{ ternary "html" (printf "%s/html" .Values.nextcloud.persistence.subPath) (empty .Values.nextcloud.persistence.subPath) }}
+            - name: nextcloud-main
+              mountPath: /var/www/html/config
+              subPath: {{ ternary "config" (printf "%s/config" .Values.nextcloud.persistence.subPath) (empty .Values.nextcloud.persistence.subPath) }}
         {{- with .Values.nextcloud.extraInitContainers }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
