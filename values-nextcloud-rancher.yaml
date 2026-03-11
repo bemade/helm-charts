@@ -103,11 +103,14 @@ nextcloud:
           1 => '10.43.0.0/16',
           2 => '127.0.0.1',
         ),
-        // Use X-Forwarded-For header to get real client IP
+        // Use X-Forwarded-For and X-Real-IP headers to get real client IP
         'forwarded_for_headers' => array(
           0 => 'HTTP_X_FORWARDED_FOR',
+          1 => 'HTTP_X_REAL_IP',
         ),
         'overwriteprotocol' => 'https',
+        'overwritehost' => 'cloud.3387.vezina.biz',
+        'overwrite.cli.url' => 'https://cloud.3387.vezina.biz',
         'default_phone_region' => 'CA',
         // Maintenance window start at 5 AM UTC (1 AM EST/EDT)
         'maintenance_window_start' => 5,
