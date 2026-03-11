@@ -98,6 +98,8 @@ nextcloud:
     custom.config.php: |-
       <?php
       $CONFIG = array (
+        // Server identification for configuration management
+        'instanceid' => 'nextcloud-prod-01',
         'trusted_proxies' => array(
           0 => '10.42.0.0/16',
           1 => '10.43.0.0/16',
