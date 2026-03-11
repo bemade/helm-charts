@@ -431,6 +431,16 @@ spec:
             name: {{ template "nextcloud.fullname" . }}-hooks
             defaultMode: 0o755
         {{- end }}
+        {{- if .Values.oidc.enabled }}
+        - name: nextcloud-oidc-config
+          configMap:
+            name: {{ template "nextcloud.fullname" . }}-oidc
+        {{- if or .Values.oidc.existingSecret .Values.oidc.clientSecret }}
+        - name: nextcloud-oidc-secret
+          secret:
+            secretName: {{ .Values.oidc.existingSecret | default (printf "%s-oidc" (include "nextcloud.fullname" .)) }}
+        {{- end }}
+        {{- end }}
         {{- with .Values.nextcloud.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

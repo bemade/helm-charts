@@ -1,0 +1,34 @@
+{{- if .Values.oidc.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "nextcloud.fullname" . }}-oidc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "nextcloud.labels" (dict "component" "oidc" "rootContext" $) | nindent 4 }}
+data:
+  oidc.config.php: |-
+    <?php
+    $CONFIG = array (
+      'allow_user_to_change_display_name' => {{ .Values.oidc.disableChangeDisplayName | ternary "false" "true" }},
+      'lost_password_link' => {{ .Values.oidc.disableLostPassword | ternary "'disabled'" "''" }},
+      'oidc_login_provider_url' => '{{ .Values.oidc.providerUrl }}',
+      'oidc_login_client_id' => '{{ .Values.oidc.clientId }}',
+      'oidc_login_auto_redirect' => {{ .Values.oidc.autoRedirect }},
+      'oidc_login_end_session_redirect' => {{ .Values.oidc.endSessionRedirect }},
+      'oidc_login_button_text' => '{{ .Values.oidc.buttonText }}',
+      'oidc_login_hide_password_form' => {{ .Values.oidc.hidePasswordForm }},
+      'oidc_login_attributes' => array(
+        'id' => '{{ .Values.oidc.attributes.id }}',
+        'name' => '{{ .Values.oidc.attributes.name }}',
+        'mail' => '{{ .Values.oidc.attributes.mail }}',
+        'groups' => '{{ .Values.oidc.attributes.groups }}',
+      ),
+      'oidc_login_scope' => '{{ .Values.oidc.scope }}',
+      'oidc_login_tls_verify' => {{ .Values.oidc.tlsVerify }},
+      'oidc_login_disable_registration' => {{ .Values.oidc.disableRegistration }},
+      {{- if .Values.oidc.allowLocalRemoteServers }}
+      'allow_local_remote_servers' => true,
+      {{- end }}
+    );
+{{- end }}

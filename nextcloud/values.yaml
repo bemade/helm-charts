@@ -139,6 +139,46 @@ phpClientHttpsFix:
   enabled: false
   protocol: https
 
+## OIDC Login configuration (for oidc_login app)
+## Generates oidc.config.php and optionally creates the client secret
+oidc:
+  enabled: false
+  # OIDC provider URL (e.g., https://auth.example.com/realms/myrealm)
+  providerUrl: ""
+  # Client ID registered in the OIDC provider
+  clientId: ""
+  # Client secret - use existingSecret for production
+  clientSecret: ""
+  # Use existing Kubernetes secret for client secret
+  # Secret must contain key 'oidc-client-secret'
+  existingSecret: ""
+  # Button text on login page
+  buttonText: "Login with SSO"
+  # Auto redirect to OIDC provider (skip Nextcloud login page)
+  autoRedirect: false
+  # Redirect to OIDC provider on logout
+  endSessionRedirect: true
+  # Hide the password form on login page
+  hidePasswordForm: false
+  # Disable user registration via OIDC
+  disableRegistration: false
+  # Verify TLS certificate of OIDC provider
+  tlsVerify: true
+  # OIDC scopes to request
+  scope: "openid profile email"
+  # Attribute mapping from OIDC claims to Nextcloud user attributes
+  attributes:
+    id: "preferred_username"
+    name: "name"
+    mail: "email"
+    groups: "groups"
+  # Disable user ability to change display name (recommended with OIDC)
+  disableChangeDisplayName: true
+  # Disable lost password link (recommended with OIDC)
+  disableLostPassword: true
+  # Allow requests to local/private IPs (needed if OIDC provider resolves to private IP)
+  allowLocalRemoteServers: false
+
 nextcloud:
   host: nextcloud.kube.home
   username: admin

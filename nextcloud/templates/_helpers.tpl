@@ -412,6 +412,17 @@ Create volume mounts for the nextcloud container as well as the cron sidecar con
 {{- if .Values.nextcloud.extraVolumeMounts }}
 {{ toYaml .Values.nextcloud.extraVolumeMounts }}
 {{- end }}
+{{- if .Values.oidc.enabled }}
+- name: nextcloud-oidc-config
+  mountPath: /var/www/html/config/oidc.config.php
+  subPath: oidc.config.php
+{{- if or .Values.oidc.existingSecret .Values.oidc.clientSecret }}
+- name: nextcloud-oidc-secret
+  mountPath: /var/www/html/config/oidc-secret.config.php
+  subPath: oidc-secret.config.php
+  readOnly: true
+{{- end }}
+{{- end }}
 {{- $nginxEnabled := .Values.nginx.enabled -}}
 {{- range $key, $value := .Values.nextcloud.phpConfigs }}
 - name: nextcloud-phpconfig
