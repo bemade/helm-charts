@@ -127,10 +127,14 @@ spec:
             {{- toYaml . | nindent 12 }}
             {{- else }}
             {{- if .Values.nginx.enabled }}
-            # Will mount configuration files as www-data (id: 82) for nextcloud
+            # Run as www-data (id: 82) for nextcloud fpm-alpine
+            runAsUser: 82
+            runAsGroup: 82
             fsGroup: 82
             {{- else }}
-            # Will mount configuration files as www-data (id: 33) for nextcloud
+            # Run as www-data (id: 33) for nextcloud apache
+            runAsUser: 33
+            runAsGroup: 33
             fsGroup: 33
             {{- end }}
             {{- end }}{{/* end-with podSecurityContext */}}
