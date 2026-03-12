@@ -44,6 +44,32 @@ entries:
   nextcloud:
   - apiVersion: v2
     appVersion: 33.0.0
+    created: "2026-03-12T19:20:31.174122549Z"
+    description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
+    digest: 05f2768a9c74bb5ab470bdcbfbca4e1fbf4aa30c298585b79f552f27f24a9586
+    home: https://nextcloud.com/
+    icon: https://cdn.rawgit.com/docker-library/docs/defa5ffc7123177acd60ddef6e16bddf694cc35f/nextcloud/logo.svg
+    keywords:
+    - nextcloud
+    - storage
+    - http
+    - web
+    - php
+    maintainers:
+    - email: it@bemade.org
+      name: Bemade Inc.
+      url: https://bemade.org
+    name: nextcloud
+    sources:
+    - https://github.com/bemade/helm-charts
+    - https://github.com/nextcloud/helm
+    - https://github.com/nextcloud/docker
+    type: application
+    urls:
+    - https://github.com/bemade/helm-charts/releases/download/nextcloud-1.0.18/nextcloud-1.0.18.tgz
+    version: 1.0.18
+  - apiVersion: v2
+    appVersion: 33.0.0
     created: "2026-03-12T18:56:59.787770202Z"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: a8f9638e699cc1cdf453e927d9d1c35a1f9e29c1ebc34b712d4d45d5c78d3c4d
@@ -907,4 +933,4 @@ entries:
     urls:
     - postgres-pgvector/postgres-pgvector-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-12T18:56:59.788496929Z"
+generated: "2026-03-12T19:20:31.174409055Z"
