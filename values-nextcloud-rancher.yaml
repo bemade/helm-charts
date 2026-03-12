@@ -85,16 +85,12 @@ oidc:
 nextcloud:
   host: cloud.3387.vezina.biz
   
-  # Admin credentials from existing secret
+  # Admin credentials - chart will create the secret automatically
+  username: admin
+  password: "CHANGE_ME_ADMIN_PASSWORD"
+  
   existingSecret:
-    enabled: true
-    secretName: nextcloud-credentials
-    usernameKey: nextcloud-username
-    passwordKey: nextcloud-password
-    smtpUsernameKey: smtp-username
-    smtpPasswordKey: smtp-password
-    smtpHostKey: smtp-host
-    tokenKey: ""
+    enabled: false
   
   trustedDomains:
     - cloud.3387.vezina.biz
