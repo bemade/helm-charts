@@ -1138,3 +1138,28 @@ securityContext: {}
 #     spec:
 #       ...
 extraManifests: []
+
+## CloudNativePG (CNPG) PostgreSQL cluster
+## Creates a CNPG Cluster resource for PostgreSQL
+cnpg:
+  enabled: false
+  # Cluster name (default: release-name-db)
+  name: ""
+  # Number of PostgreSQL instances
+  instances: 1
+  # Storage size for each instance
+  storage:
+    size: 10Gi
+    storageClass: ""
+  # Database configuration
+  database:
+    name: nextcloud
+    owner: nextcloud
+  # Resource limits
+  resources: {}
+  #  requests:
+  #    memory: "256Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "1Gi"
+  #    cpu: "500m"
