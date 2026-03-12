@@ -382,6 +382,16 @@ httpRoute:
   enabled: false
 extraManifests: []
 
+# CloudNativePG PostgreSQL cluster
+cnpg:
+  enabled: true
+  instances: 1
+  storage:
+    size: 10Gi
+  database:
+    name: nextcloud
+    owner: nextcloud
+
 global:
   image:
     registry: null
