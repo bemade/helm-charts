@@ -288,8 +288,8 @@ spec:
         {{- if and .Values.externalDatabase.enabled (eq (toString .Values.nextcloud.update) "auto") }}
         # Auto-detect if database already has Nextcloud tables
         - name: check-db-exists
-          image: {{ include "nextcloud.image" . }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: postgres:16-alpine
+          imagePullPolicy: IfNotPresent
           env:
             - name: POSTGRES_HOST
               value: {{ .Values.externalDatabase.host | quote }}
