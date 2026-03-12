@@ -340,44 +340,59 @@ spec:
             - /bin/sh
             - -c
             - |
-              if [ ! -f /var/www/html/version.php ]; then
-                echo "Initializing Nextcloud files in PVC..."
-                # Use cp -a to preserve attributes and copy hidden files
-                cp -a /usr/src/nextcloud/. /var/www/html/
-                chown -R www-data:www-data /var/www/html
-                echo "Initialization complete"
-              else
-                echo "Nextcloud files already present"
-                # Ensure hidden files exist (may be missing from previous init)
-                for f in .htaccess .user.ini; do
-                  if [ ! -f /var/www/html/$f ] && [ -f /usr/src/nextcloud/$f ]; then
-                    echo "Copying missing $f..."
-                    cp /usr/src/nextcloud/$f /var/www/html/
-                    chown www-data:www-data /var/www/html/$f
-                  fi
-                done
+              # Determine if this is a fresh install or existing install
+              FRESH_INSTALL=false
+              if [ -f /tmp/db-check/DB_EXISTS ]; then
+                DB_EXISTS=$(cat /tmp/db-check/DB_EXISTS)
+                if [ "$DB_EXISTS" = "0" ]; then
+                  FRESH_INSTALL=true
+                fi
               fi
+
+              if [ "$FRESH_INSTALL" = "true" ]; then
+                # Fresh install: do NOT copy files - let Docker entrypoint handle
+                # the full initialization and auto-install via env vars
+                echo "Fresh install detected (DB empty)"
+                echo "Skipping file copy - Docker entrypoint will initialize and auto-install"
+                # Ensure config dir exists for entrypoint
+                mkdir -p /var/www/html/config
+              else
+                # Existing install or non-auto mode: copy files if needed
+                if [ ! -f /var/www/html/version.php ]; then
+                  echo "Initializing Nextcloud files in PVC..."
+                  cp -a /usr/src/nextcloud/. /var/www/html/
+                  chown -R www-data:www-data /var/www/html
+                  echo "Initialization complete"
+                else
+                  echo "Nextcloud files already present"
+                  # Ensure hidden files exist (may be missing from previous init)
+                  for f in .htaccess .user.ini; do
+                    if [ ! -f /var/www/html/$f ] && [ -f /usr/src/nextcloud/$f ]; then
+                      echo "Copying missing $f..."
+                      cp /usr/src/nextcloud/$f /var/www/html/
+                      chown www-data:www-data /var/www/html/$f
+                    fi
+                  done
+                fi
+                # DB exists: create CAN_INSTALL to allow updates
+                if [ -f /tmp/db-check/DB_EXISTS ]; then
+                  echo "Auto-detect: DB exists, creating CAN_INSTALL for update mode..."
+                  touch /var/www/html/config/CAN_INSTALL
+                fi
+              fi
+
+              # Handle explicit NEXTCLOUD_UPDATE=1 (non-auto mode)
+              if [ -n "$NEXTCLOUD_UPDATE" ] && [ "$NEXTCLOUD_UPDATE" = "1" ]; then
+                echo "NEXTCLOUD_UPDATE=1 detected, creating CAN_INSTALL..."
+                touch /var/www/html/config/CAN_INSTALL
+              fi
+
               # Ensure data directory exists with correct permissions (0770 required by Nextcloud)
               DATA_DIR="${NEXTCLOUD_DATA_DIR:-/var/www/html/data}"
               mkdir -p "$DATA_DIR"
               chown www-data:www-data "$DATA_DIR"
               chmod 0770 "$DATA_DIR"
               echo "Data directory $DATA_DIR set to 0770"
-              # Handle auto-detection mode
-              if [ -f /tmp/db-check/DB_EXISTS ]; then
-                DB_EXISTS=$(cat /tmp/db-check/DB_EXISTS)
-                if [ "$DB_EXISTS" = "1" ]; then
-                  echo "Auto-detect: DB exists, creating CAN_INSTALL to skip installation..."
-                  touch /var/www/html/config/CAN_INSTALL
-                else
-                  echo "Auto-detect: DB empty, removing config.php to trigger fresh installation..."
-                  rm -f /var/www/html/config/config.php
-                fi
-              # Handle explicit NEXTCLOUD_UPDATE=1
-              elif [ -n "$NEXTCLOUD_UPDATE" ] && [ "$NEXTCLOUD_UPDATE" = "1" ]; then
-                echo "NEXTCLOUD_UPDATE=1 detected, creating CAN_INSTALL..."
-                touch /var/www/html/config/CAN_INSTALL
-              fi
           volumeMounts:
             - name: nextcloud-main
               mountPath: /var/www/html
