@@ -285,6 +285,51 @@ spec:
       priorityClassName: {{ . }}
       {{- end }}
       initContainers:
+        {{- if and .Values.externalDatabase.enabled (eq (toString .Values.nextcloud.update) "auto") }}
+        # Auto-detect if database already has Nextcloud tables
+        - name: check-db-exists
+          image: {{ include "nextcloud.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: POSTGRES_HOST
+              value: {{ .Values.externalDatabase.host | quote }}
+            - name: POSTGRES_DB
+              value: {{ .Values.externalDatabase.database | quote }}
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.externalDatabase.existingSecret.secretName | default (printf "%s-db" .Release.Name) }}
+                  key: {{ .Values.externalDatabase.existingSecret.usernameKey | default "username" }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.externalDatabase.existingSecret.secretName | default (printf "%s-db" .Release.Name) }}
+                  key: {{ .Values.externalDatabase.existingSecret.passwordKey | default "password" }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Checking if Nextcloud database already exists..."
+              # Wait for database to be ready
+              for i in $(seq 1 30); do
+                if PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT 1" >/dev/null 2>&1; then
+                  break
+                fi
+                echo "Waiting for database... ($i/30)"
+                sleep 2
+              done
+              # Check if oc_appconfig table exists (core Nextcloud table)
+              if PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$POSTGRES_HOST" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT 1 FROM oc_appconfig LIMIT 1" >/dev/null 2>&1; then
+                echo "Nextcloud database EXISTS - will skip installation"
+                echo "1" > /tmp/db-check/DB_EXISTS
+              else
+                echo "Nextcloud database is EMPTY - will run installation"
+                echo "0" > /tmp/db-check/DB_EXISTS
+              fi
+          volumeMounts:
+            - name: db-check
+              mountPath: /tmp/db-check
+        {{- end }}
         # Initialize Nextcloud files in PVC if html subPath is empty
         - name: init-nextcloud-files
           image: {{ include "nextcloud.image" . }}
@@ -311,11 +356,20 @@ spec:
                     chown www-data:www-data /var/www/html/$f
                   fi
                 done
-                # If NEXTCLOUD_UPDATE is set, create CAN_INSTALL for reinstall/upgrade
-                if [ -n "$NEXTCLOUD_UPDATE" ] && [ "$NEXTCLOUD_UPDATE" = "1" ]; then
-                  echo "NEXTCLOUD_UPDATE=1 detected, creating CAN_INSTALL..."
+              fi
+              # Handle auto-detection mode
+              if [ -f /tmp/db-check/DB_EXISTS ]; then
+                DB_EXISTS=$(cat /tmp/db-check/DB_EXISTS)
+                if [ "$DB_EXISTS" = "1" ]; then
+                  echo "Auto-detect: DB exists, creating CAN_INSTALL to skip installation..."
                   touch /var/www/html/config/CAN_INSTALL
+                else
+                  echo "Auto-detect: DB empty, will run fresh installation..."
                 fi
+              # Handle explicit NEXTCLOUD_UPDATE=1
+              elif [ -n "$NEXTCLOUD_UPDATE" ] && [ "$NEXTCLOUD_UPDATE" = "1" ]; then
+                echo "NEXTCLOUD_UPDATE=1 detected, creating CAN_INSTALL..."
+                touch /var/www/html/config/CAN_INSTALL
               fi
           volumeMounts:
             - name: nextcloud-main
@@ -324,6 +378,10 @@ spec:
             - name: nextcloud-main
               mountPath: /var/www/html/config
               subPath: {{ ternary "config" (printf "%s/config" .Values.nextcloud.persistence.subPath) (empty .Values.nextcloud.persistence.subPath) }}
+            {{- if and .Values.externalDatabase.enabled (eq (toString .Values.nextcloud.update) "auto") }}
+            - name: db-check
+              mountPath: /tmp/db-check
+            {{- end }}
         {{- with .Values.nextcloud.extraInitContainers }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -386,6 +444,10 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+        {{- if and .Values.externalDatabase.enabled (eq (toString .Values.nextcloud.update) "auto") }}
+        - name: db-check
+          emptyDir: {}
+        {{- end }}
         - name: nextcloud-main
           {{- if .Values.persistence.enabled }}
           {{- with .Values.persistence.hostPath }}

@@ -8,6 +8,8 @@ metadata:
     {{- include "nextcloud.labels" (dict "component" "certificate" "rootContext" $) | nindent 4 }}
 spec:
   secretName: {{ include "nextcloud.fullname" . }}-tls
+  privateKey:
+    rotationPolicy: Always
   issuerRef:
     name: {{ .Values.ingressRoute.clusterIssuer }}
     kind: ClusterIssuer
