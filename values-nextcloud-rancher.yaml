@@ -56,8 +56,9 @@ oidc:
   enabled: true
   providerUrl: "https://auth.3387.vezina.biz/realms/vezina"
   clientId: "nextcloud"
-  # Use existing secret for client secret (created manually)
-  existingSecret: "nextcloud-oidc-secret"
+  # Client secret - chart will create the Kubernetes Secret with correct structure
+  clientSecret: "Fj0VFAeuESiXPTsCrXm0vcSELMQXFXao"
+  existingSecret: ""
   buttonText: "Se connecter avec Keycloak"
   autoRedirect: false
   endSessionRedirect: true
