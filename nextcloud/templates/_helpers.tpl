@@ -187,7 +187,7 @@ Create environment variables used to configure the nextcloud container as well a
 - name: OPENMETRICS_ALLOWED_CLIENTS
   value: {{ join "," . | quote }}
 {{- end }}
-{{- if ne (int .Values.nextcloud.update) 0 }}
+{{- if and (ne (toString .Values.nextcloud.update) "0") (ne (toString .Values.nextcloud.update) "auto") }}
 - name: NEXTCLOUD_UPDATE
   value: {{ .Values.nextcloud.update | quote }}
 {{- end }}

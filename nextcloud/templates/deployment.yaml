@@ -357,6 +357,12 @@ spec:
                   fi
                 done
               fi
+              # Ensure data directory exists with correct permissions (0770 required by Nextcloud)
+              DATA_DIR="${NEXTCLOUD_DATA_DIR:-/var/www/html/data}"
+              mkdir -p "$DATA_DIR"
+              chown www-data:www-data "$DATA_DIR"
+              chmod 0770 "$DATA_DIR"
+              echo "Data directory $DATA_DIR set to 0770"
               # Handle auto-detection mode
               if [ -f /tmp/db-check/DB_EXISTS ]; then
                 DB_EXISTS=$(cat /tmp/db-check/DB_EXISTS)
