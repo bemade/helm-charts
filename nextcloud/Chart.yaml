@@ -2,7 +2,7 @@ apiVersion: v2
 name: nextcloud
 description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
 type: application
-version: 1.0.12
+version: 1.0.13
 appVersion: "33.0.0"
 home: https://nextcloud.com/
 icon: https://cdn.rawgit.com/docker-library/docs/defa5ffc7123177acd60ddef6e16bddf694cc35f/nextcloud/logo.svg

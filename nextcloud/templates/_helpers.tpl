@@ -171,12 +171,12 @@ Create environment variables used to configure the nextcloud container as well a
   valueFrom:
     secretKeyRef:
       name: {{ .Values.nextcloud.existingSecret.secretName | default (include "nextcloud.fullname" .) }}
-      key: {{ .Values.nextcloud.existingSecret.usernameKey }}
+      key: {{ .Values.nextcloud.existingSecret.usernameKey | default "nextcloud-username" }}
 - name: NEXTCLOUD_ADMIN_PASSWORD
   valueFrom:
     secretKeyRef:
       name: {{ .Values.nextcloud.existingSecret.secretName | default (include "nextcloud.fullname" .) }}
-      key: {{ .Values.nextcloud.existingSecret.passwordKey }}
+      key: {{ .Values.nextcloud.existingSecret.passwordKey | default "nextcloud-password" }}
 - name: NEXTCLOUD_TRUSTED_DOMAINS
   {{- if .Values.nextcloud.trustedDomains }}
   value: {{ join " " .Values.nextcloud.trustedDomains | quote }}
