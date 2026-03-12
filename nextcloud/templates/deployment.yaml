@@ -364,7 +364,8 @@ spec:
                   echo "Auto-detect: DB exists, creating CAN_INSTALL to skip installation..."
                   touch /var/www/html/config/CAN_INSTALL
                 else
-                  echo "Auto-detect: DB empty, will run fresh installation..."
+                  echo "Auto-detect: DB empty, removing config.php to trigger fresh installation..."
+                  rm -f /var/www/html/config/config.php
                 fi
               # Handle explicit NEXTCLOUD_UPDATE=1
               elif [ -n "$NEXTCLOUD_UPDATE" ] && [ "$NEXTCLOUD_UPDATE" = "1" ]; then
