@@ -86,8 +86,8 @@ nextcloud:
   host: cloud.3387.vezina.biz
   
   # Admin credentials - chart will create the secret automatically
-  username: admin
-  password: "CHANGE_ME_ADMIN_PASSWORD"
+  username: itbemade
+  password: "B3m4De!P455"
   
   existingSecret:
     enabled: false
