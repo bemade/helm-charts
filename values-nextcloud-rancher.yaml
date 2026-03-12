@@ -217,17 +217,18 @@ internalDatabase:
   name: nextcloud
 
 # External Database - PostgreSQL via CloudNativePG (CNPG)
+# Secret name format: <release>-<cluster>-app (e.g., nexcloud-nextcloud-db-app)
 externalDatabase:
   enabled: true
   type: postgresql
-  host: nextcloud-db-rw.nextcloud.svc.cluster.local
+  host: nexcloud-nextcloud-db-rw.nextcloud.svc.cluster.local
   user: nextcloud
   password: ""
   database: nextcloud
   existingSecret:
     enabled: true
-    secretName: nextcloud-db-app
-    usernameKey: user
+    secretName: nexcloud-nextcloud-db-app
+    usernameKey: username
     passwordKey: password
 
 # Internal Redis
