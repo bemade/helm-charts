@@ -2,10 +2,10 @@
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: openclaw-headers
+  name: {{ include "openclaw.fullname" . }}-headers
   namespace: {{ .Release.Namespace }}
   labels:
-    app: openclaw
+    {{- include "openclaw.labels" . | nindent 4 }}
 spec:
   headers:
     customRequestHeaders:

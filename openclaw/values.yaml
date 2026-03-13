@@ -1,6 +1,10 @@
 # OpenClaw Helm Chart values
 # https://github.com/openclaw/openclaw
 
+# Override chart name
+nameOverride: ""
+fullnameOverride: ""
+
 openclaw:
   # Docker image configuration
   image:
@@ -14,10 +18,22 @@ openclaw:
   # Hostname for ingress
   hostname: "openclaw.example.com"
 
+  # Command and args (override Docker entrypoint)
+  # Note: port in args is overridden by the deployment template
+  command:
+    - "node"
+    - "/app/openclaw.mjs"
+  args: []
+
   # Ingress configuration
   ingress:
     enabled: true
     clusterIssuer: "letsencrypt-dns"
+    hsts:
+      enabled: true
+      maxAge: 15552000
+      includeSubdomains: true
+      preload: true
 
   # Resource requests and limits
   resources:
@@ -43,6 +59,24 @@ openclaw:
       defaults:
         model:
           primary: "anthropic/claude-sonnet-4-20250514"
+
+  # Health check probes
+  probes:
+    liveness:
+      path: /health
+      initialDelaySeconds: 30
+      periodSeconds: 10
+    readiness:
+      path: /health
+      initialDelaySeconds: 5
+      periodSeconds: 5
+
+  # Pod annotations
+  podAnnotations: {}
+
+  # Node scheduling
+  nodeSelector: {}
+  tolerations: []
 
   # API keys and secrets (stored in Kubernetes Secret)
   # Set these via --set or external secret management

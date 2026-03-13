@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: openclaw-config
+  name: {{ include "openclaw.fullname" . }}-config
   namespace: {{ .Release.Namespace }}
   labels:
-    app: openclaw
+    {{- include "openclaw.labels" . | nindent 4 }}
 data:
   openclaw.json: |
     {{- .Values.openclaw.config | toPrettyJson | nindent 4 }}

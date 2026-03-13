@@ -1,0 +1,16 @@
+OpenClaw has been deployed successfully!
+
+{{- if .Values.openclaw.ingress.enabled }}
+
+Access the Control UI at:
+  https://{{ .Values.openclaw.hostname }}/
+
+{{- end }}
+
+{{- if .Values.openclaw.secrets.gatewayToken }}
+A gateway token has been configured. Use it to authenticate in Settings → Token.
+{{- else }}
+WARNING: No gateway token configured. Set openclaw.secrets.gatewayToken for authentication.
+{{- end }}
+
+For more information, visit: https://docs.openclaw.ai/

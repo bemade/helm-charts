@@ -1,26 +1,45 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: openclaw
+  name: {{ include "openclaw.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: openclaw
+    {{- include "openclaw.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: openclaw
+      {{- include "openclaw.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: openclaw
+        {{- include "openclaw.selectorLabels" . | nindent 8 }}
+      annotations:
+        config-hash: {{ .Values.openclaw.config | toJson | sha256sum }}
+        {{- with .Values.openclaw.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
+      {{- with .Values.openclaw.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.openclaw.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: openclaw
           image: "{{ .Values.openclaw.image.repository }}:{{ .Values.openclaw.image.tag }}"
           imagePullPolicy: {{ .Values.openclaw.image.pullPolicy }}
-          command: ["node", "/app/openclaw.mjs"]
+          {{- with .Values.openclaw.command }}
+          command: {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- if .Values.openclaw.args }}
+          args: {{- toYaml .Values.openclaw.args | nindent 12 }}
+          {{- else }}
           args: ["gateway", "--port", "{{ .Values.openclaw.port }}", "--host", "0.0.0.0"]
+          {{- end }}
           resources:
             requests:
               cpu: {{ .Values.openclaw.resources.requests.cpu }}
@@ -37,7 +56,7 @@ spec:
             - name: ANTHROPIC_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: openclaw-secrets
+                  name: {{ include "openclaw.fullname" . }}-secrets
                   key: anthropic-api-key
             {{- end }}
             # OpenAI API key (optional)
@@ -45,7 +64,7 @@ spec:
             - name: OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: openclaw-secrets
+                  name: {{ include "openclaw.fullname" . }}-secrets
                   key: openai-api-key
             {{- end }}
             # Gateway token
@@ -53,7 +72,7 @@ spec:
             - name: OPENCLAW_GATEWAY_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: openclaw-secrets
+                  name: {{ include "openclaw.fullname" . }}-secrets
                   key: gateway-token
             {{- end }}
           volumeMounts:
@@ -64,24 +83,24 @@ spec:
               subPath: openclaw.json
           livenessProbe:
             httpGet:
-              path: /health
+              path: {{ .Values.openclaw.probes.liveness.path }}
               port: {{ .Values.openclaw.port }}
-            initialDelaySeconds: 30
-            periodSeconds: 10
+            initialDelaySeconds: {{ .Values.openclaw.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.openclaw.probes.liveness.periodSeconds }}
           readinessProbe:
             httpGet:
-              path: /health
+              path: {{ .Values.openclaw.probes.readiness.path }}
               port: {{ .Values.openclaw.port }}
-            initialDelaySeconds: 5
-            periodSeconds: 5
+            initialDelaySeconds: {{ .Values.openclaw.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.openclaw.probes.readiness.periodSeconds }}
       volumes:
         - name: openclaw-config
           configMap:
-            name: openclaw-config
+            name: {{ include "openclaw.fullname" . }}-config
         - name: openclaw-data
           {{- if .Values.openclaw.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: openclaw-data
+            claimName: {{ include "openclaw.fullname" . }}-data
           {{- else }}
           emptyDir: {}
           {{- end }}

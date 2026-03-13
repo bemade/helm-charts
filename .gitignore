@@ -5,3 +5,4 @@ test-values.yaml
 .vscode
 minikube-values.yaml
 testing/odoo-instance/values-bemade.yaml
+openclaw/doc/.openclaw/

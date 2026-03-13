@@ -1,0 +1,16 @@
+{{- if .Values.openclaw.ingress.enabled }}
+{{- if .Values.openclaw.ingress.hsts.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "openclaw.fullname" . }}-hsts
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openclaw.labels" . | nindent 4 }}
+spec:
+  headers:
+    stsSeconds: {{ .Values.openclaw.ingress.hsts.maxAge }}
+    stsIncludeSubdomains: {{ .Values.openclaw.ingress.hsts.includeSubdomains }}
+    stsPreload: {{ .Values.openclaw.ingress.hsts.preload }}
+{{- end }}
+{{- end }}

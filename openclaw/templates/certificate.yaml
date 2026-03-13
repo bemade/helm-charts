@@ -2,12 +2,14 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: openclaw-cert
+  name: {{ include "openclaw.fullname" . }}-cert
   namespace: {{ .Release.Namespace }}
   labels:
-    app: openclaw
+    {{- include "openclaw.labels" . | nindent 4 }}
 spec:
-  secretName: openclaw-cert
+  secretName: {{ include "openclaw.fullname" . }}-cert
+  privateKey:
+    rotationPolicy: Always
   issuerRef:
     name: {{ .Values.openclaw.ingress.clusterIssuer }}
     kind: ClusterIssuer

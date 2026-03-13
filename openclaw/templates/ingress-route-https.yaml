@@ -2,10 +2,10 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: openclaw-https
+  name: {{ include "openclaw.fullname" . }}-https
   namespace: {{ .Release.Namespace }}
   labels:
-    app: openclaw
+    {{- include "openclaw.labels" . | nindent 4 }}
 spec:
   entryPoints:
     - websecure
@@ -15,14 +15,18 @@ spec:
       priority: 10
       services:
         - kind: Service
-          name: openclaw
+          name: {{ include "openclaw.fullname" . }}
           namespace: {{ .Release.Namespace }}
           passHostHeader: true
           port: {{ .Values.openclaw.port }}
           scheme: http
       middlewares:
-        - name: openclaw-headers
+        - name: {{ include "openclaw.fullname" . }}-headers
           namespace: {{ .Release.Namespace }}
+        {{- if .Values.openclaw.ingress.hsts.enabled }}
+        - name: {{ include "openclaw.fullname" . }}-hsts
+          namespace: {{ .Release.Namespace }}
+        {{- end }}
   tls:
-    secretName: openclaw-cert
+    secretName: {{ include "openclaw.fullname" . }}-cert
 {{- end }}
