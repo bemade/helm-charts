@@ -81,9 +81,21 @@ openclaw:
   # API keys and secrets (stored in Kubernetes Secret)
   # Set these via --set or external secret management
   secrets:
-    # Anthropic API key
+    # Anthropic API key → ANTHROPIC_API_KEY
     anthropicApiKey: ""
-    # OpenAI API key (optional)
+    # OpenAI API key → OPENAI_API_KEY
     openaiApiKey: ""
-    # Gateway token for Control UI authentication
+    # Gateway token → OPENCLAW_GATEWAY_TOKEN
     gatewayToken: ""
+    # Extra secrets (generic key/value → env vars via K8s Secret)
+    # Any env var OpenClaw supports can be added here.
+    # Common examples:
+    #   TELEGRAM_BOT_TOKEN: "your-telegram-bot-token"
+    #   OPENROUTER_API_KEY: "sk-or-..."
+    #   GROQ_API_KEY: "gsk_..."
+    #   GOOGLE_API_KEY: "AIza..."
+    #   OPENCLAW_GATEWAY_PASSWORD: "your-password"
+    extra: {}
+
+  # Extra plain (non-secret) environment variables
+  extraEnv: {}

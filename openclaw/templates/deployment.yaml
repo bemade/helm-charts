@@ -51,29 +51,42 @@ spec:
             - containerPort: {{ .Values.openclaw.port }}
               name: http
           env:
-            # Anthropic API key
+            # Built-in secrets (mapped to standard env vars)
             {{- if .Values.openclaw.secrets.anthropicApiKey }}
             - name: ANTHROPIC_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ include "openclaw.fullname" . }}-secrets
-                  key: anthropic-api-key
+                  key: ANTHROPIC_API_KEY
             {{- end }}
-            # OpenAI API key (optional)
             {{- if .Values.openclaw.secrets.openaiApiKey }}
             - name: OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: {{ include "openclaw.fullname" . }}-secrets
-                  key: openai-api-key
+                  key: OPENAI_API_KEY
             {{- end }}
-            # Gateway token
             {{- if .Values.openclaw.secrets.gatewayToken }}
             - name: OPENCLAW_GATEWAY_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: {{ include "openclaw.fullname" . }}-secrets
-                  key: gateway-token
+                  key: OPENCLAW_GATEWAY_TOKEN
+            {{- end }}
+            # Extra secrets (generic key/value → env vars)
+            {{- range $envVar, $value := .Values.openclaw.secrets.extra }}
+            {{- if $value }}
+            - name: {{ $envVar }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "openclaw.fullname" $ }}-secrets
+                  key: {{ $envVar }}
+            {{- end }}
+            {{- end }}
+            # Extra plain env vars
+            {{- range $key, $value := .Values.openclaw.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
             {{- end }}
           volumeMounts:
             - name: openclaw-data
