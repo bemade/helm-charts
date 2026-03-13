@@ -20,6 +20,13 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.openclaw.serviceAccount.create }}
+      serviceAccountName: {{ include "openclaw.fullname" . }}
+      {{- end }}
+      {{- with .Values.openclaw.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.openclaw.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -32,6 +39,10 @@ spec:
         - name: openclaw
           image: "{{ .Values.openclaw.image.repository }}:{{ .Values.openclaw.image.tag }}"
           imagePullPolicy: {{ .Values.openclaw.image.pullPolicy }}
+          {{- with .Values.openclaw.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.openclaw.command }}
           command: {{- toYaml . | nindent 12 }}
           {{- end }}

@@ -1,4 +1,4 @@
-# OpenClaw v0.2.0 - Values for bemade/openclaw chart
+# OpenClaw v0.4.0 - Values for bemade/openclaw chart
 # Hostname: claw.3387.vezina.biz
 
 # Override chart name
@@ -33,6 +33,15 @@ openclaw:
       maxAge: 15552000
       includeSubdomains: true
       preload: true
+    # Keycloak SSO via oauth2-proxy ForwardAuth
+    forwardAuth:
+      enabled: false
+      address: "http://oauth2-proxy.auth.svc.cluster.local:4180/oauth2/auth"
+      trustForwardHeader: true
+      authResponseHeaders:
+        - X-Forwarded-User
+        - X-Auth-Request-User
+        - X-Auth-Request-Email
 
   # Resource requests and limits
   resources:
@@ -145,6 +154,11 @@ openclaw:
       auth:
         mode: token
         # token injected via gatewayToken secret
+      # Required for non-loopback Control UI access
+      controlUi:
+        enabled: true
+        allowedOrigins:
+          - "https://claw.3387.vezina.biz"
       tailscale:
         mode: "off"
         resetOnExit: false
@@ -173,6 +187,26 @@ openclaw:
       initialDelaySeconds: 5
       periodSeconds: 5
 
+  # Pod-level security context
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+
+  # Container-level security context
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+
+  # Service account
+  serviceAccount:
+    create: false
+    annotations: {}
+
   # Pod annotations
   podAnnotations: {}
 
@@ -191,3 +225,18 @@ openclaw:
 
   # Extra plain (non-secret) environment variables
   extraEnv: {}
+
+  # Backup CronJob - SQLite online backup at 3 AM daily
+  backup:
+    enabled: true
+    schedule: "0 3 * * *"
+    retainCount: 7
+    successfulJobsHistoryLimit: 3
+    failedJobsHistoryLimit: 3
+    storageClass: longhorn
+    size: 2Gi
+    image:
+      repository: alpine
+      tag: "3.20"
+      pullPolicy: IfNotPresent
+    resources: {}

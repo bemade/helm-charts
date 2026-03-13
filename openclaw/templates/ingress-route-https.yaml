@@ -27,6 +27,10 @@ spec:
         - name: {{ include "openclaw.fullname" . }}-hsts
           namespace: {{ .Release.Namespace }}
         {{- end }}
+        {{- if .Values.openclaw.ingress.forwardAuth.enabled }}
+        - name: {{ include "openclaw.fullname" . }}-forward-auth
+          namespace: {{ .Release.Namespace }}
+        {{- end }}
   tls:
     secretName: {{ include "openclaw.fullname" . }}-cert
 {{- end }}

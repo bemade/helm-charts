@@ -34,6 +34,19 @@ openclaw:
       maxAge: 15552000
       includeSubdomains: true
       preload: true
+    # ForwardAuth middleware for SSO (Keycloak, Authelia, oauth2-proxy, etc.)
+    # Delegates authentication to an external identity provider via Traefik ForwardAuth.
+    # Use with gateway.auth.mode: "trusted-proxy" in openclaw.config.
+    forwardAuth:
+      enabled: false
+      # URL of the auth endpoint (e.g. oauth2-proxy, Keycloak gatekeeper)
+      address: ""
+      trustForwardHeader: true
+      # Headers forwarded from the auth response to the upstream
+      authResponseHeaders:
+        - X-Forwarded-User
+        - X-Auth-Request-User
+        - X-Auth-Request-Email
 
   # Resource requests and limits
   resources:
@@ -71,6 +84,26 @@ openclaw:
       initialDelaySeconds: 5
       periodSeconds: 5
 
+  # Pod-level security context
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+
+  # Container-level security context
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+
+  # Service account
+  serviceAccount:
+    create: false
+    annotations: {}
+
   # Pod annotations
   podAnnotations: {}
 
@@ -99,3 +132,18 @@ openclaw:
 
   # Extra plain (non-secret) environment variables
   extraEnv: {}
+
+  # Backup CronJob - SQLite online backup + config/session snapshot
+  backup:
+    enabled: false
+    schedule: "0 3 * * *"
+    retainCount: 7
+    successfulJobsHistoryLimit: 3
+    failedJobsHistoryLimit: 3
+    storageClass: ""
+    size: 2Gi
+    image:
+      repository: alpine
+      tag: "3.20"
+      pullPolicy: IfNotPresent
+    resources: {}

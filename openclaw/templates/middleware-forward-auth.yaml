@@ -1,0 +1,19 @@
+{{- if .Values.openclaw.ingress.enabled }}
+{{- if .Values.openclaw.ingress.forwardAuth.enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: {{ include "openclaw.fullname" . }}-forward-auth
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openclaw.labels" . | nindent 4 }}
+spec:
+  forwardAuth:
+    address: {{ .Values.openclaw.ingress.forwardAuth.address | quote }}
+    trustForwardHeader: {{ .Values.openclaw.ingress.forwardAuth.trustForwardHeader }}
+    {{- with .Values.openclaw.ingress.forwardAuth.authResponseHeaders }}
+    authResponseHeaders:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+{{- end }}
+{{- end }}
