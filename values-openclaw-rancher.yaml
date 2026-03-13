@@ -149,8 +149,8 @@ openclaw:
     gateway:
       port: 18789
       mode: local
-      # Bind to all interfaces for Kubernetes
-      bind: "0.0.0.0"
+      # Bind to all interfaces for Kubernetes (lan = 0.0.0.0)
+      bind: lan
       auth:
         mode: token
         # token injected via gatewayToken secret
