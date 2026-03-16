@@ -43,7 +43,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      # Init container: copy config from ConfigMap to PVC and prepare workspace
+      # Init container: copy config from ConfigMap to PVC, inject gateway token, prepare workspace
       initContainers:
         - name: init-config
           image: busybox:1.37
@@ -53,7 +53,19 @@ spec:
             - -c
             - |
               cp /config/openclaw.json /home/node/.openclaw/openclaw.json
+              # Inject gateway token from K8s Secret into config JSON
+              if [ -n "$OPENCLAW_GATEWAY_TOKEN" ]; then
+                sed -i 's/"mode": "token"/"mode": "token", "token": "'"$OPENCLAW_GATEWAY_TOKEN"'"/' /home/node/.openclaw/openclaw.json
+              fi
               mkdir -p /home/node/.openclaw/workspace
+          {{- if .Values.openclaw.secrets.gatewayToken }}
+          env:
+            - name: OPENCLAW_GATEWAY_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "openclaw.fullname" . }}-secrets
+                  key: OPENCLAW_GATEWAY_TOKEN
+          {{- end }}
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
