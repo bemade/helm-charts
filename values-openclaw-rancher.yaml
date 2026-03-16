@@ -197,8 +197,13 @@ openclaw:
           - reminders.add
           - sms.send
     plugins:
+      enabled: true
+      allow:
+        - "@bemade/odoo-discuss"
       entries:
         telegram:
+          enabled: true
+        "@bemade/odoo-discuss":
           enabled: true
 
   # OpenClaw plugins
