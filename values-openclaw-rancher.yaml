@@ -63,6 +63,12 @@ openclaw:
     env:
       shellEnv:
         enabled: false
+    models:
+      providers:
+        ollama:
+          baseUrl: "http://192.168.235.231:11434"
+          apiKey: "ollama-local"
+          api: ollama
     auth:
       profiles:
         "anthropic:default":
@@ -71,7 +77,6 @@ openclaw:
         "ollama:default":
           provider: ollama
           mode: api_key
-          baseUrl: "http://192.168.235.231:11434"
     agents:
       defaults:
         model:
