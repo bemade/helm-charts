@@ -69,7 +69,14 @@ openclaw:
           baseUrl: "http://192.168.235.231:11434"
           apiKey: "ollama-local"
           api: ollama
-          models: []
+          models:
+            - id: "glm-5:cloud"
+              name: "GLM-5 Cloud"
+              reasoning: false
+              input:
+                - text
+              contextWindow: 202752
+              maxTokens: 16384
     auth:
       profiles:
         "anthropic:default":
