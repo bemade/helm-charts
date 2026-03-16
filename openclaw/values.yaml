@@ -83,8 +83,16 @@ openclaw:
   # Extra pod-level security context (merged with hardcoded fsGroup/seccomp)
   podSecurityContext: {}
 
-  # Note: container securityContext is hardcoded in the deployment template
-  # (runAsNonRoot, readOnlyRootFilesystem, drop ALL) per official manifest
+  # Container-level security context (configurable)
+  # For :slim images, you can enable readOnlyRootFilesystem: true
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
 
   # Service account
   serviceAccount:

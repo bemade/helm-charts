@@ -187,6 +187,16 @@ openclaw:
   # Extra pod-level security context (fsGroup/seccomp hardcoded in template)
   podSecurityContext: {}
 
+  # Container-level security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+
   # Service account
   serviceAccount:
     create: false

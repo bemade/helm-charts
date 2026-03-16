@@ -73,15 +73,10 @@ spec:
         - name: gateway
           image: "{{ .Values.openclaw.image.repository }}:{{ .Values.openclaw.image.tag }}"
           imagePullPolicy: {{ .Values.openclaw.image.pullPolicy }}
+          {{- with .Values.openclaw.securityContext }}
           securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            capabilities:
-              drop:
-                - ALL
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- with .Values.openclaw.command }}
           command: {{- toYaml . | nindent 12 }}
           {{- end }}
