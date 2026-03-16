@@ -9,7 +9,7 @@ openclaw:
   # Docker image configuration
   image:
     repository: ghcr.io/openclaw/openclaw
-    tag: latest
+    tag: "2026.3.11"
     pullPolicy: IfNotPresent
 
   # Gateway port (default: 18789)
@@ -143,7 +143,7 @@ openclaw:
       telegram:
         enabled: true
         dmPolicy: pairing
-        groupPolicy: allowlist
+        groupPolicy: open
         streaming: partial
         # botToken injected via OPENCLAW_TELEGRAM_BOT_TOKEN env var or secret
     gateway:
