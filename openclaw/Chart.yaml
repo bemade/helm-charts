@@ -2,7 +2,7 @@ apiVersion: v2
 name: openclaw
 description: A Helm chart for deploying OpenClaw - Personal AI Assistant
 type: application
-version: 0.6.4
+version: 0.6.5
 appVersion: "latest"
 home: https://github.com/bemade/helm-charts
 sources:
