@@ -153,6 +153,10 @@ openclaw:
       auth:
         mode: token
         # token injected via gatewayToken secret
+      # Trust Traefik and Calico pod network for proxy header forwarding
+      trustedProxies:
+        - "10.42.0.0/16"
+        - "10.43.0.0/16"
       # Required for non-loopback Control UI access
       controlUi:
         enabled: true
