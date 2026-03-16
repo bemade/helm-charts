@@ -163,23 +163,19 @@ spec:
               mountPath: /home/node/.openclaw
             - name: tmp-volume
               mountPath: /tmp
-          # Liveness probe: exec-based node healthcheck (official pattern)
+          # Liveness probe: lightweight httpGet
           livenessProbe:
-            exec:
-              command:
-                - node
-                - -e
-                - "require('http').get('http://127.0.0.1:{{ .Values.openclaw.port }}/healthz', r => process.exit(r.statusCode < 400 ? 0 : 1)).on('error', () => process.exit(1))"
+            httpGet:
+              path: {{ .Values.openclaw.probes.liveness.path | default "/health" }}
+              port: {{ .Values.openclaw.port }}
             initialDelaySeconds: {{ .Values.openclaw.probes.liveness.initialDelaySeconds }}
             periodSeconds: {{ .Values.openclaw.probes.liveness.periodSeconds }}
-            timeoutSeconds: 10
-          # Readiness probe: exec-based node readiness check
+            timeoutSeconds: 5
+          # Readiness probe: lightweight httpGet
           readinessProbe:
-            exec:
-              command:
-                - node
-                - -e
-                - "require('http').get('http://127.0.0.1:{{ .Values.openclaw.port }}/readyz', r => process.exit(r.statusCode < 400 ? 0 : 1)).on('error', () => process.exit(1))"
+            httpGet:
+              path: {{ .Values.openclaw.probes.readiness.path | default "/health" }}
+              port: {{ .Values.openclaw.port }}
             initialDelaySeconds: {{ .Values.openclaw.probes.readiness.initialDelaySeconds }}
             periodSeconds: {{ .Values.openclaw.probes.readiness.periodSeconds }}
             timeoutSeconds: 5

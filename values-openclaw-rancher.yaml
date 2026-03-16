@@ -179,12 +179,14 @@ openclaw:
         telegram:
           enabled: true
 
-  # Health check probes (exec-based, official pattern)
+  # Health check probes (httpGet)
   probes:
     liveness:
+      path: /health
       initialDelaySeconds: 60
       periodSeconds: 30
     readiness:
+      path: /health
       initialDelaySeconds: 15
       periodSeconds: 10
 
