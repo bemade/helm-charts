@@ -9,6 +9,7 @@ metadata:
 data:
   openclaw.plugin.json: |
     {
+      "id": "odoo-discuss",
       "name": "@bemade/odoo-discuss",
       "version": "0.1.0",
       "openclaw": {

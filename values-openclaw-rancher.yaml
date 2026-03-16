@@ -163,6 +163,8 @@ openclaw:
         enabled: true
         webhookPath: "/webhook/odoo-discuss"
         dmPolicy: open
+        allowFrom:
+          - "*"
         # token/odooUrl/odooApiKey configured via env vars or secrets later
     gateway:
       port: 18789
@@ -199,11 +201,14 @@ openclaw:
     plugins:
       enabled: true
       allow:
-        - "@bemade/odoo-discuss"
+        - "odoo-discuss"
+      load:
+        paths:
+          - "/home/openclaw/.openclaw/extensions/odoo-discuss"
       entries:
         telegram:
           enabled: true
-        "@bemade/odoo-discuss":
+        odoo-discuss:
           enabled: true
 
   # OpenClaw plugins
