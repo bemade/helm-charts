@@ -951,6 +951,24 @@ entries:
   openclaw:
   - apiVersion: v2
     appVersion: latest
+    created: "2026-03-16T18:15:14.983683204Z"
+    description: A Helm chart for deploying OpenClaw - Personal AI Assistant
+    digest: a8ab9b7c16b90011844135d23dd90e2c7e95f19b2ccaa4b3b536fbf940756583
+    home: https://github.com/bemade/helm-charts
+    maintainers:
+    - email: it@bemade.org
+      name: Bemade Inc.
+      url: https://bemade.org
+    name: openclaw
+    sources:
+    - https://github.com/bemade/helm-charts
+    - https://github.com/openclaw/openclaw
+    type: application
+    urls:
+    - https://github.com/bemade/helm-charts/releases/download/openclaw-0.6.0/openclaw-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
+    appVersion: latest
     created: "2026-03-16T15:45:46.198315706Z"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: 366b317b6ba5a32ba622ef0bf15534a180799a7f7716e10ef40cd7ce1a109ea6
@@ -1183,4 +1201,4 @@ entries:
     urls:
     - postgres-pgvector/postgres-pgvector-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-16T15:45:46.198452552Z"
+generated: "2026-03-16T18:15:14.983862218Z"
