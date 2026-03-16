@@ -10,35 +10,11 @@ data:
   openclaw.plugin.json: |
     {
       "id": "odoo-discuss",
-      "name": "@bemade/odoo-discuss",
-      "description": "OpenClaw channel plugin for Odoo Discuss integration",
-      "version": "0.1.0",
-      "extensions": ["./index.ts"],
-      "channel": {
-        "id": "odoo-discuss",
-        "label": "Odoo Discuss",
-        "selectionLabel": "Odoo Discuss (Bemade)",
-        "docsPath": "/channels/odoo-discuss",
-        "blurb": "Chat with Majordomo from Odoo Discuss",
-        "order": 70,
-        "aliases": ["odoo", "discuss"]
-      },
+      "channels": ["odoo-discuss"],
       "configSchema": {
         "type": "object",
-        "properties": {
-          "enabled": { "type": "boolean" },
-          "token": { "type": "string" },
-          "odooUrl": { "type": "string" },
-          "odooDatabase": { "type": "string" },
-          "odooUser": { "type": "string" },
-          "odooApiKey": { "type": "string" },
-          "webhookPath": { "type": "string" },
-          "dmPolicy": { "type": "string", "enum": ["allowlist", "open", "disabled"] },
-          "allowFrom": { "type": "array", "items": { "type": "string" } },
-          "allowedUserIds": { "type": "array", "items": { "type": "number" } },
-          "rateLimitPerMinute": { "type": "number" }
-        },
-        "required": ["enabled"]
+        "additionalProperties": false,
+        "properties": {}
       }
     }
   package.json: |
@@ -46,8 +22,20 @@ data:
       "name": "@bemade/odoo-discuss",
       "version": "0.1.0",
       "description": "OpenClaw channel plugin for Odoo Discuss integration",
-      "main": "index.ts",
-      "license": "LGPL-3"
+      "type": "module",
+      "license": "LGPL-3",
+      "openclaw": {
+        "extensions": ["./index.ts"],
+        "channel": {
+          "id": "odoo-discuss",
+          "label": "Odoo Discuss",
+          "selectionLabel": "Odoo Discuss (Bemade)",
+          "docsPath": "/channels/odoo-discuss",
+          "blurb": "Chat with Majordomo from Odoo Discuss",
+          "order": 70,
+          "aliases": ["odoo", "discuss"]
+        }
+      }
     }
   index.ts: |
 {{ .Files.Get "files/odoo-discuss-plugin/index.ts" | indent 4 }}
