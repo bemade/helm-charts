@@ -61,6 +61,11 @@ openclaw:
     storageClass: ""
     size: 5Gi
 
+  # OpenClaw plugins (installed via ConfigMap + initContainer)
+  plugins:
+    odooDiscuss:
+      enabled: false
+
   # OpenClaw configuration (openclaw.json)
   # Reference: https://docs.openclaw.ai/gateway/configuration
   config:

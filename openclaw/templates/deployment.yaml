@@ -58,6 +58,11 @@ spec:
                 sed -i 's/"mode": "token"/"mode": "token", "token": "'"$OPENCLAW_GATEWAY_TOKEN"'"/' /home/openclaw/.openclaw/openclaw.json
               fi
               mkdir -p /home/openclaw/.openclaw/workspace
+              # Install plugins from ConfigMaps
+              {{- if and .Values.openclaw.plugins .Values.openclaw.plugins.odooDiscuss .Values.openclaw.plugins.odooDiscuss.enabled }}
+              mkdir -p /home/openclaw/.openclaw/plugins/@bemade/odoo-discuss
+              cp /plugins/odoo-discuss/* /home/openclaw/.openclaw/plugins/@bemade/odoo-discuss/
+              {{- end }}
           {{- if .Values.openclaw.secrets.gatewayToken }}
           env:
             - name: OPENCLAW_GATEWAY_TOKEN
@@ -81,6 +86,10 @@ spec:
               mountPath: /home/openclaw/.openclaw
             - name: openclaw-config
               mountPath: /config
+            {{- if and .Values.openclaw.plugins .Values.openclaw.plugins.odooDiscuss .Values.openclaw.plugins.odooDiscuss.enabled }}
+            - name: plugin-odoo-discuss
+              mountPath: /plugins/odoo-discuss
+            {{- end }}
       containers:
         - name: gateway
           image: "{{ .Values.openclaw.image.repository }}:{{ .Values.openclaw.image.tag }}"
@@ -192,3 +201,8 @@ spec:
           {{- end }}
         - name: tmp-volume
           emptyDir: {}
+        {{- if and .Values.openclaw.plugins .Values.openclaw.plugins.odooDiscuss .Values.openclaw.plugins.odooDiscuss.enabled }}
+        - name: plugin-odoo-discuss
+          configMap:
+            name: {{ include "openclaw.fullname" . }}-plugin-odoo
+        {{- end }}

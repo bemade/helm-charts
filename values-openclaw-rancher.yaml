@@ -159,8 +159,11 @@ openclaw:
         groupPolicy: open
         streaming: partial
         # botToken injected via OPENCLAW_TELEGRAM_BOT_TOKEN env var or secret
-      # odoo-discuss: requires openclaw-plugin to be installed first
-      # See: git.bemade.org/bemade/odoo-openclaw
+      odoo-discuss:
+        enabled: true
+        webhookPath: "/webhook/odoo-discuss"
+        dmPolicy: open
+        # token/odooUrl/odooApiKey configured via env vars or secrets later
     gateway:
       port: 18789
       mode: local
@@ -197,6 +200,11 @@ openclaw:
       entries:
         telegram:
           enabled: true
+
+  # OpenClaw plugins
+  plugins:
+    odooDiscuss:
+      enabled: true
 
   # Health check probes (httpGet)
   probes:

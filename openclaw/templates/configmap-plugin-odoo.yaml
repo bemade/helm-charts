@@ -1,0 +1,49 @@
+{{- if and .Values.openclaw.plugins .Values.openclaw.plugins.odooDiscuss .Values.openclaw.plugins.odooDiscuss.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "openclaw.fullname" . }}-plugin-odoo
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "openclaw.labels" . | nindent 4 }}
+data:
+  openclaw.plugin.json: |
+    {
+      "name": "@bemade/odoo-discuss",
+      "version": "0.1.0",
+      "openclaw": {
+        "extensions": ["./index.ts"],
+        "channel": {
+          "id": "odoo-discuss",
+          "label": "Odoo Discuss",
+          "selectionLabel": "Odoo Discuss (Bemade)",
+          "docsPath": "/channels/odoo-discuss",
+          "blurb": "Chat with Majordomo from Odoo Discuss",
+          "order": 70,
+          "aliases": ["odoo", "discuss"]
+        }
+      }
+    }
+  package.json: |
+    {
+      "name": "@bemade/odoo-discuss",
+      "version": "0.1.0",
+      "description": "OpenClaw channel plugin for Odoo Discuss integration",
+      "main": "index.ts",
+      "license": "LGPL-3",
+      "openclaw": {
+        "extensions": ["./index.ts"],
+        "channel": {
+          "id": "odoo-discuss",
+          "label": "Odoo Discuss",
+          "selectionLabel": "Odoo Discuss (Bemade)",
+          "docsPath": "/channels/odoo-discuss",
+          "blurb": "Chat with Majordomo from Odoo Discuss",
+          "order": 70,
+          "aliases": ["odoo", "discuss"]
+        }
+      }
+    }
+  index.ts: |
+{{ .Files.Get "files/odoo-discuss-plugin/index.ts" | indent 4 }}
+{{- end }}
