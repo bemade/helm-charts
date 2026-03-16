@@ -22,6 +22,23 @@ data:
           "blurb": "Chat with Majordomo from Odoo Discuss",
           "order": 70,
           "aliases": ["odoo", "discuss"]
+        },
+        "configSchema": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "token": { "type": "string" },
+            "odooUrl": { "type": "string" },
+            "odooDatabase": { "type": "string" },
+            "odooUser": { "type": "string" },
+            "odooApiKey": { "type": "string" },
+            "webhookPath": { "type": "string" },
+            "dmPolicy": { "type": "string", "enum": ["allowlist", "open", "disabled"] },
+            "allowFrom": { "type": "array", "items": { "type": "string" } },
+            "allowedUserIds": { "type": "array", "items": { "type": "number" } },
+            "rateLimitPerMinute": { "type": "number" }
+          },
+          "required": ["enabled"]
         }
       }
     }
