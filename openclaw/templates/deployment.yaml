@@ -77,13 +77,15 @@ spec:
           securityContext:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          {{- with .Values.openclaw.command }}
-          command: {{- toYaml . | nindent 12 }}
+          {{- if .Values.openclaw.command }}
+          command: {{- toYaml .Values.openclaw.command | nindent 12 }}
           {{- end }}
           {{- if .Values.openclaw.args }}
           args: {{- toYaml .Values.openclaw.args | nindent 12 }}
           {{- else }}
+          # Default: pass openclaw.mjs script + gateway subcommand as args to node ENTRYPOINT
           args:
+            - /app/openclaw.mjs
             - gateway
             - --port
             - "{{ .Values.openclaw.port }}"
