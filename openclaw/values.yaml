@@ -19,10 +19,8 @@ openclaw:
   hostname: "openclaw.example.com"
 
   # Command and args (override Docker entrypoint)
-  # Note: port in args is overridden by the deployment template
-  command:
-    - "node"
-    - "/app/openclaw.mjs"
+  # Leave empty to use the official entrypoint: node /app/dist/index.js gateway run
+  command: []
   args: []
 
   # Ingress configuration
@@ -73,31 +71,20 @@ openclaw:
         model:
           primary: "anthropic/claude-sonnet-4-20250514"
 
-  # Health check probes
+  # Health check probes (exec-based, official pattern)
   probes:
     liveness:
-      path: /health
-      initialDelaySeconds: 30
-      periodSeconds: 10
+      initialDelaySeconds: 60
+      periodSeconds: 30
     readiness:
-      path: /health
-      initialDelaySeconds: 5
-      periodSeconds: 5
+      initialDelaySeconds: 15
+      periodSeconds: 10
 
-  # Pod-level security context
-  podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 1000
-    runAsGroup: 1000
-    fsGroup: 1000
+  # Extra pod-level security context (merged with hardcoded fsGroup/seccomp)
+  podSecurityContext: {}
 
-  # Container-level security context
-  securityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
+  # Note: container securityContext is hardcoded in the deployment template
+  # (runAsNonRoot, readOnlyRootFilesystem, drop ALL) per official manifest
 
   # Service account
   serviceAccount:

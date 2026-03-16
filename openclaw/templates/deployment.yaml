@@ -7,6 +7,9 @@ metadata:
     {{- include "openclaw.labels" . | nindent 4 }}
 spec:
   replicas: 1
+  # Recreate strategy required for single-writer PVC
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "openclaw.selectorLabels" . | nindent 6 }}
@@ -22,11 +25,16 @@ spec:
     spec:
       {{- if .Values.openclaw.serviceAccount.create }}
       serviceAccountName: {{ include "openclaw.fullname" . }}
+      {{- else }}
+      automountServiceAccountToken: false
       {{- end }}
-      {{- with .Values.openclaw.podSecurityContext }}
       securityContext:
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+        {{- with .Values.openclaw.podSecurityContext }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
       {{- with .Values.openclaw.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -35,21 +43,56 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      # Init container: copy config from ConfigMap to PVC and prepare workspace
+      initContainers:
+        - name: init-config
+          image: busybox:1.37
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              cp /config/openclaw.json /home/node/.openclaw/openclaw.json
+              mkdir -p /home/node/.openclaw/workspace
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          resources:
+            requests:
+              memory: 32Mi
+              cpu: 50m
+            limits:
+              memory: 64Mi
+              cpu: 100m
+          volumeMounts:
+            - name: openclaw-data
+              mountPath: /home/node/.openclaw
+            - name: openclaw-config
+              mountPath: /config
       containers:
-        - name: openclaw
+        - name: gateway
           image: "{{ .Values.openclaw.image.repository }}:{{ .Values.openclaw.image.tag }}"
           imagePullPolicy: {{ .Values.openclaw.image.pullPolicy }}
-          {{- with .Values.openclaw.securityContext }}
           securityContext:
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
           {{- with .Values.openclaw.command }}
           command: {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- if .Values.openclaw.args }}
-          args: {{- toYaml .Values.openclaw.args | nindent 12 }}
           {{- else }}
-          args: ["gateway", "--port", "{{ .Values.openclaw.port }}"]
+          command:
+            - node
+            - /app/dist/index.js
+            - gateway
+            - run
+          {{- end }}
+          {{- with .Values.openclaw.args }}
+          args: {{- toYaml . | nindent 12 }}
           {{- end }}
           resources:
             requests:
@@ -59,9 +102,17 @@ spec:
               cpu: {{ .Values.openclaw.resources.limits.cpu }}
               memory: {{ .Values.openclaw.resources.limits.memory }}
           ports:
-            - containerPort: {{ .Values.openclaw.port }}
-              name: http
+            - name: gateway
+              containerPort: {{ .Values.openclaw.port }}
+              protocol: TCP
           env:
+            # Required runtime env vars
+            - name: HOME
+              value: /home/node
+            - name: OPENCLAW_CONFIG_DIR
+              value: /home/node/.openclaw
+            - name: NODE_ENV
+              value: production
             # Built-in secrets (mapped to standard env vars)
             {{- if .Values.openclaw.secrets.anthropicApiKey }}
             - name: ANTHROPIC_API_KEY
@@ -102,21 +153,28 @@ spec:
           volumeMounts:
             - name: openclaw-data
               mountPath: /home/node/.openclaw
-            - name: openclaw-config
-              mountPath: /home/node/.openclaw/openclaw.json
-              subPath: openclaw.json
+            - name: tmp-volume
+              mountPath: /tmp
+          # Liveness probe: exec-based node healthcheck (official pattern)
           livenessProbe:
-            httpGet:
-              path: {{ .Values.openclaw.probes.liveness.path }}
-              port: {{ .Values.openclaw.port }}
+            exec:
+              command:
+                - node
+                - -e
+                - "require('http').get('http://127.0.0.1:{{ .Values.openclaw.port }}/healthz', r => process.exit(r.statusCode < 400 ? 0 : 1)).on('error', () => process.exit(1))"
             initialDelaySeconds: {{ .Values.openclaw.probes.liveness.initialDelaySeconds }}
             periodSeconds: {{ .Values.openclaw.probes.liveness.periodSeconds }}
+            timeoutSeconds: 10
+          # Readiness probe: exec-based node readiness check
           readinessProbe:
-            httpGet:
-              path: {{ .Values.openclaw.probes.readiness.path }}
-              port: {{ .Values.openclaw.port }}
+            exec:
+              command:
+                - node
+                - -e
+                - "require('http').get('http://127.0.0.1:{{ .Values.openclaw.port }}/readyz', r => process.exit(r.statusCode < 400 ? 0 : 1)).on('error', () => process.exit(1))"
             initialDelaySeconds: {{ .Values.openclaw.probes.readiness.initialDelaySeconds }}
             periodSeconds: {{ .Values.openclaw.probes.readiness.periodSeconds }}
+            timeoutSeconds: 5
       volumes:
         - name: openclaw-config
           configMap:
@@ -128,3 +186,5 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+        - name: tmp-volume
+          emptyDir: {}

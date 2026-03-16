@@ -1,4 +1,4 @@
-# OpenClaw v0.4.0 - Values for bemade/openclaw chart
+# OpenClaw v0.5.0 - Values for bemade/openclaw chart
 # Hostname: claw.3387.vezina.biz
 
 # Override chart name
@@ -175,31 +175,17 @@ openclaw:
         telegram:
           enabled: true
 
-  # Health check probes
+  # Health check probes (exec-based, official pattern)
   probes:
     liveness:
-      path: /health
-      initialDelaySeconds: 120
-      periodSeconds: 15
+      initialDelaySeconds: 60
+      periodSeconds: 30
     readiness:
-      path: /health
-      initialDelaySeconds: 5
-      periodSeconds: 5
+      initialDelaySeconds: 15
+      periodSeconds: 10
 
-  # Pod-level security context
-  podSecurityContext:
-    runAsNonRoot: true
-    runAsUser: 1000
-    runAsGroup: 1000
-    fsGroup: 1000
-
-  # Container-level security context
-  securityContext:
-    allowPrivilegeEscalation: false
-    readOnlyRootFilesystem: false
-    capabilities:
-      drop:
-        - ALL
+  # Extra pod-level security context (fsGroup/seccomp hardcoded in template)
+  podSecurityContext: {}
 
   # Service account
   serviceAccount:
