@@ -162,6 +162,9 @@ openclaw:
         enabled: true
         allowedOrigins:
           - "https://claw.3387.vezina.biz"
+        # Disable device pairing for reverse proxy (Traefik) setup
+        # Token auth is still enforced via gateway.auth.mode: token
+        dangerouslyDisableDeviceAuth: true
       tailscale:
         mode: "off"
         resetOnExit: false
