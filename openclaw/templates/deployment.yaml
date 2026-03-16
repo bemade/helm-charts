@@ -84,15 +84,14 @@ spec:
                 - ALL
           {{- with .Values.openclaw.command }}
           command: {{- toYaml . | nindent 12 }}
-          {{- else }}
-          command:
-            - node
-            - /app/dist/index.js
-            - gateway
-            - run
           {{- end }}
-          {{- with .Values.openclaw.args }}
-          args: {{- toYaml . | nindent 12 }}
+          {{- if .Values.openclaw.args }}
+          args: {{- toYaml .Values.openclaw.args | nindent 12 }}
+          {{- else }}
+          args:
+            - gateway
+            - --port
+            - "{{ .Values.openclaw.port }}"
           {{- end }}
           resources:
             requests:
