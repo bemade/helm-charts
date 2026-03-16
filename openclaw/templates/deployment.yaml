@@ -58,11 +58,6 @@ spec:
                 sed -i 's/"mode": "token"/"mode": "token", "token": "'"$OPENCLAW_GATEWAY_TOKEN"'"/' /home/openclaw/.openclaw/openclaw.json
               fi
               mkdir -p /home/openclaw/.openclaw/workspace
-              # Install plugins to extensions/ for auto-discovery
-              {{- if and .Values.openclaw.plugins .Values.openclaw.plugins.odooDiscuss .Values.openclaw.plugins.odooDiscuss.enabled }}
-              mkdir -p /home/openclaw/.openclaw/extensions/odoo-discuss
-              cp /plugins/odoo-discuss/* /home/openclaw/.openclaw/extensions/odoo-discuss/
-              {{- end }}
           {{- if .Values.openclaw.secrets.gatewayToken }}
           env:
             - name: OPENCLAW_GATEWAY_TOKEN
@@ -86,10 +81,45 @@ spec:
               mountPath: /home/openclaw/.openclaw
             - name: openclaw-config
               mountPath: /config
-            {{- if and .Values.openclaw.plugins .Values.openclaw.plugins.odooDiscuss .Values.openclaw.plugins.odooDiscuss.enabled }}
+        {{- if and .Values.openclaw.plugins .Values.openclaw.plugins.odooDiscuss .Values.openclaw.plugins.odooDiscuss.enabled }}
+        # Init container: install odoo-discuss plugin using OpenClaw CLI
+        - name: init-plugin-odoo
+          image: "{{ .Values.openclaw.image.repository }}:{{ .Values.openclaw.image.tag }}"
+          imagePullPolicy: {{ .Values.openclaw.image.pullPolicy }}
+          command:
+            - sh
+            - -c
+            - |
+              # Copy plugin source from ConfigMap to a temp dir
+              mkdir -p /tmp/odoo-discuss-plugin
+              cp /plugins/odoo-discuss/* /tmp/odoo-discuss-plugin/
+              # Install plugin using OpenClaw CLI
+              export HOME=/home/openclaw
+              export OPENCLAW_CONFIG_DIR=/home/openclaw/.openclaw
+              node /app/openclaw.mjs plugins install /tmp/odoo-discuss-plugin --yes 2>&1 || {
+                echo "Plugin install failed, trying link mode..."
+                node /app/openclaw.mjs plugins install -l /tmp/odoo-discuss-plugin --yes 2>&1 || true
+              }
+              echo "Plugin install complete. Listing plugins:"
+              node /app/openclaw.mjs plugins list 2>&1 || true
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 200m
+            limits:
+              memory: 512Mi
+              cpu: 500m
+          volumeMounts:
+            - name: openclaw-data
+              mountPath: /home/openclaw/.openclaw
             - name: plugin-odoo-discuss
               mountPath: /plugins/odoo-discuss
-            {{- end }}
+            - name: tmp-volume
+              mountPath: /tmp
+        {{- end }}
       containers:
         - name: gateway
           image: "{{ .Values.openclaw.image.repository }}:{{ .Values.openclaw.image.tag }}"
