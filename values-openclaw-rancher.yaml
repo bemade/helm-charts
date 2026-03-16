@@ -228,7 +228,8 @@ openclaw:
       TELEGRAM_BOT_TOKEN: "8705187418:AAHkHvfdzVZDZ1btmTHEiWjP6SpmeTjs8YM"
 
   # Extra plain (non-secret) environment variables
-  extraEnv: {}
+  extraEnv:
+    OLLAMA_API_KEY: "ollama-local"
 
   # Backup CronJob - SQLite online backup at 3 AM daily
   backup:
