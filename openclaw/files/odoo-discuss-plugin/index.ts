@@ -28,7 +28,7 @@ interface OdooWebhookPayload {
   author_name: string;
   body: string;
   timestamp: string;
-  token: string;
+  // token can be in payload (legacy) or Authorization header (new)
 }
 
 /**
@@ -43,26 +43,28 @@ async function sendToOdoo(
   body: string
 ): Promise<{ ok: boolean; error?: string }> {
   const endpoint = `${odooUrl}/jsonrpc`;
-  
+
+  // Use message_post on discuss.channel instead of creating mail.message
+  // directly, so that Odoo's bus notifications fire and the message appears
+  // in real-time in the Discuss UI.
   const payload = {
     jsonrpc: "2.0",
     method: "call",
     id: Date.now(),
     params: {
       service: "object",
-      method: "execute",
+      method: "execute_kw",
       args: [
         database,
         userId,
         apiKey,
-        "mail.message",
-        "create",
+        "discuss.channel",
+        "message_post",
+        [channelId],
         {
-          model: "discuss.channel",
-          res_id: channelId,
           body: body,
           message_type: "comment",
-          subtype_id: 1, // "Discussions"
+          subtype_xmlid: "mail.mt_comment",
         },
       ],
     },
@@ -85,6 +87,15 @@ async function sendToOdoo(
   } catch (err) {
     return { ok: false, error: String(err) };
   }
+}
+
+/**
+ * Extract Bearer token from Authorization header
+ */
+function extractBearerToken(authHeader: string | undefined): string | null {
+  if (!authHeader) return null;
+  const match = authHeader.match(/^Bearer\s+(.+)$/i);
+  return match ? match[1] : null;
 }
 
 /**
@@ -177,7 +188,7 @@ export default function register(api: ChannelPluginContext) {
   // Register the webhook HTTP route
   api.registerHttpRoute({
     path: "/webhook/odoo-discuss",
-    auth: "plugin",
+    auth: "none",
     match: "exact",
     handler: async (req, res) => {
       if (req.method !== "POST") {
@@ -193,8 +204,20 @@ export default function register(api: ChannelPluginContext) {
           const payload: OdooWebhookPayload = JSON.parse(body);
           const cfg = api.config.channels?.[PLUGIN_ID] as OdooDiscussConfig;
 
-          // Validate token
-          if (!cfg || payload.token !== cfg.token) {
+          // Validate token - check Authorization header first (new format),
+          // then fall back to payload token (legacy format)
+          const authHeader = req.headers["authorization"] as string | undefined;
+          const headerToken = extractBearerToken(authHeader);
+          const payloadToken = (payload as any).token;
+          
+          const providedToken = headerToken || payloadToken;
+          
+          if (!cfg || providedToken !== cfg.token) {
+            api.logger.warn("Odoo webhook auth failed", { 
+              hasHeaderToken: !!headerToken, 
+              hasPayloadToken: !!payloadToken,
+              configToken: !!cfg?.token 
+            });
             res.statusCode = 401;
             res.end(JSON.stringify({ error: "Invalid token" }));
             return;
