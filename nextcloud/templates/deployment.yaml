@@ -349,35 +349,37 @@ spec:
                 fi
               fi
 
-              if [ "$FRESH_INSTALL" = "true" ]; then
-                # Fresh install: do NOT copy files - let Docker entrypoint handle
-                # the full initialization and auto-install via env vars
-                echo "Fresh install detected (DB empty)"
-                echo "Skipping file copy - Docker entrypoint will initialize and auto-install"
-                # Ensure config dir exists for entrypoint
-                mkdir -p /var/www/html/config
+              # Always copy files when version.php is missing, regardless of
+              # fresh install or existing install. The PVC subPath mounts shadow
+              # the image's /var/www/html, so the Docker entrypoint cannot
+              # reliably copy files itself. Doing it in the init container
+              # ensures files are present before probes start.
+              if [ ! -f /var/www/html/version.php ]; then
+                echo "Initializing Nextcloud files in PVC..."
+                cp -a /usr/src/nextcloud/. /var/www/html/
+                chown -R www-data:www-data /var/www/html
+                echo "Initialization complete ($(cat /var/www/html/version.php | grep 'VersionString' | head -1))"
               else
-                # Existing install or non-auto mode: copy files if needed
-                if [ ! -f /var/www/html/version.php ]; then
-                  echo "Initializing Nextcloud files in PVC..."
-                  cp -a /usr/src/nextcloud/. /var/www/html/
-                  chown -R www-data:www-data /var/www/html
-                  echo "Initialization complete"
-                else
-                  echo "Nextcloud files already present"
-                  # Ensure hidden files exist (may be missing from previous init)
-                  for f in .htaccess .user.ini; do
-                    if [ ! -f /var/www/html/$f ] && [ -f /usr/src/nextcloud/$f ]; then
-                      echo "Copying missing $f..."
-                      cp /usr/src/nextcloud/$f /var/www/html/
-                      chown www-data:www-data /var/www/html/$f
-                    fi
-                  done
-                fi
+                echo "Nextcloud files already present (version.php exists)"
+                # Ensure hidden files exist (may be missing from previous init)
+                for f in .htaccess .user.ini; do
+                  if [ ! -f /var/www/html/$f ] && [ -f /usr/src/nextcloud/$f ]; then
+                    echo "Copying missing $f..."
+                    cp /usr/src/nextcloud/$f /var/www/html/
+                    chown www-data:www-data /var/www/html/$f
+                  fi
+                done
+              fi
+
+              if [ "$FRESH_INSTALL" = "true" ]; then
+                echo "Fresh install detected (DB empty)"
+                echo "Docker entrypoint will auto-install via NEXTCLOUD_ADMIN_USER env var"
+              else
                 # DB exists: create CAN_INSTALL to allow updates
                 if [ -f /tmp/db-check/DB_EXISTS ]; then
                   echo "Auto-detect: DB exists, creating CAN_INSTALL for update mode..."
                   touch /var/www/html/config/CAN_INSTALL
+                  chown www-data:www-data /var/www/html/config/CAN_INSTALL
                 fi
               fi
 
@@ -385,7 +387,11 @@ spec:
               if [ -n "$NEXTCLOUD_UPDATE" ] && [ "$NEXTCLOUD_UPDATE" = "1" ]; then
                 echo "NEXTCLOUD_UPDATE=1 detected, creating CAN_INSTALL..."
                 touch /var/www/html/config/CAN_INSTALL
+                chown www-data:www-data /var/www/html/config/CAN_INSTALL
               fi
+
+              # Ensure config directory has correct ownership
+              chown -R www-data:www-data /var/www/html/config
 
               # Ensure data directory exists with correct permissions (0770 required by Nextcloud)
               DATA_DIR="${NEXTCLOUD_DATA_DIR:-/var/www/html/data}"

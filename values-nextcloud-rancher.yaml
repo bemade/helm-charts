@@ -1,5 +1,5 @@
-# Nextcloud v1.0.8 - Values for bemade/nextcloud chart with CloudNativePG
-# Hostname: cloud.3387.vezina.biz
+# Nextcloud v1.0.21 - Values for bemade/nextcloud chart with CloudNativePG
+# Hostname: home.3387.vezina.biz
 
 # Image configuration - FPM Alpine
 image:
@@ -50,6 +50,11 @@ ingressRoute:
   clusterIssuer: letsencrypt-cloudflare-vezina
   entryPoints:
     - websecure
+  hsts:
+    enabled: true
+    maxAge: 15552000
+    includeSubdomains: true
+    preload: true
 
 # OIDC Login configuration for Keycloak SSO
 oidc:
@@ -83,7 +88,7 @@ oidc:
 
 # Nextcloud configuration
 nextcloud:
-  host: cloud.3387.vezina.biz
+  host: home.3387.vezina.biz
   
   # Admin credentials - chart will create the secret automatically
   username: itbemade
@@ -93,7 +98,7 @@ nextcloud:
     enabled: false
   
   trustedDomains:
-    - cloud.3387.vezina.biz
+    - home.3387.vezina.biz
   
   datadir: /var/www/html/data
   
@@ -126,6 +131,7 @@ nextcloud:
     custom.config.php: |-
       <?php
       $CONFIG = array (
+        'serverid' => 'nextcloud-prod-01',
         'trusted_proxies' => array(
           0 => '10.42.0.0/16',
           1 => '10.43.0.0/16',
@@ -137,8 +143,8 @@ nextcloud:
           1 => 'HTTP_X_REAL_IP',
         ),
         'overwriteprotocol' => 'https',
-        'overwritehost' => 'cloud.3387.vezina.biz',
-        'overwrite.cli.url' => 'https://cloud.3387.vezina.biz',
+        'overwritehost' => 'home.3387.vezina.biz',
+        'overwrite.cli.url' => 'https://home.3387.vezina.biz',
         'default_phone_region' => 'CA',
         // Maintenance window start at 5 AM UTC (1 AM EST/EDT)
         'maintenance_window_start' => 5,
@@ -176,10 +182,23 @@ nextcloud:
   
   hooks:
     pre-installation: null
-    post-installation: null
+    post-installation: |
+      php /var/www/html/occ app:install oidc_login || true
+      php /var/www/html/occ app:enable oidc_login || true
     pre-upgrade: null
     post-upgrade: null
-    before-starting: null
+    before-starting: |
+      # Only run occ commands if Nextcloud is already installed
+      if php /var/www/html/occ status --output=json 2>/dev/null | grep -q '"installed":true'; then
+        echo "Nextcloud installed, running maintenance tasks..."
+        php /var/www/html/occ app:install oidc_login || true
+        php /var/www/html/occ app:enable oidc_login || true
+        php /var/www/html/occ db:add-missing-indices -n
+        php /var/www/html/occ db:add-missing-columns -n
+        php /var/www/html/occ maintenance:repair --include-expensive -n
+      else
+        echo "Nextcloud not yet installed, skipping maintenance tasks"
+      fi
   
   extraEnv: null
   extraInitContainers: []
@@ -316,8 +335,8 @@ readinessProbe:
   successThreshold: 1
 
 startupProbe:
-  enabled: false
-  initialDelaySeconds: 30
+  enabled: true
+  initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 30

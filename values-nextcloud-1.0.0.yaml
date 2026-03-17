@@ -1,0 +1,169 @@
+# Nextcloud v1.0.0 - Migrated values from old chart (0.4.x)
+# Chart based on official Nextcloud Helm chart, Bitnami-free
+
+# Image configuration
+image:
+  registry: docker.io
+  repository: library/nextcloud
+  flavor: fpm-alpine
+  tag: "33.0.0-fpm-alpine"
+  pullPolicy: IfNotPresent
+
+# Replicas
+replicaCount: 1
+
+# Traefik IngressRoute (not standard ingress)
+ingress:
+  enabled: false
+
+ingressRoute:
+  enabled: true
+  clusterIssuer: "letsencrypt-cloudflare-vezina"
+  entryPoints:
+    - websecure
+
+# Nextcloud configuration
+nextcloud:
+  host: cloud.3387.vezina.biz
+  
+  # Admin credentials from existing secret
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-credentials
+    usernameKey: nextcloud-username
+    passwordKey: nextcloud-password
+  
+  # Trusted domains
+  trustedDomains:
+    - cloud.3387.vezina.biz
+  
+  # Data directory
+  datadir: /var/www/html/data
+  
+  # SMTP configuration (disabled)
+  mail:
+    enabled: false
+  
+  # S3 Object Storage (disabled)
+  objectStore:
+    s3:
+      enabled: false
+
+  # PHP configuration via defaultConfigs
+  defaultConfigs:
+    .htaccess: true
+    apache-pretty-urls.config.php: true
+    apcu.config.php: true
+    apps.config.php: true
+    autoconfig.php: true
+    redis.config.php: true
+    reverse-proxy.config.php: true
+    s3.config.php: true
+    smtp.config.php: true
+    swift.config.php: true
+    upgrade-disable-web.config.php: true
+    helm-metrics.config.php: true
+
+  # Extra configs for trusted proxies and other settings
+  configs:
+    custom.config.php: |-
+      <?php
+      $CONFIG = array (
+        'trusted_proxies' => array(
+          0 => '10.42.0.0/16',
+          1 => '127.0.0.1',
+        ),
+        'overwriteprotocol' => 'https',
+        'default_phone_region' => 'CA',
+        'maintenance_window_start' => 1,
+      );
+
+  # PHP configs for large file uploads
+  phpConfigs:
+    uploadLimit.ini: |
+      upload_max_filesize = 16G
+      post_max_size = 16G
+      max_execution_time = 3600
+      max_input_time = 3600
+      memory_limit = 512M
+
+
+# Nginx configuration (for fpm-alpine flavor)
+nginx:
+  enabled: true
+  image:
+    registry: docker.io
+    repository: nginxinc/nginx-unprivileged
+    tag: alpine
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+
+# External Database (PostgreSQL via CNPG)
+internalDatabase:
+  enabled: false
+
+externalDatabase:
+  enabled: true
+  type: postgresql
+  host: nextcloud-db-rw.nextcloud.svc.cluster.local
+  database: nextcloud
+  existingSecret:
+    enabled: true
+    secretName: nextcloud-db-app
+    usernameKey: user
+    passwordKey: password
+
+# Internal Redis (not Bitnami)
+redis:
+  enabled: true
+  image:
+    repository: docker.io/library/redis
+    tag: "7-alpine"
+    pullPolicy: IfNotPresent
+  port: 6379
+  auth:
+    enabled: false
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  persistence:
+    enabled: false
+
+# Persistence (at root level, not under nextcloud)
+persistence:
+  enabled: true
+  storageClass: "longhorn"
+  accessMode: ReadWriteMany
+  size: 20Gi
+
+# Resources (at root level)
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+# CronJob for background tasks
+cronjob:
+  enabled: true
+  type: cronjob  # Use CronJob instead of sidecar
+  cronjob:
+    schedule: "*/5 * * * *"
+    failedJobsHistoryLimit: 1
+    successfulJobsHistoryLimit: 3
+
+# Service Account
+serviceAccount:
+  create: true

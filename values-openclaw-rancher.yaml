@@ -161,11 +161,15 @@ openclaw:
         # botToken injected via OPENCLAW_TELEGRAM_BOT_TOKEN env var or secret
       odoo-discuss:
         enabled: true
+        token: "CHANGE_ME_ODOO_WEBHOOK_TOKEN"
+        odooUrl: "https://CHANGE_ME.odoo.com"
+        odooDatabase: "CHANGE_ME_DB_NAME"
+        odooUser: "CHANGE_ME_USER_ID"
+        odooApiKey: "CHANGE_ME_ODOO_API_KEY"
         webhookPath: "/webhook/odoo-discuss"
         dmPolicy: open
         allowFrom:
           - "*"
-        # token/odooUrl/odooApiKey configured via env vars or secrets later
     gateway:
       port: 18789
       mode: local

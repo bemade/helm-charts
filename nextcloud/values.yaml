@@ -852,8 +852,8 @@ readinessProbe:
   failureThreshold: 3
   successThreshold: 1
 startupProbe:
-  enabled: false
-  initialDelaySeconds: 30
+  enabled: true
+  initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 30
