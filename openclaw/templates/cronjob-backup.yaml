@@ -23,6 +23,23 @@ spec:
           serviceAccountName: {{ include "openclaw.fullname" . }}
           {{- end }}
           restartPolicy: OnFailure
+          # Force backup pod onto the same node as the main openclaw pod.
+          # Both openclaw-data and openclaw-backup PVCs are RWO, so the
+          # backup pod must land on the node that already has them attached.
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values:
+                          - {{ include "openclaw.name" . }}
+                      - key: app.kubernetes.io/component
+                        operator: NotIn
+                        values:
+                          - backup
+                  topologyKey: kubernetes.io/hostname
           containers:
             - name: backup
               image: "{{ .Values.openclaw.backup.image.repository }}:{{ .Values.openclaw.backup.image.tag }}"
