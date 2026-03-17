@@ -1,0 +1,59 @@
+# OpenClaw values for Bemade deployment with Odoo Discuss integration
+# Apply with: helm upgrade openclaw bemade/openclaw -n openclaw -f values-odoo-integration.yaml
+
+openclaw:
+  # Enable Odoo Discuss plugin
+  plugins:
+    odooDiscuss:
+      enabled: true
+
+  # Gateway configuration
+  config:
+    gateway:
+      mode: local
+      # Token will be injected from secret
+    agents:
+      defaults:
+        model:
+          primary: "anthropic/claude-sonnet-4-20250514"
+    # Channel configuration for Odoo Discuss
+    channels:
+      odoo-discuss:
+        enabled: true
+        # Webhook token for Odoo → OpenClaw authentication
+        # Generate a secure token: openssl rand -hex 32
+        token: "CHANGE_ME_WEBHOOK_TOKEN"
+        # URL of your Odoo instance (from inside the cluster)
+        odooUrl: "https://odoo.your-domain.com"
+        odooDatabase: "odoo"
+        # Odoo API user (system user for Majordomo)
+        odooUser: "2"
+        odooApiKey: "CHANGE_ME_ODOO_API_KEY"
+        # DM policy: "allowlist", "open", or "disabled"
+        dmPolicy: "allowlist"
+        # User IDs allowed to DM Majordomo
+        allowedUserIds: [2]
+        # Rate limit
+        rateLimitPerMinute: 60
+
+  # Secrets - Set these via --set or external secret management
+  secrets:
+    # Anthropic API key for Claude
+    anthropicApiKey: ""
+    # Gateway token for authentication
+    gatewayToken: ""
+    # Extra secrets for Odoo integration
+    extra:
+      # Webhook token used by Odoo to authenticate
+      ODOO_WEBHOOK_TOKEN: ""
+      # Odoo API key for Majordomo user
+      ODOO_API_KEY: ""
+
+  # Adjust resources if needed
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 2
+      memory: 2Gi
