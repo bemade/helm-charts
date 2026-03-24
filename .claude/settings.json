@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.openclaw.ai)",
+      "Bash(docker build:*)",
+      "Bash(docker run:*)",
+      "Bash(helm show:*)",
+      "Bash(kubectl -n bemade exec ollama-77d775b568-7kks2 -- ollama run glm-5:cloud \"say hi in one word\")",
+      "Bash(helm -n bemade get values ollama)"
+    ],
+    "additionalDirectories": [
+      "/home/mdurepos/src/openclaw-odoo"
+    ]
+  }
+}
