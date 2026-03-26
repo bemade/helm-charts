@@ -52,25 +52,25 @@ spec:
             - sh
             - -c
             - |
-              cp /config/openclaw.json /home/openclaw/.openclaw/openclaw.json
+              cp /config/openclaw.json /home/node/.openclaw/openclaw.json
               # Inject gateway token from K8s Secret into config JSON
               if [ -n "$OPENCLAW_GATEWAY_TOKEN" ]; then
-                sed -i 's/"mode": "token"/"mode": "token", "token": "'"$OPENCLAW_GATEWAY_TOKEN"'"/' /home/openclaw/.openclaw/openclaw.json
+                sed -i 's/"mode": "token"/"mode": "token", "token": "'"$OPENCLAW_GATEWAY_TOKEN"'"/' /home/node/.openclaw/openclaw.json
               fi
-              mkdir -p /home/openclaw/.openclaw/workspace
+              mkdir -p /home/node/.openclaw/workspace
               {{- if and .Values.openclaw.plugins .Values.openclaw.plugins.odooDiscuss .Values.openclaw.plugins.odooDiscuss.enabled }}
               # Clean stale plugin artifacts from previous deploys
-              rm -rf /home/openclaw/.openclaw/extensions/odoo-discuss
-              rm -rf /home/openclaw/.openclaw/plugins/@bemade
+              rm -rf /home/node/.openclaw/extensions/odoo-discuss
+              rm -rf /home/node/.openclaw/plugins/@bemade
               # Copy plugin files from ConfigMap to extensions/ for discovery
-              mkdir -p /home/openclaw/.openclaw/extensions/odoo-discuss
-              cp /plugins/odoo-discuss/openclaw.plugin.json /home/openclaw/.openclaw/extensions/odoo-discuss/
-              cp /plugins/odoo-discuss/package.json /home/openclaw/.openclaw/extensions/odoo-discuss/
-              cp /plugins/odoo-discuss/index.ts /home/openclaw/.openclaw/extensions/odoo-discuss/
+              mkdir -p /home/node/.openclaw/extensions/odoo-discuss
+              cp /plugins/odoo-discuss/openclaw.plugin.json /home/node/.openclaw/extensions/odoo-discuss/
+              cp /plugins/odoo-discuss/package.json /home/node/.openclaw/extensions/odoo-discuss/
+              cp /plugins/odoo-discuss/index.ts /home/node/.openclaw/extensions/odoo-discuss/
               echo "Plugin files installed to extensions/odoo-discuss:"
-              ls -la /home/openclaw/.openclaw/extensions/odoo-discuss/
+              ls -la /home/node/.openclaw/extensions/odoo-discuss/
               echo "--- openclaw.plugin.json ---"
-              cat /home/openclaw/.openclaw/extensions/odoo-discuss/openclaw.plugin.json
+              cat /home/node/.openclaw/extensions/odoo-discuss/openclaw.plugin.json
               {{- end }}
           {{- if .Values.openclaw.secrets.gatewayToken }}
           env:
@@ -92,7 +92,7 @@ spec:
               cpu: 100m
           volumeMounts:
             - name: openclaw-data
-              mountPath: /home/openclaw/.openclaw
+              mountPath: /home/node/.openclaw
             - name: openclaw-config
               mountPath: /config
             {{- if and .Values.openclaw.plugins .Values.openclaw.plugins.odooDiscuss .Values.openclaw.plugins.odooDiscuss.enabled }}
@@ -134,9 +134,9 @@ spec:
           env:
             # Required runtime env vars
             - name: HOME
-              value: /home/openclaw
+              value: /home/node
             - name: OPENCLAW_CONFIG_DIR
-              value: /home/openclaw/.openclaw
+              value: /home/node/.openclaw
             - name: NODE_ENV
               value: production
             # Built-in secrets (mapped to standard env vars)
@@ -178,7 +178,7 @@ spec:
             {{- end }}
           volumeMounts:
             - name: openclaw-data
-              mountPath: /home/openclaw/.openclaw
+              mountPath: /home/node/.openclaw
             - name: tmp-volume
               mountPath: /tmp
           # Liveness probe: lightweight httpGet
