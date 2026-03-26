@@ -43,7 +43,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      # Init container: copy config from ConfigMap to PVC, inject gateway token, prepare workspace
+      # Init container: migrate old paths, copy config from ConfigMap to PVC, inject gateway token, prepare workspace
       initContainers:
         - name: init-config
           image: busybox:1.37
@@ -52,6 +52,24 @@ spec:
             - sh
             - -c
             - |
+              # Migration: Fix old home paths from previous versions
+              # Check if data exists and migrate /home/openclaw -> {{ .Values.openclaw.homeDir }}
+              if [ -d "{{ .Values.openclaw.homeDir }}/.openclaw" ]; then
+                echo "Checking for old home paths to migrate..."
+                find {{ .Values.openclaw.homeDir }}/.openclaw -name "*.json" -type f 2>/dev/null | while read f; do
+                  if grep -q "/home/openclaw" "$f" 2>/dev/null; then
+                    echo "Migrating: $f"
+                    sed -i 's|/home/openclaw|{{ .Values.openclaw.homeDir }}|g' "$f"
+                  fi
+                done
+                # Also fix sessions.jsonl files which may contain hardcoded paths
+                find {{ .Values.openclaw.homeDir }}/.openclaw -name "*.jsonl" -type f 2>/dev/null | while read f; do
+                  if grep -q "/home/openclaw" "$f" 2>/dev/null; then
+                    echo "Migrating: $f"
+                    sed -i 's|/home/openclaw|{{ .Values.openclaw.homeDir }}|g' "$f"
+                  fi
+                done
+              fi
               cp /config/openclaw.json {{ .Values.openclaw.homeDir }}/.openclaw/openclaw.json
               # Inject gateway token from K8s Secret into config JSON
               if [ -n "$OPENCLAW_GATEWAY_TOKEN" ]; then
