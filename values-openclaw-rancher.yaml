@@ -6,6 +6,8 @@ nameOverride: ""
 fullnameOverride: ""
 
 openclaw:
+  homeDir: /home/node
+
   # Docker image configuration
   image:
     repository: ghcr.io/openclaw/openclaw
@@ -99,7 +101,7 @@ openclaw:
           "anthropic/claude-haiku-4-5": {}
           "anthropic/claude-sonnet-4-6": {}
           "anthropic/claude-opus-4-6": {}
-        workspace: "/home/openclaw/.openclaw/workspace"
+        workspace: "/home/node/.openclaw/workspace"
         compaction:
           mode: safeguard
           reserveTokensFloor: 20000
@@ -208,7 +210,7 @@ openclaw:
         - "odoo-discuss"
       load:
         paths:
-          - "/home/openclaw/.openclaw/extensions/odoo-discuss"
+          - "/home/node/.openclaw/extensions/odoo-discuss"
       entries:
         telegram:
           enabled: true

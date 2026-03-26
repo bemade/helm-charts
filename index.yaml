@@ -3,7 +3,7 @@ entries:
   internal-ca:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-03-24T08:29:28.078815416-04:00"
+    created: "2026-03-26T11:57:29.48688-04:00"
     description: A Helm chart for creating an internal Certificate Authority for Kubernetes
     digest: c6177148460a8b2fd19e5445d798455106bb54f627d1482b110be87dc679e730
     name: internal-ca
@@ -14,7 +14,7 @@ entries:
   keycloak:
   - apiVersion: v2
     appVersion: "26.0"
-    created: "2026-03-24T08:29:28.079247607-04:00"
+    created: "2026-03-26T11:57:29.487291-04:00"
     description: A Helm chart for deploying Keycloak - Identity and Access Management
     digest: 30ab2109cd9e1f40fd0bcba9adb380f5d960a4dc5ca68b8cd78292a915a43d18
     home: https://git.bemade.org/bemade/helm-charts
@@ -33,7 +33,7 @@ entries:
   minio:
   - apiVersion: v2
     appVersion: RELEASE.2024-05-28T17-19-04Z
-    created: "2026-03-24T08:29:28.079535156-04:00"
+    created: "2026-03-26T11:57:29.487673-04:00"
     description: Minimal Helm chart for a single MinIO deployment with ingress
     digest: 1f5ab085decb9cb8d1b88480cd70c3eb455dd353bbab5e8e263985e9d97e936a
     name: minio
@@ -44,7 +44,7 @@ entries:
   nextcloud:
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.1414905-04:00"
+    created: "2026-03-26T11:57:29.534604-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 7b81ab772630d7a306a122ac4bf15c9ca731f0c6c62ac32da27c065b0dd5d84c
     home: https://nextcloud.com/
@@ -70,7 +70,7 @@ entries:
     version: 1.0.21
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.139245991-04:00"
+    created: "2026-03-26T11:57:29.532377-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 77c2ea89c0e4e1a044eec91565b6b6301901326b33c1580fea2884d11927132c
     home: https://nextcloud.com/
@@ -96,7 +96,7 @@ entries:
     version: 1.0.20
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.133692405-04:00"
+    created: "2026-03-26T11:57:29.527657-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 77372d46429e5ee11f1b63d57f9570e6bcec5337537e05960335c5e8cd96eedc
     home: https://nextcloud.com/
@@ -122,7 +122,7 @@ entries:
     version: 1.0.19
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.130357911-04:00"
+    created: "2026-03-26T11:57:29.52534-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: a1dfe6243ca84dc4c4b7045eff11a0336a0ea29cae351863b5d780e32ff6b055
     home: https://nextcloud.com/
@@ -148,7 +148,7 @@ entries:
     version: 1.0.18
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.126916417-04:00"
+    created: "2026-03-26T11:57:29.522266-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: c88e8996010e1b3ffcf837dc078b7b767d7d729704937bfdaa5257920b385fbf
     home: https://nextcloud.com/
@@ -174,7 +174,7 @@ entries:
     version: 1.0.17
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.122831616-04:00"
+    created: "2026-03-26T11:57:29.519886-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 1cdc9538bf525b1b8c57f3ee793064166c48dad75d5696ecefd4dc7e9587eb5d
     home: https://nextcloud.com/
@@ -200,7 +200,7 @@ entries:
     version: 1.0.16
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.119418064-04:00"
+    created: "2026-03-26T11:57:29.517339-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 13aaf40ee90d4fad3379d32a3c2e6903a3d3e7751e8862dc14d295dee63bd426
     home: https://nextcloud.com/
@@ -226,7 +226,7 @@ entries:
     version: 1.0.15
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.116069975-04:00"
+    created: "2026-03-26T11:57:29.514376-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 19c5d31acb15549cc61d55f960803f19fbdf0d94cff7dba0340053497532536f
     home: https://nextcloud.com/
@@ -252,7 +252,7 @@ entries:
     version: 1.0.14
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.112201199-04:00"
+    created: "2026-03-26T11:57:29.512229-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: fe8114a75848962c0d1072135638c46188291bf7e43fd697d345b2d01b651db7
     home: https://nextcloud.com/
@@ -278,7 +278,7 @@ entries:
     version: 1.0.13
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.108850385-04:00"
+    created: "2026-03-26T11:57:29.509403-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 20f9d04206456fd3e35a061a38465904004a4fa94823640ac96db8243dbcc6cb
     home: https://nextcloud.com/
@@ -304,7 +304,7 @@ entries:
     version: 1.0.12
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.105421084-04:00"
+    created: "2026-03-26T11:57:29.507111-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 2719f6455ea58efceeba199c1236f16f1e7bfe17814cf201aa2aab3194322ed2
     home: https://nextcloud.com/
@@ -330,7 +330,7 @@ entries:
     version: 1.0.11
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.101588797-04:00"
+    created: "2026-03-26T11:57:29.504736-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: ed3171c2b5e521da2cb41f78028bdf580c8b353687c5050b733b287b9da4750a
     home: https://nextcloud.com/
@@ -356,7 +356,7 @@ entries:
     version: 1.0.10
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.164493892-04:00"
+    created: "2026-03-26T11:57:29.551509-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: dd5dbf5a3794bb712020d3930e88889ac0f5b065e9140fd1b1baa4080e235fec
     home: https://nextcloud.com/
@@ -382,7 +382,7 @@ entries:
     version: 1.0.9
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.161142777-04:00"
+    created: "2026-03-26T11:57:29.548672-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: ff1bc4c5bbf5af3658000b87e9bf48fde5d7f3c41de430a4b72526dac74bb134
     home: https://nextcloud.com/
@@ -408,7 +408,7 @@ entries:
     version: 1.0.8
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.157878845-04:00"
+    created: "2026-03-26T11:57:29.546338-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: f32bdfdad49bd0dced94c9f27025d6d711426c2792a4f29b4962744a8d23fd39
     home: https://nextcloud.com/
@@ -434,7 +434,7 @@ entries:
     version: 1.0.7
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.154511861-04:00"
+    created: "2026-03-26T11:57:29.543602-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: ec50d18705b70e6625a828237850254d926f664b1da7c279127ce9b528fe557e
     home: https://nextcloud.com/
@@ -460,7 +460,7 @@ entries:
     version: 1.0.6
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.150826169-04:00"
+    created: "2026-03-26T11:57:29.54134-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 5cfbebe7574aa65c4ea1eca445125af39441b1f97b0ecb76bea2895d00e194ab
     home: https://nextcloud.com/
@@ -486,7 +486,7 @@ entries:
     version: 1.0.5
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.147700066-04:00"
+    created: "2026-03-26T11:57:29.539345-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 8401bed0181d5aab7860150fee2d8e0ecc2e54f6bb114bb8f3d605b22867948d
     home: https://nextcloud.com/
@@ -512,7 +512,7 @@ entries:
     version: 1.0.4
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.144393174-04:00"
+    created: "2026-03-26T11:57:29.537049-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 8f232ee8571c29a26e3d95a71981dbc47de5228a46495b443884abaa27e0423c
     home: https://nextcloud.com/
@@ -538,7 +538,7 @@ entries:
     version: 1.0.3
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.137037539-04:00"
+    created: "2026-03-26T11:57:29.529681-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 550cc0fc38ccb073da21bb85d39534b35b95705640c5e53753b7fe23d3d95d45
     home: https://nextcloud.com/
@@ -564,7 +564,7 @@ entries:
     version: 1.0.2
   - apiVersion: v2
     appVersion: 33.0.0
-    created: "2026-03-24T08:29:28.098294879-04:00"
+    created: "2026-03-26T11:57:29.501805-04:00"
     description: A Helm chart for Nextcloud - forked from official chart, Bitnami-free
     digest: 52ce2cfe6c4319cf52edfe357a77cd54c0a86b8ed940495a63b36a1e8c04e53b
     home: https://nextcloud.com/
@@ -590,7 +590,7 @@ entries:
     version: 1.0.0
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.095420638-04:00"
+    created: "2026-03-26T11:57:29.499875-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 148ffd9414f55801b4918a884965f9bc00cac3cdd73c36cdf8ca3440099ca8bd
     home: https://git.bemade.org/bemade/helm-charts
@@ -608,7 +608,7 @@ entries:
     version: 0.4.6
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.094300528-04:00"
+    created: "2026-03-26T11:57:29.499289-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 4cf00086d5329081b2977ee4fb3f69f69e1cc35e79dbb0b9dc205b69ead5d957
     home: https://git.bemade.org/bemade/helm-charts
@@ -626,7 +626,7 @@ entries:
     version: 0.4.5
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.092894391-04:00"
+    created: "2026-03-26T11:57:29.498717-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 987d52c0b5e1b4d7fdf38cc04812d5c7e7c19fa67843aeba1a5b927128c22a34
     home: https://git.bemade.org/bemade/helm-charts
@@ -644,7 +644,7 @@ entries:
     version: 0.4.4
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.092105241-04:00"
+    created: "2026-03-26T11:57:29.498032-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 6ab73a1c16d58ddc7ac648a16f67ca54a9b06a48dadd4bb5ccbf85bdccaccd1a
     home: https://git.bemade.org/bemade/helm-charts
@@ -662,7 +662,7 @@ entries:
     version: 0.4.3
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.091287637-04:00"
+    created: "2026-03-26T11:57:29.496661-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: bef8e4a00bf2541d288c446104a9ca121a75dbef506ea520182a53ae406f1890
     home: https://git.bemade.org/bemade/helm-charts
@@ -680,7 +680,7 @@ entries:
     version: 0.4.2
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.090408068-04:00"
+    created: "2026-03-26T11:57:29.496152-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 49831f015703bc45daf802b7495b1365bff896dd8b9db7e4cb40386c83f33422
     home: https://git.bemade.org/bemade/helm-charts
@@ -698,7 +698,7 @@ entries:
     version: 0.4.1
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.089532596-04:00"
+    created: "2026-03-26T11:57:29.495641-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 5d75628e6febd00396537f12c3932fc1ecad679ed00ac9e3c43e876dfd18b30b
     home: https://git.bemade.org/bemade/helm-charts
@@ -716,7 +716,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.088738476-04:00"
+    created: "2026-03-26T11:57:29.495076-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: eff4783c7188d28133152a4930060088f3f7f1f9124c01bbf96700aa3aebcfca
     home: https://git.bemade.org/bemade/helm-charts
@@ -734,7 +734,7 @@ entries:
     version: 0.3.9
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.087883102-04:00"
+    created: "2026-03-26T11:57:29.494545-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 2f710ffc4127cba0c119261ac00284523155d8a1d8455bda7c1fee620b2d50c7
     home: https://git.bemade.org/bemade/helm-charts
@@ -752,7 +752,7 @@ entries:
     version: 0.3.8
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.087033889-04:00"
+    created: "2026-03-26T11:57:29.49393-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 9f91fe8de1f6f46ac3b39691a60ab5c11f78859375fc4d25e2c06babd99e18a2
     home: https://git.bemade.org/bemade/helm-charts
@@ -770,7 +770,7 @@ entries:
     version: 0.3.7
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.086140424-04:00"
+    created: "2026-03-26T11:57:29.493392-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 1e576f3658f7342d4ecbb80c55419673baadae6f205bf16a37db20022e70644f
     home: https://git.bemade.org/bemade/helm-charts
@@ -788,7 +788,7 @@ entries:
     version: 0.3.6
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.085213876-04:00"
+    created: "2026-03-26T11:57:29.492807-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: ed184939ffd1deb803a446d630634fe0c239add955e45c187d9920337f0942da
     home: https://git.bemade.org/bemade/helm-charts
@@ -806,7 +806,7 @@ entries:
     version: 0.3.5
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.083686001-04:00"
+    created: "2026-03-26T11:57:29.492215-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 899fc2bed0935630c016ad68ce9bc1caafb4b17650ecfc5a5aacc4eb0a03322d
     home: https://git.bemade.org/bemade/helm-charts
@@ -824,7 +824,7 @@ entries:
     version: 0.3.4
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.08294449-04:00"
+    created: "2026-03-26T11:57:29.491114-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: dd5b9a6747122a8104b716ad56b89700aca99426ce65ff8c818d2f350da67581
     home: https://git.bemade.org/bemade/helm-charts
@@ -842,7 +842,7 @@ entries:
     version: 0.3.3
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.082364492-04:00"
+    created: "2026-03-26T11:57:29.490357-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: ece14916e1f0426f4abcd913d2d21dfa50b43c82aeaa5d1ae6a26a4c2fe916b0
     home: https://git.bemade.org/bemade/helm-charts
@@ -860,7 +860,7 @@ entries:
     version: 0.3.2
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.081792479-04:00"
+    created: "2026-03-26T11:57:29.48967-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 445c607d329f88a1dd34c170bb66a63a3862d92e6bd8b328287fa995da2289f2
     home: https://git.bemade.org/bemade/helm-charts
@@ -878,7 +878,7 @@ entries:
     version: 0.3.1
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.081182986-04:00"
+    created: "2026-03-26T11:57:29.489106-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: efcfdd1adb939e442898b9960513f69d38318fc5c5de175c3c123c764232210b
     home: https://git.bemade.org/bemade/helm-charts
@@ -896,7 +896,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.080617636-04:00"
+    created: "2026-03-26T11:57:29.488622-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: 1d4d56716d5b1fbebc76890938fa6b93da924d4e8c76c39096b237d1a7ba7bb5
     home: https://git.bemade.org/bemade/helm-charts
@@ -914,7 +914,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: "30.0"
-    created: "2026-03-24T08:29:28.080061102-04:00"
+    created: "2026-03-26T11:57:29.488134-04:00"
     description: A Helm chart for deploying Nextcloud - Self-hosted productivity platform
     digest: b2551bde9afe58f33232912246a55639e6a51072f6de2a3dcb27f48bd766075d
     home: https://git.bemade.org/bemade/helm-charts
@@ -933,7 +933,7 @@ entries:
   odoo-openapi:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-03-24T08:29:28.165519455-04:00"
+    created: "2026-03-26T11:57:29.553478-04:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
     digest: 84c60cc932efc5c45dfe7fee22805c1f393821bea7681a41879f26be3c8b9fb8
     name: odoo-openapi
@@ -943,7 +943,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-03-24T08:29:28.165206388-04:00"
+    created: "2026-03-26T11:57:29.553141-04:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
     digest: 6f5c6ba50eccc69b460a4a3f7d37c8e17653a3d6f2f296921b9ee09925af5766
     name: odoo-openapi
@@ -953,7 +953,7 @@ entries:
     version: 0.1.2
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2026-03-24T08:29:28.164883853-04:00"
+    created: "2026-03-26T11:57:29.552731-04:00"
     description: A Helm chart for Odoo OpenAPI Tool Server
     digest: 0fc02498f0e1a76822db7bc7b6bf7321da8befb8d3eaa875e11a563469e74214
     name: odoo-openapi
@@ -963,7 +963,7 @@ entries:
     version: 0.1.0
   onlyoffice:
   - apiVersion: v2
-    created: "2026-03-24T08:29:28.165753043-04:00"
+    created: "2026-03-26T11:57:29.553852-04:00"
     description: A Helm chart for deploying OnlyOffice CE instances
     digest: 077b7940b7b9d6f07dcd361cfc485c96f381dcfbe5b284dc3922a2deefa1d392
     maintainers:
@@ -977,7 +977,43 @@ entries:
   openclaw:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.181389799-04:00"
+    created: "2026-03-26T11:57:29.564934-04:00"
+    description: A Helm chart for deploying OpenClaw - Personal AI Assistant
+    digest: f2621b645bdf0642a315e9c36cedddcb1d3ec939f05d69fdb46486ab2799ecd3
+    home: https://github.com/bemade/helm-charts
+    maintainers:
+    - email: it@bemade.org
+      name: Bemade Inc.
+      url: https://bemade.org
+    name: openclaw
+    sources:
+    - https://github.com/bemade/helm-charts
+    - https://github.com/openclaw/openclaw
+    type: application
+    urls:
+    - openclaw/openclaw-0.7.0.tgz
+    version: 0.7.0
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-03-26T11:57:29.564458-04:00"
+    description: A Helm chart for deploying OpenClaw - Personal AI Assistant
+    digest: 0067ed85aef054514c8b8681ef5bc6254c0d7faf468ff38f17210cf9ec353104
+    home: https://github.com/bemade/helm-charts
+    maintainers:
+    - email: it@bemade.org
+      name: Bemade Inc.
+      url: https://bemade.org
+    name: openclaw
+    sources:
+    - https://github.com/bemade/helm-charts
+    - https://github.com/openclaw/openclaw
+    type: application
+    urls:
+    - openclaw/openclaw-0.6.9.tgz
+    version: 0.6.9
+  - apiVersion: v2
+    appVersion: latest
+    created: "2026-03-26T11:57:29.563981-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: 40f983603a9fcec9c41cd27464bc41e2c1ec91bff0439e65141e1c62d7a10369
     home: https://github.com/bemade/helm-charts
@@ -995,7 +1031,7 @@ entries:
     version: 0.6.8
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.180598315-04:00"
+    created: "2026-03-26T11:57:29.563495-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: 47661a61832137abf6ca93882964500b126b34889d9e21a4d409427b04d258b1
     home: https://github.com/bemade/helm-charts
@@ -1013,7 +1049,7 @@ entries:
     version: 0.6.7
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.179781843-04:00"
+    created: "2026-03-26T11:57:29.562989-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: 20a82f70ec1e3072b3e0272338bc059afaf6de6a675ab1d368ba99e663a59b9b
     home: https://github.com/bemade/helm-charts
@@ -1031,7 +1067,7 @@ entries:
     version: 0.6.6
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.178861187-04:00"
+    created: "2026-03-26T11:57:29.562281-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: 8e8bead6d1855c2c141d36f36e6d2c56e3f141df4626be1dce55d8c8d6006b29
     home: https://github.com/bemade/helm-charts
@@ -1049,7 +1085,7 @@ entries:
     version: 0.6.5
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.177571248-04:00"
+    created: "2026-03-26T11:57:29.561815-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: 8c9b88d3b4a668897fe3177b3c90b25ee3fbc422c8db4aba95f094f373684a0d
     home: https://github.com/bemade/helm-charts
@@ -1067,7 +1103,7 @@ entries:
     version: 0.6.4
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.176856096-04:00"
+    created: "2026-03-26T11:57:29.56125-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: ceb55d22d05510c9fb009ebec05348ac7f48c79b5cb68c75870352dd17beae98
     home: https://github.com/bemade/helm-charts
@@ -1085,7 +1121,7 @@ entries:
     version: 0.6.3
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.17609009-04:00"
+    created: "2026-03-26T11:57:29.560708-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: d4f33179d3676b36f103c7516df18458d95b53442d274c97efbc2ae029119d0e
     home: https://github.com/bemade/helm-charts
@@ -1103,7 +1139,7 @@ entries:
     version: 0.6.2
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.175350713-04:00"
+    created: "2026-03-26T11:57:29.560105-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: ce5d062514194ad696e99f6f89b80f47cb68bdb177d244a747166a33e8d137f2
     home: https://github.com/bemade/helm-charts
@@ -1121,7 +1157,7 @@ entries:
     version: 0.6.1
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.174552286-04:00"
+    created: "2026-03-26T11:57:29.559111-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: ee68084a3fecafe9cd25379308a38ee16046b329192801600e94c3cbfeb21ba3
     home: https://github.com/bemade/helm-charts
@@ -1139,7 +1175,7 @@ entries:
     version: 0.6.0
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.173846362-04:00"
+    created: "2026-03-26T11:57:29.558659-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: df02ea8cc4af58f885e621628c46982f62ce316dde751533b9a70dd3e4b7cecd
     home: https://github.com/bemade/helm-charts
@@ -1157,7 +1193,7 @@ entries:
     version: 0.5.6
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.173213355-04:00"
+    created: "2026-03-26T11:57:29.558252-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: 83f865a1dd0bcef9b4fc82e7ad9db323bd26da6000ac86e80040d0c5885c3669
     home: https://github.com/bemade/helm-charts
@@ -1175,7 +1211,7 @@ entries:
     version: 0.5.5
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.172605725-04:00"
+    created: "2026-03-26T11:57:29.557844-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: e151e4d8ef6b17240cee0c2c4adb896ce012d86277e4078ded136526cb1fd4cc
     home: https://github.com/bemade/helm-charts
@@ -1193,7 +1229,7 @@ entries:
     version: 0.5.4
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.171937081-04:00"
+    created: "2026-03-26T11:57:29.557432-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: fe0111b7960ff3455d36faa6df92c78210aab99b9696d66ea371c94ad3a27036
     home: https://github.com/bemade/helm-charts
@@ -1211,7 +1247,7 @@ entries:
     version: 0.5.3
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.171261464-04:00"
+    created: "2026-03-26T11:57:29.557006-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: 37e95cbbc8e9a4c8035c949856c4b53932a82749be95b3482e06cca3583175d6
     home: https://github.com/bemade/helm-charts
@@ -1229,7 +1265,7 @@ entries:
     version: 0.5.2
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.170543918-04:00"
+    created: "2026-03-26T11:57:29.556577-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: ed5b9b52cd53a78efe4894ff11e25ded9f08b8d5406a6070358b5ccabd6b9075
     home: https://github.com/bemade/helm-charts
@@ -1247,7 +1283,7 @@ entries:
     version: 0.5.1
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.169859464-04:00"
+    created: "2026-03-26T11:57:29.556096-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: 5f8704e41582bcc0e0d33b11fdbfaeabae4daf3ecf40d3a622e7eea27b2a2ef9
     home: https://github.com/bemade/helm-charts
@@ -1265,7 +1301,7 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.169120028-04:00"
+    created: "2026-03-26T11:57:29.555669-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: ed6502756cceedde4db7c835b42accbc5564544bce3b25bfa9e67eab6947a998
     home: https://github.com/bemade/helm-charts
@@ -1283,7 +1319,7 @@ entries:
     version: 0.4.1
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.168352198-04:00"
+    created: "2026-03-26T11:57:29.555237-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: d7b4421190b885f9743644320e92dfbc62b3271694010eaa0afe1e1b9a209d06
     home: https://github.com/bemade/helm-charts
@@ -1301,7 +1337,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.167243478-04:00"
+    created: "2026-03-26T11:57:29.554799-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: dafc83066ea3c8114104017702fcbecb43ddd9c0a5fbdf3bb8bb9e39b688cf6c
     home: https://github.com/bemade/helm-charts
@@ -1319,7 +1355,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.166594702-04:00"
+    created: "2026-03-26T11:57:29.554463-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: 526e39400605fdfbff9d9f630a794026457b7214aa085881588181e3cc3d4097
     home: https://github.com/bemade/helm-charts
@@ -1337,7 +1373,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: latest
-    created: "2026-03-24T08:29:28.1661511-04:00"
+    created: "2026-03-26T11:57:29.554141-04:00"
     description: A Helm chart for deploying OpenClaw - Personal AI Assistant
     digest: 330b3bb0a31bb5ffef2b06914d2a2ee86e00fe6b5484961d5962a828b24ae883
     home: https://github.com/bemade/helm-charts
@@ -1355,7 +1391,7 @@ entries:
     version: 0.1.6
   postgres-pgvector:
   - apiVersion: v2
-    created: "2026-03-24T08:29:28.181745296-04:00"
+    created: "2026-03-26T11:57:29.565522-04:00"
     description: Single-instance PostgreSQL with pgvector extension using vectordb/vectordb
       image
     digest: 428560241676bc29295ecadea21bd8b16fccb90785cf26d4e27ddcb4c7b450b3
@@ -1371,4 +1407,4 @@ entries:
     urls:
     - postgres-pgvector/postgres-pgvector-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-24T08:29:28.078327872-04:00"
+generated: "2026-03-26T11:57:29.486312-04:00"
