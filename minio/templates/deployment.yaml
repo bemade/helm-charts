@@ -38,6 +38,9 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.rootCredentials.secretName }}
                   key: {{ .Values.rootCredentials.passwordKey }}
+            {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
           ports:
             - name: api
               containerPort: {{ .Values.service.apiPort }}
