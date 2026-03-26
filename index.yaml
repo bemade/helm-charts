@@ -33,6 +33,23 @@ entries:
   minio:
   - apiVersion: v2
     appVersion: RELEASE.2024-05-28T17-19-04Z
+    created: "2026-03-26T14:58:20.584574781Z"
+    description: Minimal Helm chart for a single MinIO deployment with ingress
+    digest: 634eb7ba3490c6839172614015fedc09f3e813e26500d7d0154b4b8446ae1710
+    home: https://github.com/bemade/helm-charts
+    maintainers:
+    - email: marc@bemade.org
+      name: Bemade Inc.
+      url: https://bemade.org
+    name: minio
+    sources:
+    - https://github.com/bemade/helm-charts
+    type: application
+    urls:
+    - https://github.com/bemade/helm-charts/releases/download/minio-0.1.1/minio-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: RELEASE.2024-05-28T17-19-04Z
     created: "2026-03-10T17:51:57.744876-04:00"
     description: Minimal Helm chart for a single MinIO deployment with ingress
     digest: 1f5ab085decb9cb8d1b88480cd70c3eb455dd353bbab5e8e263985e9d97e936a
@@ -1389,4 +1406,4 @@ entries:
     urls:
     - postgres-pgvector/postgres-pgvector-0.1.0.tgz
     version: 0.1.0
-generated: "2026-03-26T13:10:47.613358688Z"
+generated: "2026-03-26T14:58:21.01881473Z"
